@@ -1,24 +1,33 @@
-﻿// simple tabs + year
-const tabs = document.querySelectorAll('.tab');
-const panels = ['part1','part2','part3','notes'];
+﻿// Simple tabs + year
+const tabs = document.querySelectorAll('.tab-button');
+const panels = document.querySelectorAll('.tab-panel');
 
-function show(id){
-  tabs.forEach(t=>t.setAttribute('aria-selected', t.dataset.tab===id ? 'true' : 'false'));
-  panels.forEach(p=>{
-    const el = document.getElementById(p);
-    el.hidden = (p !== id);
+function activate(tabId){
+  tabs.forEach(btn=>{
+    const active = btn.dataset.tab === tabId;
+    btn.setAttribute('aria-selected', active ? 'true' : 'false');
+  });
+  panels.forEach((p,i)=>{
+    const shouldShow =
+      (tabId==='part1' && p.id==='panel-1') ||
+      (tabId==='part2' && p.id==='panel-2') ||
+      (tabId==='part3' && p.id==='panel-3') ||
+      (tabId==='notes' && p.id==='panel-4');
+    p.hidden = !shouldShow;
   });
 }
 
-tabs.forEach(btn=>{
-  btn.addEventListener('click', ()=> {
-    show(btn.dataset.tab);
-    location.hash = btn.dataset.tab;
-  });
-});
+// Deep-link with hash: #part1, #part2, #part3, #notes
+function fromHash(){
+  const h = (location.hash || '#part1').replace('#','');
+  const valid = ['part1','part2','part3','notes'];
+  activate(valid.includes(h) ? h : 'part1');
+}
+tabs.forEach(b=>b.addEventListener('click',()=> {
+  location.hash = b.dataset.tab;
+}));
+window.addEventListener('hashchange', fromHash);
+fromHash();
 
-window.addEventListener('load', ()=>{
-  document.getElementById('year').textContent = new Date().getFullYear();
-  const h = (location.hash||'#part1').replace('#','');
-  show(panels.includes(h) ? h : 'part1');
-});
+// Footer year
+document.getElementById('year').textContent = new Date().getFullYear();

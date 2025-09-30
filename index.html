@@ -1,48 +1,152 @@
 ﻿<!DOCTYPE html>
-<html lang=""en"">
+<html lang="en">
 <head>
-  <meta charset=""utf-8"">
-  <meta name=""viewport"" content=""width=device-width,initial-scale=1"">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>HCD Project Hub — Aryan Yaghobi</title>
-  <link href=""styles.css"" rel=""stylesheet"">
+  <meta name="description" content="Integrated Final Assessment project hub for Human-Centered Design Methods I." />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class=""site-header"">
-    <h1>HCD Project Hub</h1>
-    <p>Human-Centered Design Methods I — Integrated Final Assessment</p>
-    <p><strong>Student:</strong> Aryan Yaghobi</p>
+  <header class="site-header">
+    <div class="container header-grid">
+      <div class="branding">
+        <div class="logo-circle" aria-hidden="true">HCD</div>
+        <div>
+          <h1>HCD Project Hub</h1>
+          <p>Human-Centered Design Methods I — Integrated Final Assessment</p>
+        </div>
+      </div>
+      <div class="student-meta">
+        <strong>Student:</strong> Aryan Yaghobi<br />
+        <strong>Course:</strong> Human-Centered Design Methods I
+      </div>
+    </div>
   </header>
 
-  <nav class=""tabs"" role=""tablist"">
-    <button class=""tab"" data-tab=""part1"" aria-selected=""true"">Part 1</button>
-    <button class=""tab"" data-tab=""part2"">Part 2</button>
-    <button class=""tab"" data-tab=""part3"">Part 3</button>
-    <button class=""tab"" data-tab=""notes"">Notes</button>
+  <nav class="tabs container" role="tablist" aria-label="Project Sections">
+    <button class="tab-button" role="tab" aria-selected="true" aria-controls="panel-1" id="tab-1" data-tab="part1">Part 1</button>
+    <button class="tab-button" role="tab" aria-selected="false" aria-controls="panel-2" id="tab-2" data-tab="part2">Part 2</button>
+    <button class="tab-button" role="tab" aria-selected="false" aria-controls="panel-3" id="tab-3" data-tab="part3">Part 3</button>
+    <button class="tab-button" role="tab" aria-selected="false" aria-controls="panel-4" id="tab-4" data-tab="notes">Notes</button>
   </nav>
 
-  <main>
-    <section id=""part1"" class=""panel"">
-      <h2>Part 1 — Product Opportunity & SET Analysis</h2>
-      <p><em>Paste your Part 1 report here.</em></p>
+  <main class="container">
+    <!-- PART 1 -->
+    <section id="panel-1" class="tab-panel" role="tabpanel" aria-labelledby="tab-1">
+      <article class="card">
+        <h2>Part 1 — Product Opportunity & SET Analysis</h2>
+        <p class="muted">Module 3 — Integrated Final Assessment (Part 1)</p>
+        <hr />
+
+        <!-- Paste your Part 1 report here -->
+        <div class="content">
+          <h3>Ramp Worker Ergonomics — Part 1: Product Opportunity & SET Analysis</h3>
+
+          <h4>Opportunity Statement</h4>
+          <p><strong>How might we reduce physical strain and injury risk for airport ramp workers during baggage loading and unloading—especially in harsh weather and time-critical turns—without slowing operations?</strong></p>
+
+          <h4>Justification</h4>
+          <p><strong>Customer need.</strong> Airline baggage handlers and screeners perform high-frequency manual lifts in confined holds and awkward postures, leading to elevated rates of work-related musculoskeletal disorders (WMSDs) and lost time. NIOSH reports baggage personnel face WMSD risks from repetitive lifting; mechanical lift aids can mitigate exposure. Peer-reviewed studies confirm high MSD prevalence among handlers. IATA flags ground operations safety as a priority due to injuries, delays, and damage. The UK HSE notes manual-handling injury rates in baggage handling are about five times the all-industry average.</p>
+          <p><strong>Competitive landscape.</strong> Controls include IATA IGOM standards and training; some airports trial lift-assist devices, vacuum lifters, and emerging wearable back-support exoskeletons. However, adoption is uneven due to workflow integration and ROI uncertainty.</p>
+          <p><strong>Target market.</strong> Airlines, ground-handling companies, airport authorities, and GSE providers.</p>
+          <p><strong>Market size.</strong> The airport ground handling market was ~$32.4 billion in 2023 and is projected to reach $83.8 billion by 2033. Fortune Business Insights estimates $46.19 billion in 2024, growing to $96.68 billion by 2032. Airlines also incur about $100.80 per minute of block time; inefficient turns magnify delay costs. WMSDs impose hundreds of billions in costs annually in the U.S., underscoring the ROI for ergonomic risk reduction.</p>
+
+          <h4>SET Factors</h4>
+          <h5>Social</h5>
+          <ol>
+            <li>Safety culture and duty of care: ground-handling injuries and delays keep safety in focus.</li>
+            <li>High MSD burden: studies confirm elevated prevalence among baggage handlers.</li>
+            <li>Risk far above average: baggage handling injury rates ~5× the all-industry average.</li>
+            <li>Heat and harsh conditions: extreme weather raises awareness of worker safety.</li>
+            <li>Passenger expectations: baggage mishandling rates are improving, but volumes remain high.</li>
+          </ol>
+          <h5>Economic</h5>
+          <ol>
+            <li>Growing ground-handling market: expanding demand drives competition for safer, more efficient innovations.</li>
+            <li>Delay costs are high: about $100.80 per minute average aircraft operating cost.</li>
+            <li>MSD costs are significant: direct and indirect costs are enormous.</li>
+            <li>Liability and regulatory penalties: fines for service failures reinforce the case for safety.</li>
+            <li>Workforce stability: injuries increase absence and turnover, raising training and overtime costs.</li>
+          </ol>
+          <h5>Technological</h5>
+          <ol>
+            <li>Wearable exoskeletons: trials show reduced muscle loading in manual handling.</li>
+            <li>Lift-assist devices: proven to reduce spinal strain during baggage handling.</li>
+            <li>Process standardization: IATA IGOM harmonizes ground operations procedures.</li>
+            <li>Automation in baggage: IT investment is reducing mishandling rates.</li>
+            <li>Ergonomic methods: research validates stowing and posture techniques.</li>
+          </ol>
+
+          <h4>Reflection &amp; Relevance</h4>
+          <p>This opportunity is compelling now because it combines a stronger global safety culture, high economic incentives to reduce injuries and delays, and maturing assistive technologies that can be realistically deployed. By framing around worker well-being and operational efficiency, multiple product directions remain open for exploration in the next phases.</p>
+
+          <h4>References</h4>
+          <ul class="refs">
+            <li>Airlines for America. (2024, July 12). <em>U.S. passenger carrier delay costs</em>.</li>
+            <li>Allied Market Research. (2025, April 17). <em>Airport ground handling market to reach $83.8 billion by 2033 at 10.1% CAGR</em>.</li>
+            <li>Bergsten, E. L., et al. (2015). Psychosocial work factors and musculoskeletal pain. <em>Journal of Occupational Rehabilitation</em>.</li>
+            <li>Chen, N., et al. (2023). Health and economic outcomes associated with musculoskeletal disorders in the U.S. <em>JAMA Network Open</em>.</li>
+            <li>HSE. (2025). <em>Manual handling risks during baggage handling on the ramp</em>.</li>
+            <li>IATA. (n.d.). <em>Ground operations safety</em>.</li>
+            <li>IATA. (2024). <em>Safety report—Executive and safety overview (Edition 9)</em>.</li>
+            <li>Jakobsen, L. S., et al. (2025). Effects of 24-weeks in-field use of a back-supporting exoskeleton. <em>Applied Ergonomics</em>.</li>
+            <li>Korkmaz, S. V., et al. (2006). Baggage handling in an airplane cargo hold: An ergonomic analysis. <em>International Journal of Industrial Ergonomics</em>.</li>
+            <li>NIOSH. (2015). <em>Reducing musculoskeletal disorders among airport baggage screeners and handlers</em> (No. 2015-201).</li>
+            <li>Qu, Y., et al. (2025). Wearable back-support exoskeletons: Review. <em>Applied Ergonomics</em>.</li>
+            <li>SITA. (2024). <em>Baggage IT Insights 2024</em>.</li>
+            <li>SITA. (2025, June 12). <em>More air passengers than ever… lowest rates of mishandled baggage</em>.</li>
+            <li>US Bone &amp; Joint Initiative. (2018). <em>The burden of musculoskeletal diseases in the United States</em>.</li>
+            <li>ABC News. (2025, September 25). <em>Delta fined for passenger rights violations on tarmac delays</em>.</li>
+          </ul>
+        </div>
+
+        <div class="cta">
+          <a class="button" href="https://aryan1359.github.io/hcd-project/" rel="noopener">Open Live Project Hub</a>
+        </div>
+      </article>
     </section>
-    <section id=""part2"" class=""panel"" hidden>
-      <h2>Part 2 — User-Centered Research & Stakeholders</h2>
-      <p>Coming soon.</p>
+
+    <!-- PART 2 -->
+    <section id="panel-2" class="tab-panel" role="tabpanel" aria-labelledby="tab-2" hidden>
+      <article class="card">
+        <h2>Part 2 — User-Centered Research & Stakeholders</h2>
+        <p class="muted">Module 6 — Integrated Final Assessment (Part 2)</p>
+        <hr />
+        <p><strong>Coming soon:</strong> research plan, stakeholder analysis, interview guides, personas, journey maps, and early insights.</p>
+      </article>
     </section>
-    <section id=""part3"" class=""panel"" hidden>
-      <h2>Part 3 — Product Requirements & Concepts</h2>
-      <p>Coming soon.</p>
+
+    <!-- PART 3 -->
+    <section id="panel-3" class="tab-panel" role="tabpanel" aria-labelledby="tab-3" hidden>
+      <article class="card">
+        <h2>Part 3 — Product Requirements & Concepts</h2>
+        <p class="muted">Module 7 — Integrated Final Assessment (Part 3)</p>
+        <hr />
+        <p><strong>Coming soon:</strong> product requirements, concept options, evaluation criteria, and next steps.</p>
+      </article>
     </section>
-    <section id=""notes"" class=""panel"" hidden>
-      <h2>Notes & Changelog</h2>
-      <ul><li>v1.0 — Initial launch</li></ul>
+
+    <!-- NOTES -->
+    <section id="panel-4" class="tab-panel" role="tabpanel" aria-labelledby="tab-4" hidden>
+      <article class="card">
+        <h2>Notes & Changelog</h2>
+        <hr />
+        <ul>
+          <li><strong>v1.0</strong> — Initial launch with Part 1 and site structure for Part 2 and Part 3.</li>
+        </ul>
+      </article>
     </section>
   </main>
 
-  <footer class=""site-footer"">
-    <p>© <span id=""year""></span> Aryan Yaghobi — HCD Methods I</p>
+  <footer class="site-footer">
+    <div class="container">
+      <p>© <span id="year"></span> Aryan Yaghobi — Human-Centered Design Methods I</p>
+    </div>
   </footer>
 
-  <script src=""script.js""></script>
+  <script src="script.js"></script>
 </body>
 </html>
