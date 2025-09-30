@@ -1,0 +1,10 @@
+﻿/* quick dark theme */
+:root{--bg:#0b0c10;--panel:#151821;--text:#e6e9ee;--muted:#aab1b9;--ring:#2a2f39;--accent:#6ee7b7}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:system-ui,Segoe UI,Inter,Arial,sans-serif}
+.site-header{padding:18px;border-bottom:1px solid var(--ring)}
+.tabs{display:flex;gap:8px;padding:12px 18px;border-bottom:1px solid var(--ring)}
+.tab{background:var(--panel);color:var(--text);border:1px solid var(--ring);padding:8px 12px;border-radius:8px;cursor:pointer}
+.tab[aria-selected=""true""]{outline:2px solid rgba(110,231,183,.25)}
+main{padding:18px}
+.panel{background:#11141b;border:1px solid var(--ring);border-radius:12px;padding:18px}
+.site-footer{border-top:1px solid var(--ring);padding:18px;color:var(--muted)}
