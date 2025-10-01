@@ -48,7 +48,13 @@
     .logo-svg { width:44px; height:44px; display:block }
     .logo-svg .ring { fill:none; stroke: var(--primary); stroke-width:2; filter: drop-shadow(0 0 4px rgba(110,231,183,.25)); }
     .logo-svg .inner{ fill:none; stroke: var(--accent); stroke-width:1.5; opacity:.7; }
-    .logo-svg .mark { fill:#ffffff; font-weight:800 }
+    .logo-svg .mark {
+  fill: #ffffff;            /* was #00332f */
+  letter-spacing: 0.5px;
+  paint-order: stroke fill; /* ensures stroke sits under fill */
+  stroke: rgba(0,0,0,0.35); /* soft dark outline */
+  stroke-width: 1.2px;
+}
     .logo-svg .orb  { fill: var(--primary) }
     .logo-svg .orbit{ transform-origin: 32px 32px; animation: spin 10s linear infinite; }
     @keyframes spin{ to{ transform: rotate(360deg) } }
