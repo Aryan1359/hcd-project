@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Module 3 - HCD Project</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="container">
+    <h1>Module 3</h1>
+    <nav class="tabs">
+      <button class="tab-btn" aria-selected="true">Overview</button>
+      <button class="tab-btn">Details</button>
+      <button class="tab-btn">Resources</button>
+      <button class="tab-btn">Extra Note</button>
+    </nav>
+    <section class="tab-panel">
+      <p>To be completed later.</p>
+      <a href="index.html" class="button" style="display:inline-block;margin-top:24px;">Back to Home</a>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="container">
+      <nav class="footer-menu">
+        <a class="footer-link" href="module1.html">Module 1</a>
+        <a class="footer-link" href="module2.html">Module 2</a>
+        <a class="footer-link" href="module3.html">Module 3</a>
+        <a class="footer-link" href="module4.html">Module 4</a>
+        <a class="footer-link" href="module5.html">Module 5</a>
+        <a class="footer-link" href="module6.html">Module 6</a>
+        <a class="footer-link" href="module7.html">Module 7</a>
+      </nav>
+      <p style="margin-top:12px">© <span id="year"></span> Aryan Yaghobi — Human-Centered Design Methods I</p>
+    </div>
+  </footer>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

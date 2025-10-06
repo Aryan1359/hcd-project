@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Module 4 - HCD Project</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="container">
+    <h1>Module 4</h1>
+    <nav class="tabs">
+      <button class="tab-btn" aria-selected="true">Overview</button>
+      <button class="tab-btn">Details</button>
+      <button class="tab-btn">Resources</button>
+      <button class="tab-btn">Extra Note</button>
+    </nav>
+    <section class="tab-panel">
+      <div class="card" style="background:var(--card);border-radius:14px;padding:24px 20px;margin-bottom:18px;box-shadow:0 2px 12px rgba(0,0,0,0.10);">
+        <h2 style="color:var(--primary);margin-top:0;margin-bottom:10px;">Pre-Reflection: Powers of Ten</h2>
+        <p style="font-size:1.08rem;line-height:1.7;color:var(--text);margin-bottom:18px;">Before watching the <strong>Powers of Ten</strong> video, my understanding of scale and perspective connects to what we learned earlier about stakeholders. I’ve realized that every project involves many different people and roles, and each of them sees the problem from a unique point of view. By looking through their lenses, we can catch issues early that might cause problems or even failure later.</p>
+        <p style="font-size:1.08rem;line-height:1.7;color:var(--text);margin-bottom:18px;">For example, regulations, end users, and business priorities don’t always align, so it’s important to balance those perspectives. I think listing all stakeholders, understanding their interests, and seeing how much influence each one has helps us stay organized and make better decisions. By comparing their level of interest and impact, we can decide who needs close engagement and who just needs to be monitored.</p>
+        <p style="font-size:1.08rem;line-height:1.7;color:var(--text);margin-bottom:0;">To me, the <strong>Powers of Ten</strong> concept probably builds on this idea — by zooming in and out, we can see not only the individuals but the entire system around them. Changing scale could help us understand how small design details connect to bigger social, technical, or environmental outcomes.</p>
+      </div>
+      <a href="index.html" class="button" style="display:inline-block;margin-top:24px;">Back to Home</a>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="container">
+      <nav class="footer-menu">
+        <a class="footer-link" href="module1.html">Module 1</a>
+        <a class="footer-link" href="module2.html">Module 2</a>
+        <a class="footer-link" href="module3.html">Module 3</a>
+        <a class="footer-link" href="module4.html">Module 4</a>
+        <a class="footer-link" href="module5.html">Module 5</a>
+        <a class="footer-link" href="module6.html">Module 6</a>
+        <a class="footer-link" href="module7.html">Module 7</a>
+      </nav>
+      <p style="margin-top:12px">© <span id="year"></span> Aryan Yaghobi — Human-Centered Design Methods I</p>
+    </div>
+  </footer>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
