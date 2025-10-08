@@ -11,6 +11,21 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <script src="shared-header.js"></script>
+  <script src="reflection-content.js"></script>
+  <script>
+    // Load shared reflection content into Part 2 - Subtab 3
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof BRIEF_REFLECTION !== 'undefined') {
+        const subtab3 = document.getElementById('part2-sub3');
+        if (subtab3) {
+          const p = subtab3.querySelector('p');
+          if (p) {
+            p.textContent = BRIEF_REFLECTION;
+          }
+        }
+      }
+    });
+  </script>
 </head>
 <body>
   <div id="header-placeholder" data-page-type="home"></div>
