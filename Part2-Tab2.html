@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Ramp Worker Ergonomics – Stakeholder Powers-of-Ten Table</title>
+<title>Ramp Worker Ergonomics – Stakeholder Powers‑of‑Ten Table</title>
 <style>
   :root {
     --bg: #ffffff;
@@ -15,12 +15,27 @@
   }
   body { font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji"; color: var(--fg); background: var(--bg); margin: 0; padding: 24px; }
   .page { max-width: 1100px; margin: 0 auto; }
-  header { margin-bottom: 18px; }
-  header h1 { margin: 0 0 6px; font-size: 1.6rem; }
-  header p { margin: 4px 0; color: var(--muted); }
-  .badge { display: inline-block; padding: 4px 8px; border-radius: 999px; background: var(--accent); color: #0369a1; font-weight: 600; font-size: 12px; margin-right: 8px; }
-  .opportunity { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin: 14px 0 18px; }
-  .opportunity strong { color: #0b5582; }
+
+  /* Controls & print */
+  .controls { border:1px solid var(--border); border-radius:10px; padding:10px 12px; background:#ffffff; margin-bottom:12px; }
+  .controlsRow { display:grid; grid-template-columns: 1fr 140px auto auto; gap:8px; align-items:center; }
+  .controlsRow label { font-weight:600; color:#0b3d5c; }
+  .controlsRow input { padding:6px 8px; border:1px solid var(--border); border-radius:8px; }
+  .btn { appearance:none; border:1px solid var(--border); background:#0ea5e9; color:#fff; font-weight:600; padding:6px 10px; border-radius:8px; cursor:pointer; }
+  .btn.secondary { background:#fff; color:#0b3d5c; }
+  .btn:hover { filter:brightness(0.96); }
+  .printHeader { margin-top:8px; color:#334155; }
+  .phTitle { font-size:1.05rem; font-weight:800; color:#0b3d5c; }
+  .phMeta { font-size:0.9rem; }
+  @media print {
+    body { background:#ffffff; }
+    .controlsRow, .note, .boardControls, .miniReset, .boardReset, .btn { display:none !important; }
+    thead th, .note { background:#ffffff !important; }
+    .printHeader { margin-bottom:6px; }
+    .phTitle { font-size:18px; }
+  }
+
+  /* Table */
   table { width: 100%; border-collapse: collapse; border: 1px solid var(--border); }
   thead th { text-align: left; font-size: 0.9rem; color: #0b3d5c; border-bottom: 2px solid var(--border); padding: 10px; background: #f0f9ff; }
   tbody td { vertical-align: top; padding: 12px 10px; border-bottom: 1px solid var(--border); }
@@ -29,29 +44,28 @@
   .zoom { width: 160px; min-width: 140px; vertical-align: top; }
   .name { font-weight: 700; color: #0f172a; }
   .why { color: var(--muted); margin-top: 6px; line-height: 1.45; }
-  footer { margin-top: 16px; font-size: 12px; color: var(--muted); }
-  .legend { margin: 8px 0 18px; font-size: 0.92rem; color: var(--muted); }
-  /* --- Sliders styling --- */
+
+  /* Sliders */
   .sliders { margin-top: 10px; border-top: 1px dashed var(--border); padding-top: 10px; }
   .slider-row { display: grid; grid-template-columns: 220px 1fr; align-items: center; gap: 10px; margin: 8px 0; }
   .slider-row label { font-weight: 600; color: #0b3d5c; }
   .slider-row .value { font-weight: 700; margin-left: 6px; color: var(--fg); }
   input[type=range] { width: 100%; }
-  .micro-hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
   /* Mini quadrant per-row */
   .zoomCell { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-  .zoomLabel { font-weight: 700; color: #0b3d5c; }
-  .miniQuad { width: 100%; max-width: 130px; aspect-ratio: 1 / 1; }
+  .miniQuad { width: 100%; max-width: 130px; aspect-ratio: 1 / 1; cursor: crosshair; }
   .miniQuad svg { width: 100%; height: 100%; display: block; }
-  .miniQuad { cursor: crosshair; }
   .miniReset { appearance: none; border: 1px solid var(--border); background: #ffffff; color: #0b3d5c; font-size: 12px; padding: 4px 8px; border-radius: 6px; margin-top: 4px; cursor: pointer; }
   .miniReset:hover { background: #f0f9ff; border-color: #bae6fd; }
   @media (max-width: 700px){
     .zoom { width: 130px; min-width: 110px; }
     .slider-row { grid-template-columns: 160px 1fr; }
   }
+
+  /* Note */
   .note { background:#f8fafc; border:1px solid var(--border); border-radius:10px; padding:10px 12px; margin-bottom:10px; color: #0b3d5c; }
-  .note { background:#f8fafc; border:1px solid var(--border); border-radius:10px; padding:10px 12px; margin-bottom:10px; color: #0b3d5c; }
+
   /* Big board */
   .boardWrap { margin-top: 18px; padding-top: 12px; border-top: 2px solid var(--border); }
   .boardTitle { font-weight: 800; color:#0b3d5c; margin: 0 0 8px; }
@@ -67,18 +81,34 @@
 </head>
 <body>
   <div class="page">
-    
+    <!-- Top controls -->
+    <section class="controls" aria-label="Title, Revision, Export/Print">
+      <div class="controlsRow">
+        <label for="titleInput">Title</label>
+        <input id="titleInput" type="text" placeholder="Ramp Worker Ergonomics — Interest–Influence Map" />
+        <label for="revInput">Revision</label>
+        <input id="revInput" type="text" placeholder="e.g., Rev A" />
+        <button type="button" id="printBtn" class="btn">Print PDF</button>
+        <button type="button" id="exportBtn" class="btn secondary">Export to Excel (CSV)</button>
+      </div>
+      <div class="printHeader">
+        <div class="phTitle" id="docTitle"></div>
+        <div class="phMeta"><span id="docRev"></span> • <span id="docDate"></span></div>
+      </div>
+    </section>
 
+    <!-- How-to -->
     <div class="note"><strong>How to use:</strong>
-  <ul style="margin:6px 0 0 18px; padding:0 0 0 4px;">
-    <li>Each stakeholder starts with preset default values for <em>Interest</em> (X) and <em>Influence</em> (Y) — currently 50% unless changed later.</li>
-    <li>Adjust values using the two horizontal sliders under the stakeholder description; the percentages update immediately.</li>
-    <li>Or drag the dot inside the mini quadrant: left↔right changes <em>Interest</em>, up↕down changes <em>Influence</em>.</li>
-    <li>Use <strong>Reset</strong> under a quadrant to return that stakeholder’s dot and sliders to its preset defaults. Reset affects only that row.</li>
-  </ul>
-</div>
+      <ul style="margin:6px 0 0 18px; padding:0 0 0 4px;">
+        <li>Each stakeholder starts with preset default values for <em>Interest</em> (X) and <em>Influence</em> (Y) — currently 50% unless changed later.</li>
+        <li>Adjust values using the two horizontal sliders under the stakeholder description; the percentages update immediately.</li>
+        <li>Or drag the dot inside the mini quadrant: left↔right changes <em>Interest</em>, up↕down changes <em>Influence</em>.</li>
+        <li>Use <strong>Reset</strong> under a quadrant to return that stakeholder’s dot and sliders to its preset defaults. Reset affects only that row.</li>
+      </ul>
+    </div>
 
-<table>
+    <!-- Table -->
+    <table>
       <caption style="caption-side: top; text-align:left; padding:8px 10px; font-weight:700; color:#0b3d5c;">Interest–Influence Map — dynamic (drag to adjust %)</caption>
       <thead>
         <tr>
@@ -178,8 +208,10 @@
             <div class="why">Handle claims and total cost of injury; can create incentives or requirements for ergonomic interventions and track ROI at scale.</div>
           </td>
         </tr>
-      </tbody></table>
+      </tbody>
+    </table>
 
+    <!-- Big board -->
     <section class="boardWrap">
       <h2 class="boardTitle">System Quadrant — All Stakeholders (drag to reposition)</h2>
       <div class="boardControls">
@@ -189,9 +221,7 @@
       <div class="boardLegend" id="boardLegend" aria-label="Legend"></div>
     </section>
 
-    <!-- Interactive Interest/Influence sliders injected under each stakeholder -->
-    
-
+    <!-- Slider template injected per-row -->
     <template id="sliderTemplate">
       <div class="sliders" role="group" aria-label="Interest and Influence controls">
         <div class="slider-row">
@@ -206,11 +236,17 @@
     </template>
 
     <script>
+  // ===== Utilities =====
   const svgns = 'http://www.w3.org/2000/svg';
-
   function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
 
-  // --- Mini quadrants helpers ---
+  // Small self-test to ensure newline joining is valid (debug safeguard)
+  (function testCSVJoin(){
+    const s = ['a','b','c'].join('\n');
+    console.assert(s.split('\n').length === 3, 'CSV newline join failed');
+  })();
+
+  // ===== Mini quadrants =====
   function setDot(dot, interest, influence){
     const x = clamp(Number(interest), 0, 100);
     const y = 100 - clamp(Number(influence), 0, 100);
@@ -219,7 +255,6 @@
     dot.setAttribute('r', 4);
     dot.setAttribute('fill', '#0ea5e9');
   }
-
   function buildMiniQuad(container, interest, influence){
     const svg = document.createElementNS(svgns, 'svg');
     svg.setAttribute('viewBox', '0 0 100 100');
@@ -246,7 +281,6 @@
     container.appendChild(svg);
     return svg;
   }
-
   function attachMiniInteractions(mini, tr, syncGlobal){
     const svg = mini.querySelector('svg');
     const dot = svg.querySelector('.dot');
@@ -256,38 +290,29 @@
     const influenceLabel = tr.querySelector('.slider-row:nth-child(2) .value');
 
     let dragging = false;
-
     function setFromClient(clientX, clientY){
       const rect = svg.getBoundingClientRect();
       const xPct = clamp(((clientX - rect.left) / rect.width) * 100, 0, 100);
       const yPct = clamp(((clientY - rect.top) / rect.height) * 100, 0, 100);
       const interest = Math.round(xPct);
       const influence = Math.round(100 - yPct);
-      tr.dataset.interest = interest;
-      tr.dataset.influence = influence;
+      tr.dataset.interest = interest; tr.dataset.influence = influence;
       setDot(dot, interest, influence);
       if(interestInput){ interestInput.value = interest; interestLabel.textContent = interest + '%'; }
       if(influenceInput){ influenceInput.value = influence; influenceLabel.textContent = influence + '%'; }
       syncGlobal(tr.dataset.id, interest, influence);
     }
-
     svg.addEventListener('pointerdown', (e) => {
       dragging = true;
       svg.setPointerCapture(e.pointerId);
       setFromClient(e.clientX, e.clientY);
     });
-    svg.addEventListener('pointermove', (e) => {
-      if(!dragging) return;
-      setFromClient(e.clientX, e.clientY);
-    });
-    svg.addEventListener('pointerup', (e) => {
-      dragging = false;
-      try { svg.releasePointerCapture(e.pointerId); } catch(_){}
-    });
+    svg.addEventListener('pointermove', (e) => { if(dragging) setFromClient(e.clientX, e.clientY); });
+    svg.addEventListener('pointerup', (e) => { dragging = false; try { svg.releasePointerCapture(e.pointerId); } catch(_){} });
     svg.addEventListener('pointercancel', () => { dragging = false; });
   }
 
-  // --- Global board helpers ---
+  // ===== Big board =====
   function regularPolygonPoints(sides, r, rotationDeg){
     const pts = [];
     const rot = (Math.PI/180) * (rotationDeg || 0);
@@ -297,32 +322,21 @@
     }
     return pts.join(' ');
   }
-
   function createShape(type){
     const g = document.createElementNS(svgns, 'g');
     g.setAttribute('tabindex', '0');
     g.style.cursor = 'grab';
-    const r = 3.5; // base size in board units
+    const r = 3.5;
     let el;
     switch(type){
-      case 'circle':
-        el = document.createElementNS(svgns, 'circle'); el.setAttribute('cx', 0); el.setAttribute('cy', 0); el.setAttribute('r', r);
-        el.setAttribute('fill', '#0ea5e9'); break;
-      case 'square':
-        el = document.createElementNS(svgns, 'rect'); el.setAttribute('x', -r); el.setAttribute('y', -r); el.setAttribute('width', 2*r); el.setAttribute('height', 2*r);
-        el.setAttribute('fill', '#0284c7'); break;
-      case 'triangle':
-        el = document.createElementNS(svgns, 'polygon'); el.setAttribute('points', regularPolygonPoints(3, r, -90)); el.setAttribute('fill', '#38bdf8'); break;
-      case 'triangleDown':
-        el = document.createElementNS(svgns, 'polygon'); el.setAttribute('points', regularPolygonPoints(3, r, 90)); el.setAttribute('fill', '#38bdf8'); break;
-      case 'diamond':
-        el = document.createElementNS(svgns, 'polygon'); el.setAttribute('points', '0,'+(-r)+' '+r+',0 0,'+r+' '+(-r)+',0'); el.setAttribute('fill', '#06b6d4'); break;
-      case 'pentagon':
-        el = document.createElementNS(svgns, 'polygon'); el.setAttribute('points', regularPolygonPoints(5, r, -90)); el.setAttribute('fill', '#0ea5e9'); break;
-      case 'hexagon':
-        el = document.createElementNS(svgns, 'polygon'); el.setAttribute('points', regularPolygonPoints(6, r, 0)); el.setAttribute('fill', '#3b82f6'); break;
-      case 'octagon':
-        el = document.createElementNS(svgns, 'polygon'); el.setAttribute('points', regularPolygonPoints(8, r, 22.5)); el.setAttribute('fill', '#60a5fa'); break;
+      case 'circle': el = document.createElementNS(svgns, 'circle'); el.setAttribute('cx', 0); el.setAttribute('cy', 0); el.setAttribute('r', r); el.setAttribute('fill', '#0ea5e9'); break;
+      case 'square': el = document.createElementNS(svgns, 'rect'); el.setAttribute('x', -r); el.setAttribute('y', -r); el.setAttribute('width', 2*r); el.setAttribute('height', 2*r); el.setAttribute('fill', '#0284c7'); break;
+      case 'triangle': el = document.createElementNS(svgns, 'polygon'); el.setAttribute('points', regularPolygonPoints(3, r, -90)); el.setAttribute('fill', '#38bdf8'); break;
+      case 'triangleDown': el = document.createElementNS(svgns, 'polygon'); el.setAttribute('points', regularPolygonPoints(3, r, 90)); el.setAttribute('fill', '#38bdf8'); break;
+      case 'diamond': el = document.createElementNS(svgns, 'polygon'); el.setAttribute('points', '0,'+(-r)+' '+r+',0 0,'+r+' '+(-r)+',0'); el.setAttribute('fill', '#06b6d4'); break;
+      case 'pentagon': el = document.createElementNS(svgns, 'polygon'); el.setAttribute('points', regularPolygonPoints(5, r, -90)); el.setAttribute('fill', '#0ea5e9'); break;
+      case 'hexagon': el = document.createElementNS(svgns, 'polygon'); el.setAttribute('points', regularPolygonPoints(6, r, 0)); el.setAttribute('fill', '#3b82f6'); break;
+      case 'octagon': el = document.createElementNS(svgns, 'polygon'); el.setAttribute('points', regularPolygonPoints(8, r, 22.5)); el.setAttribute('fill', '#60a5fa'); break;
       case 'plus':
         el = document.createElementNS(svgns, 'g');
         const h = document.createElementNS(svgns, 'rect'); h.setAttribute('x', -r); h.setAttribute('y', -1.2); h.setAttribute('width', 2*r); h.setAttribute('height', 2.4); h.setAttribute('fill', '#0284c7');
@@ -339,12 +353,10 @@
     g.appendChild(el);
     return g;
   }
-
   function buildBoard(container){
     const svg = document.createElementNS(svgns, 'svg');
     svg.setAttribute('viewBox', '0 0 100 100');
 
-    // grid
     const border = document.createElementNS(svgns, 'rect');
     border.setAttribute('x', 0); border.setAttribute('y', 0); border.setAttribute('width', 100); border.setAttribute('height', 100);
     border.setAttribute('fill', 'none'); border.setAttribute('stroke', '#94a3b8');
@@ -357,17 +369,15 @@
     h.setAttribute('x1', 0); h.setAttribute('y1', 50); h.setAttribute('x2', 100); h.setAttribute('y2', 50);
     h.setAttribute('stroke', '#94a3b8'); h.setAttribute('stroke-dasharray', '3,3');
 
+    container.innerHTML = '';
     svg.append(border, v, h);
-    container.innerHTML = ''; container.appendChild(svg);
+    container.appendChild(svg);
     return svg;
   }
 
-  const SHAPE_FOR_ID = {
-    1:'circle', 2:'square', 3:'triangle', 4:'diamond', 5:'pentagon',
-    6:'hexagon', 7:'triangleDown', 8:'octagon', 9:'plus', 10:'cross'
-  };
+  const SHAPE_FOR_ID = { 1:'circle', 2:'square', 3:'triangle', 4:'diamond', 5:'pentagon', 6:'hexagon', 7:'triangleDown', 8:'octagon', 9:'plus', 10:'cross' };
 
-  // Default values per stakeholder (1..10). Set to numbers 0–100; leave null to use 50 as placeholder.
+  // Defaults per stakeholder (1..10). Use null to fall back to 50.
   const DEFAULTS = {
     1: { interest: null, influence: null }, // Ramp workers / baggage handlers
     2: { interest: null, influence: null }, // Ground crew leads & safety trainers
@@ -388,7 +398,57 @@
     const legendEl = document.getElementById('boardLegend');
     const resetAllBtn = document.getElementById('resetAll');
 
-    // --- init rows (sliders + mini-quads)
+    // Controls
+    const titleInput = document.getElementById('titleInput');
+    const revInput = document.getElementById('revInput');
+    const printBtn = document.getElementById('printBtn');
+    const exportBtn = document.getElementById('exportBtn');
+    const docTitle = document.getElementById('docTitle');
+    const docRev = document.getElementById('docRev');
+    const docDate = document.getElementById('docDate');
+
+    const DEFAULT_TITLE = 'Ramp Worker Ergonomics — Interest–Influence Map';
+    titleInput.value = DEFAULT_TITLE;
+    function refreshHeader(){
+      docTitle.textContent = titleInput.value || DEFAULT_TITLE;
+      docRev.textContent = 'Revision: ' + (revInput.value || '—');
+      docDate.textContent = new Date().toLocaleString();
+    }
+    refreshHeader();
+    titleInput.addEventListener('input', refreshHeader);
+    revInput.addEventListener('input', refreshHeader);
+
+    printBtn.addEventListener('click', () => { refreshHeader(); window.print(); });
+
+    // --- Export CSV (Excel friendly) ---
+    exportBtn.addEventListener('click', () => {
+      refreshHeader();
+      const lines = [];
+      const title = (titleInput.value || DEFAULT_TITLE).replace(/,/g,' ');
+      const rev = (revInput.value || '').replace(/,/g,' ');
+      lines.push(`Title,${title}`);
+      lines.push(`Revision,${rev || '-'}`);
+      lines.push(`Exported,${new Date().toLocaleString()}`);
+      lines.push('');
+      lines.push('#,Stakeholder,Interest (%),Influence (%)');
+      Array.from(rows).forEach((tr, i) => {
+        const name = tr.querySelector('.name').textContent.trim().replace(/,/g,';');
+        const interest = tr.dataset.interest ?? '50';
+        const influence = tr.dataset.influence ?? '50';
+        lines.push(`${i+1},${name},${interest},${influence}`);
+      });
+      // IMPORTANT: use \r\n or \n (no raw newline literal)
+      const csv = lines.join('\r\n');
+      const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const safeRev = (rev || 'no-rev').replace(/[^A-Za-z0-9._-]/g,'_');
+      a.href = url; a.download = `Stakeholder_Map_${safeRev}.csv`;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+    // --- Init rows (sliders + mini-quads) ---
     rows.forEach((tr, i) => {
       const id = i + 1; // 1..10
       tr.dataset.id = id;
@@ -400,24 +460,18 @@
       const values = node.querySelectorAll('.value');
       const interestDefault = (DEFAULTS[id]?.interest ?? 50);
       const influenceDefault = (DEFAULTS[id]?.influence ?? 50);
-
       interestInput.value = interestDefault;
       influenceInput.value = influenceDefault;
       values[0].textContent = interestDefault + '%';
       values[1].textContent = influenceDefault + '%';
 
-      // Persist
       tr.dataset.interest = interestDefault;
       tr.dataset.influence = influenceDefault;
-
       stakeholderCell.appendChild(node);
 
-      // Build mini quad
+      // Build mini quad & interactions
       const mini = tr.children[1].querySelector('.miniQuad');
       const miniSvg = buildMiniQuad(mini, interestDefault, influenceDefault);
-
-      // We'll define syncGlobal later after board exists
-      function placeholderSync(){/* replaced later */}
       attachMiniInteractions(mini, tr, (...args)=>syncGlobal(...args));
 
       // Slider sync -> mini + global
@@ -425,18 +479,15 @@
       const influenceEl = tr.querySelector('input.influence');
       const vInterest = tr.querySelector('.slider-row:nth-child(1) .value');
       const vInfluence = tr.querySelector('.slider-row:nth-child(2) .value');
-
       function updateFromSliders(){
         const iVal = Number(interestEl.value);
         const yVal = Number(influenceEl.value);
-        tr.dataset.interest = iVal;
-        tr.dataset.influence = yVal;
+        tr.dataset.interest = iVal; tr.dataset.influence = yVal;
         setDot(miniSvg.querySelector('.dot'), iVal, yVal);
         vInterest.textContent = iVal + '%';
         vInfluence.textContent = yVal + '%';
         syncGlobal(tr.dataset.id, iVal, yVal);
       }
-
       interestEl.addEventListener('input', updateFromSliders);
       influenceEl.addEventListener('input', updateFromSliders);
 
@@ -452,10 +503,9 @@
       zoomCell.appendChild(btn);
     });
 
-    // --- build big board and legend
+    // --- Build big board & legend ---
     const boardSvg = buildBoard(boardEl);
 
-    // create groups for each stakeholder
     const groupsById = {};
     rows.forEach((tr, i) => {
       const id = i + 1;
@@ -465,58 +515,45 @@
       groupsById[id] = g;
       boardSvg.appendChild(g);
     });
-
     function setGroupPos(id, interest, influence){
-      const g = groupsById[id];
-      if(!g) return;
+      const g = groupsById[id]; if(!g) return;
       const x = clamp(Number(interest),0,100);
       const y = 100 - clamp(Number(influence),0,100);
       g.setAttribute('transform', `translate(${x},${y})`);
     }
-
-    // initial positions
     rows.forEach((tr, i) => {
-      const id = i + 1;
-      setGroupPos(id, tr.dataset.interest, tr.dataset.influence);
+      const id = i + 1; setGroupPos(id, tr.dataset.interest, tr.dataset.influence);
     });
 
-    // legend
+    // Legend
     legendEl.innerHTML = '';
     rows.forEach((tr, i) => {
-      const id = i + 1;
-      const label = tr.querySelector('.name').textContent.trim();
+      const id = i + 1; const label = tr.querySelector('.name').textContent.trim();
       const wrap = document.createElement('div'); wrap.className = 'legendItem';
       const icon = document.createElementNS(svgns, 'svg'); icon.setAttribute('viewBox','-12 -12 24 24'); icon.classList.add('legendIcon');
       const iconShape = createShape(SHAPE_FOR_ID[id] || 'circle');
       iconShape.setAttribute('transform','translate(0,0)');
       icon.appendChild(iconShape.firstChild.cloneNode(true));
       const span = document.createElement('span'); span.textContent = label;
-      wrap.append(icon, span);
-      legendEl.appendChild(wrap);
+      wrap.append(icon, span); legendEl.appendChild(wrap);
     });
 
-    // Sync functions between table and board
-    function syncGlobal(id, interest, influence){
-      setGroupPos(id, interest, influence);
-    }
-
+    // Sync functions table <-> board
+    function syncGlobal(id, interest, influence){ setGroupPos(id, interest, influence); }
     function syncRowFromBoard(id, interest, influence){
-      const index = Number(id) - 1;
-      const tr = rows[index];
+      const index = Number(id) - 1; const tr = rows[index];
       tr.dataset.interest = interest; tr.dataset.influence = influence;
-      // sliders
       const interestEl = tr.querySelector('input.interest');
       const influenceEl = tr.querySelector('input.influence');
       const vInterest = tr.querySelector('.slider-row:nth-child(1) .value');
       const vInfluence = tr.querySelector('.slider-row:nth-child(2) .value');
       if(interestEl){ interestEl.value = interest; vInterest.textContent = interest + '%'; }
       if(influenceEl){ influenceEl.value = influence; vInfluence.textContent = influence + '%'; }
-      // mini
       const miniSvg = tr.children[1].querySelector('.miniQuad svg');
       if(miniSvg){ setDot(miniSvg.querySelector('.dot'), interest, influence); }
     }
 
-    // drag interactions on board
+    // Drag interactions on board
     let draggingId = null;
     function boardSetFromClient(id, clientX, clientY){
       const rect = boardSvg.getBoundingClientRect();
@@ -524,45 +561,30 @@
       const yPct = clamp(((clientY - rect.top) / rect.height) * 100, 0, 100);
       const interest = Math.round(xPct);
       const influence = Math.round(100 - yPct);
-      syncRowFromBoard(id, interest, influence);
-      setGroupPos(id, interest, influence);
+      syncRowFromBoard(id, interest, influence); setGroupPos(id, interest, influence);
     }
-
     Object.values(groupsById).forEach(g => {
       g.addEventListener('pointerdown', (e) => {
-        draggingId = g.dataset.id;
-        g.style.cursor = 'grabbing';
-        boardSvg.setPointerCapture(e.pointerId);
+        draggingId = g.dataset.id; g.style.cursor = 'grabbing';
+        try { g.setPointerCapture(e.pointerId); } catch(_){ }
         boardSetFromClient(draggingId, e.clientX, e.clientY);
       });
+      g.addEventListener('pointerup', (e) => {
+        if(draggingId === g.dataset.id){ draggingId = null; g.style.cursor = 'grab'; try { g.releasePointerCapture(e.pointerId); } catch(_){ } }
+      });
+      g.addEventListener('pointercancel', () => { draggingId = null; g.style.cursor = 'grab'; });
     });
-
-    boardSvg.addEventListener('pointermove', (e) => {
-      if(!draggingId) return;
-      boardSetFromClient(draggingId, e.clientX, e.clientY);
-    });
-    boardSvg.addEventListener('pointerup', (e) => {
-      if(!draggingId) return;
-      const g = groupsById[draggingId]; if(g) g.style.cursor = 'grab';
-      draggingId = null;
-      try { boardSvg.releasePointerCapture(e.pointerId);} catch(_){}
-    });
-    boardSvg.addEventListener('pointercancel', () => { draggingId = null; });
+    boardSvg.addEventListener('pointermove', (e) => { if(!draggingId) return; boardSetFromClient(draggingId, e.clientX, e.clientY); });
 
     // Reset all
     resetAllBtn.addEventListener('click', () => {
       rows.forEach((tr, i) => {
-        const id = i + 1;
-        const dI = (DEFAULTS[id]?.interest ?? 50);
-        const dY = (DEFAULTS[id]?.influence ?? 50);
-        syncRowFromBoard(id, dI, dY);
-        setGroupPos(id, dI, dY);
+        const id = i + 1; const dI = (DEFAULTS[id]?.interest ?? 50); const dY = (DEFAULTS[id]?.influence ?? 50);
+        syncRowFromBoard(id, dI, dY); setGroupPos(id, dI, dY);
       });
     });
   });
-</script>
-
-    
+    </script>
   </div>
 </body>
 </html>

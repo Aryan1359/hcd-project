@@ -476,3 +476,10 @@ body {
   .header-grid{flex-direction:column;align-items:flex-start}
   .student-meta{text-align:left}
 }
+
+/* Iframe styling for Part 2 subtabs */
+#part2-sub2 iframe {
+  margin-top: 0;
+  padding: 0;
+  background: white;
+}
