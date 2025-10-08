@@ -47,7 +47,7 @@ body{
 .student-meta{font-size:13px;color:var(--muted);text-align:right}
 
 /* Animated Logo Styles */
-.logo-svg { width:44px; height:44px; display:block }
+.logo-svg { width:60px; height:60px; display:block }
 
 /* Circular logo for module pages (sidebar style) */
 .logo-svg .ring { 
@@ -67,15 +67,15 @@ body{
 .header-logo .hex-outer {
   fill: none;
   stroke: var(--primary);
-  stroke-width: 2;
+  stroke-width: 2.5;
   stroke-linejoin: miter;
-  filter: drop-shadow(0 0 4px rgba(110,231,183,.3));
+  filter: drop-shadow(0 0 5px rgba(110,231,183,.4));
 }
 
 .header-logo .hex-inner {
   fill: none;
   stroke: #93c5fd;
-  stroke-width: 1.5;
+  stroke-width: 2;
   stroke-linejoin: miter;
   opacity: 0.6;
 }
@@ -83,7 +83,7 @@ body{
 /* Heartbeat dot for header logo */
 .header-logo .heart-dot {
   fill: var(--primary);
-  filter: drop-shadow(0 0 4px rgba(110,231,183,.6));
+  filter: drop-shadow(0 0 6px rgba(110,231,183,.8));
   transform-origin: center;
   animation: heartbeat 1.2s ease-in-out infinite;
 }
@@ -94,6 +94,7 @@ body{
   paint-order: stroke fill;
   stroke: rgba(0,0,0,0.35);
   stroke-width: 1.2px;
+  font-weight: 700;
 }
 
 /* Heartbeat animation for module pages orb */
