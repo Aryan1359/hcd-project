@@ -616,22 +616,42 @@
     })();
 
     // Legend
-    if (legendEl) {
-      legendEl.innerHTML = '';
-      rows.forEach((tr, i) => {
-        const id = i + 1; const labelEl = tr.querySelector('.name');
-        const label = labelEl ? labelEl.textContent.trim() : `Stakeholder ${id}`;
-        const wrap = document.createElement('div'); wrap.className = 'legendItem';
-        const icon = document.createElementNS(svgns, 'svg'); icon.setAttribute('viewBox','-12 -12 24 24'); icon.classList.add('legendIcon');
-        const iconShape = createShape(SHAPE_FOR_ID[id] || 'circle');
-        // Use the visible shape (lastChild), not the transparent hit target (firstChild)
-        const visible = iconShape.lastChild.cloneNode(true);
-        icon.appendChild(visible);
+  // Legend
+if (legendEl) {
+  legendEl.innerHTML = '';
+  rows.forEach((tr, i) => {
+    const id = i + 1;
+    const labelEl = tr.querySelector('.name');
+    const label = labelEl ? labelEl.textContent.trim() : `Stakeholder ${id}`;
 
-        const span = document.createElement('span'); span.textContent = label;
-        wrap.append(icon, span); legendEl.appendChild(wrap);
-      });
-    }
+    const wrap = document.createElement('div');
+    wrap.className = 'legendItem';
+
+    const icon = document.createElementNS(svgns, 'svg');
+    icon.setAttribute('viewBox','-12 -12 24 24');
+    icon.classList.add('legendIcon');
+    // Make icons larger than the CSS default
+    icon.style.width = '36px';   // adjust to 40px if you want even larger
+    icon.style.height = '36px';
+
+    const iconShape = createShape(SHAPE_FOR_ID[id] || 'circle');
+    // Use the visible shape (lastChild), not the transparent hit circle (firstChild)
+    const visible = iconShape.lastChild.cloneNode(true);
+
+    // Scale the glyph inside the 24x24 viewBox so it fills the icon nicely
+    const g = document.createElementNS(svgns, 'g');
+    g.setAttribute('transform','scale(1.8)'); // tweak 1.6–2.0 to taste
+    g.appendChild(visible);
+    icon.appendChild(g);
+
+    const span = document.createElement('span');
+    span.textContent = label;
+
+    wrap.append(icon, span);
+    legendEl.appendChild(wrap);
+  });
+}
+
 
     // Sync functions table <-> board
     function syncGlobal(id, interest, influence){ setGroupPos(id, interest, influence); }
