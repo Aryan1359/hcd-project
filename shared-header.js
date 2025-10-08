@@ -1,8 +1,14 @@
 // Shared Header Component - DRY Principle
 // This single file controls the header for ALL pages
+// Edit this ONE file and ALL pages update automatically!
 
-function loadSharedHeader() {
-  const headerHTML = `
+function getSharedHeaderHTML(pageType = 'module') {
+  // Determine subtitle text based on page type
+  const subtitle = pageType === 'home' 
+    ? 'Human-Centered Design Methods I — Integrated Final Assessment'
+    : 'Human-Centered Design Methods I';
+  
+  return `
   <header class="site-header">
     <div class="container header-grid">
       <div class="branding">
@@ -15,7 +21,7 @@ function loadSharedHeader() {
           </svg>
           <div>
             <h1 style="margin:0;font-size:20px;">HCD Project Hub</h1>
-            <p style="margin:2px 0 0;color:var(--muted);font-size:12px;" class="header-subtitle">Human-Centered Design Methods I</p>
+            <p style="margin:2px 0 0;color:var(--muted);font-size:12px;">${subtitle}</p>
           </div>
         </a>
       </div>
@@ -26,9 +32,15 @@ function loadSharedHeader() {
     </div>
   </header>
   `;
-  
-  // Insert header at the beginning of body
-  document.body.insertAdjacentHTML('afterbegin', headerHTML);
+}
+
+function loadSharedHeader() {
+  const headerPlaceholder = document.getElementById('header-placeholder');
+  if (headerPlaceholder) {
+    // Determine page type from data attribute or default to module
+    const pageType = headerPlaceholder.getAttribute('data-page-type') || 'module';
+    headerPlaceholder.outerHTML = getSharedHeaderHTML(pageType);
+  }
 }
 
 // Load header when DOM is ready

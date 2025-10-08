@@ -244,6 +244,8 @@ hr{border:none;border-top:1px solid var(--ring);margin:16px 0 18px}
 .sidebar-logo-svg .orb {
   fill: var(--primary);
   filter: drop-shadow(0 0 4px rgba(110,231,183,.6));
+  transform-origin: center;
+  animation: heartbeat 1.2s ease-in-out infinite;
 }
 
 .sidebar-logo-svg .orbit {

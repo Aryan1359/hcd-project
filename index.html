@@ -7,154 +7,13 @@
   <meta name="description" content="Integrated Final Assessment project hub for Human-Centered Design Methods I." />
   <!-- Inline SVG favicon (no extra files needed) -->
   <link rel="icon" type="image/svg+xml" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="none" stroke="%236ee7b7" stroke-width="2"/><circle cx="32" cy="32" r="16" fill="none" stroke="%2393c5fd" stroke-width="1.5" opacity=".7"/><text x="32" y="38" text-anchor="middle" font-size="18" font-weight="800" fill="%2300332f">HCD</text><circle cx="48" cy="12" r="3" fill="%236ee7b7"/></svg>'>
+  <link rel="stylesheet" href="styles.css">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg:#0b0c10; --panel:#121317; --card:#181a20; --ring:#2a2f39;
-      --text:#e6e9ee; --muted:#aab1b9; --primary:#6ee7b7; --accent:#93c5fd;
-    }
-    *{box-sizing:border-box}
-    html,body{margin:0;padding:0}
-    body{
-      font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;
-      color:var(--text);
-      background:linear-gradient(180deg,#0b0c10, #101218 35%, #0b0c10);
-    }
-    .container{width:min(1100px,92%);margin-inline:auto}
-
-    /* Header */
-    .site-header{
-      border-bottom:1px solid var(--ring);
-      padding:18px 0;
-      background:
-        radial-gradient(1200px 200px at 10% -20%, rgba(110,231,183,.08), transparent 60%),
-        radial-gradient(900px 200px at 110% -30%, rgba(147,197,253,.07), transparent 60%),
-        rgba(18,19,23,.6);
-      backdrop-filter:saturate(1.1) blur(6px);
-      position:sticky;top:0;z-index:10;
-      animation: headerGlow 10s ease-in-out infinite alternate;
-    }
-    @keyframes headerGlow { from{filter:saturate(1) brightness(1)} to{filter:saturate(1.1) brightness(1.05)} }
-    @media (prefers-reduced-motion: reduce){ .site-header{animation:none} }
-
-    .header-grid{display:flex;align-items:center;justify-content:space-between;gap:16px}
-    .branding{display:flex;align-items:center;gap:14px}
-    .branding h1{margin:0;font-size:20px}
-    .branding p{margin:2px 0 0;color:var(--muted);font-size:12px}
-    .student-meta{font-size:13px;color:var(--muted);text-align:right}
-
-    /* Animated logo */
-    .logo-svg { width:44px; height:44px; display:block }
-    .logo-svg .ring { fill:none; stroke: var(--primary); stroke-width:2; filter: drop-shadow(0 0 4px rgba(110,231,183,.25)); }
-    .logo-svg .inner{ fill:none; stroke: var(--accent); stroke-width:1.5; opacity:.7; }
-    .logo-svg .mark {
-  fill: #ffffff;            /* was #00332f */
-  letter-spacing: 0.5px;
-  paint-order: stroke fill; /* ensures stroke sits under fill */
-  stroke: rgba(0,0,0,0.35); /* soft dark outline */
-  stroke-width: 1.2px;
-}
-    .logo-svg .orb  { fill: var(--primary) }
-    .logo-svg .orbit{ transform-origin: 32px 32px; animation: spin 10s linear infinite; }
-    @keyframes spin{ to{ transform: rotate(360deg) } }
-    @media (prefers-reduced-motion: reduce){ .logo-svg .orbit{ animation:none } }
-    .branding:hover .logo-svg { filter: brightness(1.05); transform: translateY(-1px); transition:.2s ease }
-
-    /* Tabs */
-    .tabs{display:flex;gap:8px;margin:18px auto}
-    .tab-btn{
-      background:var(--panel); border:1px solid var(--ring); color:var(--text);
-      padding:10px 14px; border-radius:10px; cursor:pointer;
-      transition:transform .08s ease, background .2s;
-    }
-    .tab-btn[aria-selected="true"]{
-      background:linear-gradient(180deg,var(--card), #1e212a);
-      border-color:#3a4151;
-      box-shadow:0 0 0 2px rgba(110,231,183,.15) inset;
-    }
-    .tab-btn:focus{outline:2px solid var(--primary); outline-offset:2px}
-
-    /* Panels */
-    .tab-panel{margin:8px 0 42px}
-    .card{
-      background:var(--card); border:1px solid var(--ring); border-radius:16px;
-      padding:22px; box-shadow:0 10px 30px rgba(0,0,0,.25);
-    }
-    .muted{color:var(--muted)}
-    hr{border:none;border-top:1px solid var(--ring);margin:16px 0 18px}
-    h2,h3,h4,h5{margin-top:18px}
-    .content p{line-height:1.6}
-    .content ol{padding-left:20px}
-    ul.refs{line-height:1.5;padding-left:18px}
-    ul.refs li{margin:6px 0}
-    .cta{margin-top:20px}
-    .button{display:inline-block;text-decoration:none;background:var(--primary);color:#00332f;font-weight:700;padding:10px 14px;border-radius:10px}
-    .button:hover{filter:brightness(1.05)}
-    
-    /* Left Sidebar Navigation */
-    body{padding-left:220px}
-    .site-header{margin-left:-220px;padding-left:220px}
-    .site-footer{position:fixed;left:0;top:0;bottom:0;width:220px;background:linear-gradient(180deg,rgba(18,19,23,.95),rgba(18,19,23,.98));border-right:1px solid var(--ring);padding:0;overflow-y:auto;z-index:100;backdrop-filter:blur(12px);display:flex;flex-direction:column}
-    
-    /* Logo in Sidebar */
-    .sidebar-logo-container{padding:24px;border-bottom:1px solid var(--ring);display:flex;justify-content:center;align-items:center;background:linear-gradient(180deg,rgba(110,231,183,.06),transparent)}
-    .sidebar-logo-link{display:block;transition:transform 0.3s ease}
-    .sidebar-logo-link:hover{transform:scale(1.05)}
-    .sidebar-logo-svg{width:80px;height:80px;display:block}
-    .sidebar-logo-svg .ring{fill:none;stroke:var(--primary);stroke-width:2;filter:drop-shadow(0 0 6px rgba(110,231,183,.4))}
-    .sidebar-logo-svg .inner{fill:none;stroke:#93c5fd;stroke-width:1.5;opacity:.7}
-    .sidebar-logo-svg .mark{fill:#ffffff;letter-spacing:0.5px;paint-order:stroke fill;stroke:rgba(0,0,0,0.35);stroke-width:1.2px;font-size:18px}
-    .sidebar-logo-svg .orb{fill:var(--primary);filter:drop-shadow(0 0 4px rgba(110,231,183,.6))}
-    .sidebar-logo-svg .orbit{transform-origin:32px 32px;animation:spin 10s linear infinite}
-    
-    .footer-nav{display:flex;flex-direction:column;gap:4px;padding:24px 12px;flex:1}
-    .footer-nav-link{display:flex;align-items:center;padding:12px 16px;background:transparent;color:var(--muted);text-decoration:none;border-radius:8px;font-size:0.9rem;font-weight:500;border:1px solid transparent;transition:all 0.2s ease;position:relative}
-    .footer-nav-link::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:3px;height:0;background:var(--primary);border-radius:0 2px 2px 0;transition:height 0.2s ease}
-    .footer-nav-link:hover{background:rgba(110,231,183,0.08);color:var(--primary);border-color:rgba(110,231,183,0.2);transform:translateX(4px)}
-    .footer-nav-link:hover::before{height:60%}
-    .footer-nav-link.active{background:linear-gradient(135deg,rgba(110,231,183,0.12),rgba(110,231,183,0.06));color:var(--primary);border-color:rgba(110,231,183,0.3);font-weight:600}
-    .footer-nav-link.active::before{height:80%}
-    .footer-text{text-align:center;font-size:0.75rem;color:var(--muted);margin:24px 12px 0;padding-top:20px;border-top:1px solid var(--ring);line-height:1.5}
-
-    @media (max-width:700px){ 
-      .header-grid{flex-direction:column;align-items:flex-start} 
-      .student-meta{text-align:left}
-      body{padding-left:0;padding-bottom:80px}
-      .site-header{margin-left:0;padding-left:0}
-      .site-footer{position:fixed;left:0;right:0;top:auto;bottom:0;width:100%;height:auto;border-right:none;border-top:1px solid var(--ring);padding:12px 0;flex-direction:row}
-      .sidebar-logo-container{display:none}
-      .footer-nav{flex-direction:row;overflow-x:auto;padding:0 12px;gap:8px}
-      .footer-nav-link{white-space:nowrap;padding:8px 16px;font-size:0.85rem}
-      .footer-nav-link::before{display:none}
-      .footer-nav-link:hover{transform:translateY(-2px)}
-      .footer-text{display:none}
-    }
-  </style>
+  <script src="shared-header.js"></script>
 </head>
 <body>
-  <header class="site-header">
-    <div class="container header-grid">
-      <div class="branding">
-        <a href="index.html" style="display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;">
-          <svg class="logo-svg header-logo" viewBox="0 0 64 64" role="img" aria-label="HCD Project Hub logo">
-            <title>HCD Project Hub - Human-Centered Focus</title>
-            <path class="hex-outer" d="M32 4 L50 15 L50 37 L32 48 L14 37 L14 15 Z" />
-            <path class="hex-inner" d="M32 12 L44 20 L44 36 L32 44 L20 36 L20 20 Z" />
-            <text x="32" y="32" text-anchor="middle" font-size="18" class="mark">HCD</text>
-          </svg>
-          <div>
-            <h1 style="margin:0;font-size:20px;">HCD Project Hub</h1>
-            <p style="margin:2px 0 0;color:var(--muted);font-size:12px;">Human-Centered Design Methods I — Integrated Final Assessment</p>
-          </div>
-        </a>
-      </div>
-      <div class="student-meta">
-        <strong>Student:</strong> Aryan Yaghobi<br />
-        <strong>Course:</strong> Human-Centered Design Methods I
-      </div>
-    </div>
-  </header>
+  <div id="header-placeholder" data-page-type="home"></div>
 
   <nav class="tabs container" role="tablist" aria-label="Project Sections">
     <button class="tab-btn" role="tab" aria-selected="true" aria-controls="panel-1" id="tab-1" data-tab="part1">Part 1</button>
@@ -289,8 +148,8 @@
         This website features two distinct logo animations, each representing a core principle of Human-Centered Design:
       </p>
       <ul style="margin:12px 0 0;padding-left:20px;font-size:14px;line-height:1.7;color:var(--text);">
-        <li><strong style="color:var(--primary);">Heartbeat Animation (Header - Hexagon):</strong> The hexagon shape represents collaboration and interconnected stakeholders working together. The center dot pulses like a human heart, symbolizing empathy and the human focus at the core of HCD.</li>
-        <li><strong style="color:var(--accent);">Orbiting Circle (Sidebar):</strong> The continuously circling element represents the iterative, cyclical nature of the design process - observe, ideate, prototype, test, and refine in an ongoing loop.</li>
+        <li><strong style="color:var(--primary);">Beating HCD Text (Header - Hexagon):</strong> The hexagon shape represents collaboration and interconnected stakeholders. The "HCD" text itself pulses with a heartbeat rhythm, symbolizing that human empathy and user focus are at the core of every design decision.</li>
+        <li><strong style="color:var(--accent);">Orbiting + Pulsing Circle (Sidebar):</strong> The circle continuously orbits while also pulsing with a heartbeat. This dual animation represents the iterative design process that's alive with energy - continuously observing, ideating, prototyping, testing, and refining.</li>
       </ul>
     </aside>
   </main>
