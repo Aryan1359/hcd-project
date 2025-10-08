@@ -35,6 +35,7 @@ body{
 }
 
 .branding{display:flex;align-items:center;gap:14px}
+.branding-link{display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit}
 .logo-circle{
   width:44px;height:44px;border-radius:999px;
   display:grid;place-items:center;

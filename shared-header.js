@@ -12,7 +12,7 @@ function getSharedHeaderHTML(pageType = 'module') {
   <header class="site-header">
     <div class="container header-grid">
       <div class="branding">
-        <a href="index.html" style="display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;">
+        <a href="index.html" class="branding-link">
           <svg class="logo-svg header-logo" viewBox="0 0 64 64" role="img" aria-label="HCD Project Hub logo">
             <title>HCD Project Hub - Human-Centered Focus</title>
             <path class="hex-outer" d="M32 4 L50 15 L50 37 L32 48 L14 37 L14 15 Z" />
@@ -20,8 +20,8 @@ function getSharedHeaderHTML(pageType = 'module') {
             <text x="32" y="32" text-anchor="middle" font-size="18" class="mark">HCD</text>
           </svg>
           <div>
-            <h1 style="margin:0;font-size:20px;">HCD Project Hub</h1>
-            <p style="margin:2px 0 0;color:var(--muted);font-size:12px;">${subtitle}</p>
+            <h1>HCD Project Hub</h1>
+            <p>${subtitle}</p>
           </div>
         </a>
       </div>
