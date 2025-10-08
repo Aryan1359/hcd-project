@@ -91,7 +91,11 @@
     .cta{margin-top:20px}
     .button{display:inline-block;text-decoration:none;background:var(--primary);color:#00332f;font-weight:700;padding:10px 14px;border-radius:10px}
     .button:hover{filter:brightness(1.05)}
-    .site-footer{border-top:1px solid var(--ring);padding:20px 0;color:var(--muted);background:rgba(18,19,23,.6)}
+    .site-footer{border-top:1px solid var(--ring);padding:20px 0;color:var(--muted);background:rgba(18,19,23,.6);margin-top:40px}
+    .footer-nav{display:flex;justify-content:center;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+    .footer-nav-link{display:inline-block;padding:8px 18px;background:linear-gradient(135deg,#1a1d24,#252932);color:#6ee7b7;text-decoration:none;border-radius:6px;font-size:0.9rem;font-weight:600;border:1px solid #2a2f39;transition:all 0.25s ease}
+    .footer-nav-link:hover{background:linear-gradient(135deg,#6ee7b7,#5ad9a5);color:#0f766e;border-color:#6ee7b7;transform:translateY(-1px);box-shadow:0 3px 10px rgba(110,231,183,0.25)}
+    .footer-text{text-align:center;font-size:0.85rem;color:#aab1b9;margin:0}
 
     @media (max-width:700px){ .header-grid{flex-direction:column;align-items:flex-start} .student-meta{text-align:left} }
   </style>
@@ -242,16 +246,17 @@
 
   <footer class="site-footer">
     <div class="container">
-      <nav class="footer-menu">
-  <a class="footer-link" href="module1.html">Module 1</a>
-  <a class="footer-link" href="module2.html">Module 2</a>
-  <a class="footer-link" href="module3.html">Module 3</a>
-  <a class="footer-link" href="module4.html">Module 4</a>
-  <a class="footer-link" href="module5.html">Module 5</a>
-  <a class="footer-link" href="module6.html">Module 6</a>
-  <a class="footer-link" href="module7.html">Module 7</a>
+      <nav class="footer-nav">
+        <a class="footer-nav-link" href="index.html">Home</a>
+        <a class="footer-nav-link" href="module1.html">Module 1</a>
+        <a class="footer-nav-link" href="module2.html">Module 2</a>
+        <a class="footer-nav-link" href="module3.html">Module 3</a>
+        <a class="footer-nav-link" href="module4.html">Module 4</a>
+        <a class="footer-nav-link" href="module5.html">Module 5</a>
+        <a class="footer-nav-link" href="module6.html">Module 6</a>
+        <a class="footer-nav-link" href="module7.html">Module 7</a>
       </nav>
-      <p style="margin-top:12px">© <span id="year"></span> Aryan Yaghobi — Human-Centered Design Methods I</p>
+      <p class="footer-text"><span id="year"></span> Aryan Yaghobi - Human-Centered Design Methods I</p>
     </div>
   </footer>
 
