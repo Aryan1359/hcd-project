@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PREVIEW: Part 2 Integration - HCD Project</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Additional styles for stakeholder analysis */
+    #stakeholder-tbody td {
+      background: var(--panel);
+      border: 1px solid var(--ring);
+      padding: 10px;
+      vertical-align: top;
+    }
+    #stakeholder-tbody tr td:first-child {
+      border-top-left-radius: 10px;
+      border-bottom-left-radius: 10px;
+    }
+    #stakeholder-tbody tr td:last-child {
+      border-top-right-radius: 10px;
+      border-bottom-right-radius: 10px;
+    }
+    .stake-type {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .sliders {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+    input[type=range] {
+      width: 160px;
+    }
+    .tag {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      border: 1px solid;
+      font-weight: 600;
+    }
+    .chip {
+      cursor: grab;
+    }
+    .chip.dragging {
+      cursor: grabbing;
+    }
+    .chip circle {
+      stroke: #0b1220;
+      stroke-width: 2;
+    }
+    .preview-banner {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #00332f;
+      padding: 16px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 18px;
+      border-bottom: 2px solid var(--primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="preview-banner">
+    🎨 LIVE PREVIEW: Part 2 Integration with Interactive Stakeholder Analysis
+  </div>
+
+  <main class="container" style="margin-top: 24px;">
+    <!-- PART 2 CONTENT -->
+    <article class="card">
+      <h2>Part 2 — User-Centered Research & Stakeholders</h2>
+      <p class="muted">Module 6 — Integrated Final Assessment (Part 2)</p>
+      <hr />
+      
+      <!-- INTERACTIVE STAKEHOLDER ANALYSIS -->
+      <div id="stakeholder-analysis" style="margin-top:24px;">
+        <h3 style="display:flex;align-items:center;gap:8px;color:var(--primary);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          Ramp Worker Ergonomics — Interactive Stakeholder Analysis
+        </h3>
+        
+        <p style="font-size:14px;line-height:1.6;color:var(--text);margin:12px 0;">
+          <strong>Goal:</strong> Reduce physical strain and injury risk for airport ramp workers during baggage loading/unloading—especially in harsh weather and time‑critical turns—without slowing operations. 
+          <strong>Primary method:</strong> Stakeholder Map (Interest × Influence).
+        </p>
+
+        <!-- Stakeholder Table -->
+        <div style="background:var(--card);border:1px solid var(--ring);border-radius:14px;padding:20px;margin:20px 0;">
+          <h4 style="margin-top:0;">Stakeholders & Live Sliders</h4>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">
+            Drag sliders to change <strong>Interest</strong> and <strong>Influence</strong> (0–100). 
+            The quadrant and category update automatically.
+          </p>
+          
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+            <button id="exportBtn" style="padding:8px 16px;background:var(--primary);color:#00332f;border:none;border-radius:8px;cursor:pointer;font-weight:600;">📥 Export JSON</button>
+            <input id="importInput" type="file" accept="application/json" style="display:none" />
+            <button id="importBtn" style="padding:8px 16px;background:var(--card);border:1px solid var(--ring);color:var(--text);border-radius:8px;cursor:pointer;">📤 Import JSON</button>
+            <button id="resetBtn" title="Reset to defaults" style="padding:8px 16px;background:var(--card);border:1px solid var(--ring);color:var(--text);border-radius:8px;cursor:pointer;">🔄 Reset</button>
+          </div>
+          
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;font-size:14px;">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="width:12px;height:12px;border-radius:50%;background:#2ecc71;display:inline-block;"></span>
+              <span>Manage Closely</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="width:12px;height:12px;border-radius:50%;background:#f1c40f;display:inline-block;"></span>
+              <span>Keep Satisfied</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="width:12px;height:12px;border-radius:50%;background:#3498db;display:inline-block;"></span>
+              <span>Keep Informed</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="width:12px;height:12px;border-radius:50%;background:#9b59b6;display:inline-block;"></span>
+              <span>Monitor</span>
+            </div>
+          </div>
+
+          <div style="overflow-x:auto;">
+            <table id="stakeholder-table" style="width:100%;border-collapse:separate;border-spacing:0 8px;font-size:14px;">
+              <thead>
+                <tr>
+                  <th style="text-align:left;color:var(--muted);font-weight:600;padding-bottom:8px;">Stakeholder</th>
+                  <th style="text-align:left;color:var(--muted);font-weight:600;padding-bottom:8px;">Interest</th>
+                  <th style="text-align:left;color:var(--muted);font-weight:600;padding-bottom:8px;">Influence</th>
+                  <th style="text-align:left;color:var(--muted);font-weight:600;padding-bottom:8px;">Category</th>
+                  <th style="text-align:left;color:var(--muted);font-weight:600;padding-bottom:8px;">Justification</th>
+                </tr>
+              </thead>
+              <tbody id="stakeholder-tbody">
+                <!-- Will be populated by JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Interactive Quadrant Map -->
+        <div style="background:var(--card);border:1px solid var(--ring);border-radius:14px;padding:20px;margin:20px 0;">
+          <h4 style="margin-top:0;">Interactive Interest × Influence Map</h4>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">
+            🖱️ <strong>Drag the dots</strong> to reposition stakeholders. The table updates automatically!
+          </p>
+          
+          <div style="position:relative;height:700px;margin-top:16px;">
+            <svg id="vizFull" viewBox="0 0 1600 900" style="width:100%;height:100%;background:#0e1728;border:1px solid var(--ring);border-radius:14px;" preserveAspectRatio="xMidYMid meet" aria-label="Stakeholder quadrant map">
+              <defs>
+                <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="2" stdDeviation="4" flood-opacity="0.4"/>
+                </filter>
+              </defs>
+              <rect x="0" y="0" width="1600" height="900" fill="#0e1728" rx="16"/>
+              <line style="stroke:#264061;stroke-width:2;" x1="800" y1="30" x2="800" y2="870"/>
+              <line style="stroke:#264061;stroke-width:2;" x1="30" y1="450" x2="1570" y2="450"/>
+              
+              <!-- Axis labels -->
+              <text style="fill:#eaf6ff;font-size:24px;font-weight:700;paint-order:stroke;stroke:#0b1220;stroke-width:4px;" x="1540" y="888" text-anchor="end">INTEREST →</text>
+              <text style="fill:#eaf6ff;font-size:24px;font-weight:700;paint-order:stroke;stroke:#0b1220;stroke-width:4px;" x="40" y="56">↑ INFLUENCE</text>
+              <text style="fill:#8ea3b0;font-size:12px;" x="1540" y="860" text-anchor="end">low → high</text>
+              <text style="fill:#8ea3b0;font-size:12px;" x="72" y="60">HIGH</text>
+              <text style="fill:#8ea3b0;font-size:12px;" x="72" y="860">LOW</text>
+
+              <!-- Quadrant badges -->
+              <g transform="translate(865, 428)">
+                <rect width="200" height="40" fill="#0b1220" opacity="0.55" rx="10" ry="10" stroke="#2ecc71" stroke-width="1.6"/>
+                <text x="12" y="26" fill="#eaf6ff" font-size="18" font-weight="700">Manage Closely</text>
+              </g>
+              <g transform="translate(575, 428)">
+                <rect width="180" height="40" fill="#0b1220" opacity="0.55" rx="10" ry="10" stroke="#f1c40f" stroke-width="1.6"/>
+                <text x="12" y="26" fill="#eaf6ff" font-size="18" font-weight="700">Keep Satisfied</text>
+              </g>
+              <g transform="translate(865, 468)">
+                <rect width="188" height="40" fill="#0b1220" opacity="0.55" rx="10" ry="10" stroke="#3498db" stroke-width="1.6"/>
+                <text x="12" y="26" fill="#eaf6ff" font-size="18" font-weight="700">Keep Informed</text>
+              </g>
+              <g transform="translate(615, 468)">
+                <rect width="130" height="40" fill="#0b1220" opacity="0.55" rx="10" ry="10" stroke="#9b59b6" stroke-width="1.6"/>
+                <text x="12" y="26" fill="#eaf6ff" font-size="18" font-weight="700">Monitor</text>
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Reflection -->
+        <div style="background:var(--card);border:1px solid var(--ring);border-radius:14px;padding:20px;margin:20px 0;">
+          <h4 style="margin-top:0;color:var(--accent);">💭 Reflection: Stakeholder Dynamics</h4>
+          <p style="font-size:14px;line-height:1.6;color:var(--text);">
+            Influence and interest will shift with evidence. If early pilots show lower injuries and stable turn times, operations leaders and unions become stronger champions. If posture analytics feel punitive, support can dip until privacy and non‑punitive coaching policies are explicit. Regulatory attention rises after incidents or new guidance. As tech prices fall and GSE integration improves, vendors' practical influence grows through service and training.
+          </p>
+        </div>
+      </div>
+      <!-- END INTERACTIVE STAKEHOLDER ANALYSIS -->
+      
+    </article>
+  </main>
+
+  <script>
+    // --- Data model (from daynamic.html) ---
+    const DEFAULT_DATA = [
+      {id:1, name:"Ramp workers (baggage handlers / leads)", type:"Direct", interest:90, influence:70, color:"", justification:"Primary users facing WMSD risk; their buy‑in determines safe adoption of assistive/AI tools and affects turn‑time."},
+      {id:2, name:"Ramp supervisors / turnaround coordinators", type:"Organizational", interest:85, influence:92, color:"", justification:"Control staffing, equipment, and compliance—critical to pilots, training, and on‑time performance."},
+      {id:3, name:"Station operations leadership", type:"Organizational", interest:88, influence:95, color:"", justification:"Own budgets/KPIs (OTP, injuries, damage); sponsorship unlocks procurement and scaling."},
+      {id:4, name:"Safety / Ergonomics / HSSE team", type:"Organizational", interest:88, influence:80, color:"", justification:"Responsible for injury prevention & policy; evaluate WMSD risk and tech/training criteria."},
+      {id:5, name:"Labor union / worker council", type:"Organizational", interest:85, influence:96, color:"", justification:"Strong influence on work rules and acceptance; early engagement on privacy and fairness."},
+      {id:6, name:"Airport authority / apron ops", type:"Ecosystem", interest:60, influence:80, color:"", justification:"Sets ramp safety rules and GSE standards; solutions must align with airport ops."},
+      {id:7, name:"Regulators (OSHA / FAA)", type:"Ecosystem", interest:55, influence:95, color:"", justification:"Compliance shapes permissible practices; data‑driven ergonomics reduces risk."},
+      {id:8, name:"GSE & exoskeleton vendors", type:"Vendor", interest:80, influence:60, color:"", justification:"Provide lift‑assist/exoskeletons; co‑design ensures fit, maintainability, integration."},
+      {id:9, name:"AI / analytics / training tech providers", type:"Vendor", interest:82, influence:60, color:"", justification:"Enable near‑real‑time risk feedback; must support coaching‑first, privacy‑aware use."},
+      {id:10, name:"Insurers / workers' comp & risk", type:"Ecosystem", interest:75, influence:78, color:"", justification:"Premiums/incentives reflect injury rates; verified WMSD reduction strengthens case."}
+    ];
+
+    let state = JSON.parse(JSON.stringify(DEFAULT_DATA));
+
+    // --- Utilities ---
+    function categoryOf(i, n){
+      const highI = i >= 50; const highN = n >= 50;
+      if(highI && highN) return {name:"Manage Closely", color:"#2ecc71"};
+      if(!highI && highN) return {name:"Keep Satisfied", color:"#f1c40f"};
+      if(highI && !highN) return {name:"Keep Informed", color:"#3498db"};
+      return {name:"Monitor", color:"#9b59b6"};
+    }
+
+    // --- Table rendering ---
+    const tbody = document.getElementById('stakeholder-tbody');
+
+    function renderTable(){
+      tbody.innerHTML = '';
+      state.forEach(item => {
+        const tr = document.createElement('tr');
+
+        const tdName = document.createElement('td');
+        tdName.innerHTML = `<div><strong>${item.name}</strong></div><div class="stake-type">${item.type}</div>`;
+        tr.appendChild(tdName);
+
+        const tdI = document.createElement('td');
+        tdI.innerHTML = `<div><strong id="val-i-${item.id}">${item.interest}</strong></div>`;
+        const rI = document.createElement('input'); rI.type='range'; rI.min=0; rI.max=100; rI.value=item.interest; rI.dataset.id=item.id; rI.className='slider-interest';
+        rI.addEventListener('input', (e)=>{ item.interest = Number(e.target.value); document.getElementById(`val-i-${item.id}`).textContent = item.interest; drawFull(); updateCategoryCell(tdCat,item); });
+        const wrapI = document.createElement('div'); wrapI.className='sliders'; wrapI.appendChild(rI); tdI.appendChild(wrapI); tr.appendChild(tdI);
+
+        const tdN = document.createElement('td');
+        tdN.innerHTML = `<div><strong id="val-n-${item.id}">${item.influence}</strong></div>`;
+        const rN = document.createElement('input'); rN.type='range'; rN.min=0; rN.max=100; rN.value=item.influence; rN.dataset.id=item.id; rN.className='slider-influence';
+        rN.addEventListener('input', (e)=>{ item.influence = Number(e.target.value); document.getElementById(`val-n-${item.id}`).textContent = item.influence; drawFull(); updateCategoryCell(tdCat,item); });
+        const wrapN = document.createElement('div'); wrapN.className='sliders'; wrapN.appendChild(rN); tdN.appendChild(wrapN); tr.appendChild(tdN);
+
+        const tdCat = document.createElement('td');
+        updateCategoryCell(tdCat,item);
+        tr.appendChild(tdCat);
+
+        const tdJ = document.createElement('td');
+        tdJ.textContent = item.justification;
+        tr.appendChild(tdJ);
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function updateCategoryCell(td, item){
+      const cat = categoryOf(item.interest, item.influence);
+      td.innerHTML = `<span class="tag" style="border-color:${cat.color}; color:${cat.color}">${cat.name}</span>`;
+    }
+
+    // --- Quadrant rendering: FULL (labels) ---
+    const svgFull = document.getElementById('vizFull');
+
+    function drawFull(){
+      svgFull.querySelectorAll('.chip').forEach(n => n.remove());
+      state.forEach(item => {
+        const cat = categoryOf(item.interest, item.influence);
+        const x = 30 + (item.interest/100) * 1540;
+        const y = 870 - (item.influence/100) * 840;
+        const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+        g.setAttribute('class','chip'); g.dataset.id = item.id; g.setAttribute('filter','url(#shadow)');
+        const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+        c.setAttribute('cx', x); c.setAttribute('cy', y); c.setAttribute('r', 12);
+        c.setAttribute('fill', cat.color);
+        g.appendChild(c);
+        const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+        t.setAttribute('x', x + 16); t.setAttribute('y', y + 4);
+        t.setAttribute('fill', '#e9f0f5'); t.setAttribute('font-size','14');
+        t.textContent = item.name;
+        g.appendChild(t);
+        svgFull.appendChild(g);
+        enableDrag(svgFull, g, c, t, item);
+      });
+    }
+
+    // --- Drag helpers ---
+    function enableDrag(svg, group, circle, label, item){
+      let dragging = false;
+      function clientToViewBox(evt){
+        const rect = svg.getBoundingClientRect();
+        const vb = svg.viewBox.baseVal;
+        const x = (evt.clientX - rect.left) * (vb.width / rect.width);
+        const y = (evt.clientY - rect.top) * (vb.height / rect.height);
+        return {x,y};
+      }
+      function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
+
+      group.addEventListener('pointerdown', (e)=>{
+        dragging = true; group.classList.add('dragging'); group.setPointerCapture(e.pointerId);
+      });
+      group.addEventListener('pointermove', (e)=>{
+        if(!dragging) return;
+        const p = clientToViewBox(e);
+        const interest = clamp(((p.x - 30)/1540)*100, 0, 100);
+        const influence = clamp(((870 - p.y)/840)*100, 0, 100);
+        item.interest = Math.round(interest); item.influence = Math.round(influence);
+        const x = 30 + (item.interest/100) * 1540;
+        const y = 870 - (item.influence/100) * 840;
+        circle.setAttribute('cx', x); circle.setAttribute('cy', y);
+        if(label){ label.setAttribute('x', x + 16); label.setAttribute('y', y + 4); }
+        
+        // sync sliders live
+        const iSpan = document.getElementById(`val-i-${item.id}`);
+        const nSpan = document.getElementById(`val-n-${item.id}`);
+        const iSlider = document.querySelector(`input.slider-interest[data-id='${item.id}']`);
+        const nSlider = document.querySelector(`input.slider-influence[data-id='${item.id}']`);
+        if(iSpan) iSpan.textContent = item.interest; if(nSpan) nSpan.textContent = item.influence;
+        if(iSlider) iSlider.value = item.interest; if(nSlider) nSlider.value = item.influence;
+      });
+      group.addEventListener('pointerup', ()=>{
+        dragging = false; group.classList.remove('dragging');
+        renderTable();
+      });
+      group.addEventListener('pointercancel', ()=>{ dragging = false; group.classList.remove('dragging'); });
+    }
+
+    // --- Export / Import / Reset ---
+    document.getElementById('exportBtn').addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'stakeholders.json'; a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('importBtn').addEventListener('click', () => {
+      document.getElementById('importInput').click();
+    });
+
+    document.getElementById('importInput').addEventListener('change', (e) => {
+      const file = e.target.files[0]; if(!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try{ state = JSON.parse(reader.result); } catch(err){ alert('Invalid JSON'); return; }
+        renderTable(); drawFull();
+      };
+      reader.readAsText(file);
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      state = JSON.parse(JSON.stringify(DEFAULT_DATA));
+      renderTable(); drawFull();
+    });
+
+    // --- init ---
+    renderTable(); drawFull();
+  </script>
+</body>
+</html>

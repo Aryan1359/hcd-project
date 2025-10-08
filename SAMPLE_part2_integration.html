@@ -1,0 +1,180 @@
+<!-- THIS IS A SAMPLE - Shows how Part 2 section would look with the interactive stakeholder analysis integrated -->
+
+    <!-- PART 2 -->
+    <section id="panel-2" class="tab-panel" role="tabpanel" aria-labelledby="tab-2" hidden>
+      <article class="card">
+        <h2>Part 2 — User-Centered Research & Stakeholders</h2>
+        <p class="muted">Module 6 — Integrated Final Assessment (Part 2)</p>
+        <hr />
+        
+        <!-- INTERACTIVE STAKEHOLDER ANALYSIS (from daynamic.html) -->
+        <div id="stakeholder-analysis" style="margin-top:24px;">
+          <h3 style="display:flex;align-items:center;gap:8px;color:var(--primary);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            Ramp Worker Ergonomics — Interactive Stakeholder Analysis
+          </h3>
+          
+          <p style="font-size:14px;line-height:1.6;color:var(--text);margin:12px 0;">
+            <strong>Goal:</strong> Reduce physical strain and injury risk for airport ramp workers during baggage loading/unloading—especially in harsh weather and time‑critical turns—without slowing operations. 
+            <strong>Primary method:</strong> Stakeholder Map (Interest × Influence).
+          </p>
+
+          <!-- Stakeholder Table -->
+          <div style="background:var(--card);border:1px solid var(--ring);border-radius:14px;padding:20px;margin:20px 0;">
+            <h4 style="margin-top:0;">Stakeholders & Live Sliders</h4>
+            <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">
+              Drag sliders to change <strong>Interest</strong> and <strong>Influence</strong> (0–100). 
+              The quadrant and category update automatically. Export JSON to reuse in your Django app later.
+            </p>
+            
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+              <button id="exportBtn" style="padding:8px 16px;background:var(--primary);color:#00332f;border:none;border-radius:8px;cursor:pointer;font-weight:600;">Export JSON</button>
+              <input id="importInput" type="file" accept="application/json" style="display:none" />
+              <button id="importBtn" style="padding:8px 16px;background:var(--card);border:1px solid var(--ring);color:var(--text);border-radius:8px;cursor:pointer;">Import JSON</button>
+              <button id="resetBtn" title="Reset to defaults" style="padding:8px 16px;background:var(--card);border:1px solid var(--ring);color:var(--text);border-radius:8px;cursor:pointer;">Reset</button>
+            </div>
+            
+            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;font-size:14px;">
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span style="width:12px;height:12px;border-radius:50%;background:#2ecc71;display:inline-block;"></span>
+                <span>Manage Closely</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span style="width:12px;height:12px;border-radius:50%;background:#f1c40f;display:inline-block;"></span>
+                <span>Keep Satisfied</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span style="width:12px;height:12px;border-radius:50%;background:#3498db;display:inline-block;"></span>
+                <span>Keep Informed</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span style="width:12px;height:12px;border-radius:50%;background:#9b59b6;display:inline-block;"></span>
+                <span>Monitor</span>
+              </div>
+            </div>
+
+            <div style="overflow-x:auto;">
+              <table id="stakeholder-table" style="width:100%;border-collapse:separate;border-spacing:0 8px;font-size:14px;">
+                <thead>
+                  <tr>
+                    <th style="text-align:left;color:var(--muted);font-weight:600;padding-bottom:8px;">Stakeholder</th>
+                    <th style="text-align:left;color:var(--muted);font-weight:600;padding-bottom:8px;">Interest</th>
+                    <th style="text-align:left;color:var(--muted);font-weight:600;padding-bottom:8px;">Influence</th>
+                    <th style="text-align:left;color:var(--muted);font-weight:600;padding-bottom:8px;">Category</th>
+                    <th style="text-align:left;color:var(--muted);font-weight:600;padding-bottom:8px;">Justification</th>
+                  </tr>
+                </thead>
+                <tbody id="stakeholder-tbody">
+                  <!-- Will be populated by JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Interactive Quadrant Map -->
+          <div style="background:var(--card);border:1px solid var(--ring);border-radius:14px;padding:20px;margin:20px 0;">
+            <h4 style="margin-top:0;">Interactive Interest × Influence Map</h4>
+            <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">
+              Drag stakeholders to reposition them. The table updates automatically.
+            </p>
+            
+            <div style="position:relative;height:700px;margin-top:16px;">
+              <svg id="vizFull" viewBox="0 0 1600 900" style="width:100%;height:100%;background:#0e1728;border:1px solid var(--ring);border-radius:14px;" preserveAspectRatio="xMidYMid meet" aria-label="Stakeholder quadrant map">
+                <rect x="0" y="0" width="1600" height="900" fill="#0e1728" rx="16"/>
+                <line style="stroke:#264061;stroke-width:2;" x1="800" y1="30" x2="800" y2="870"/>
+                <line style="stroke:#264061;stroke-width:2;" x1="30" y1="450" x2="1570" y2="450"/>
+                
+                <!-- Axis labels -->
+                <text style="fill:#eaf6ff;font-size:24px;font-weight:700;" x="1540" y="888" text-anchor="end">INTEREST →</text>
+                <text style="fill:#eaf6ff;font-size:24px;font-weight:700;" x="40" y="56">↑ INFLUENCE</text>
+                <text style="fill:#8ea3b0;font-size:12px;" x="1540" y="860" text-anchor="end">low → high</text>
+                <text style="fill:#8ea3b0;font-size:12px;" x="72" y="60">HIGH</text>
+                <text style="fill:#8ea3b0;font-size:12px;" x="72" y="860">LOW</text>
+
+                <!-- Quadrant badges -->
+                <g transform="translate(865, 428)">
+                  <rect width="200" height="40" fill="#0b1220" opacity="0.55" rx="10" ry="10" stroke="#2ecc71" stroke-width="1.6"/>
+                  <text x="12" y="26" fill="#eaf6ff" font-size="18" font-weight="700">Manage Closely</text>
+                </g>
+                <g transform="translate(575, 428)">
+                  <rect width="180" height="40" fill="#0b1220" opacity="0.55" rx="10" ry="10" stroke="#f1c40f" stroke-width="1.6"/>
+                  <text x="12" y="26" fill="#eaf6ff" font-size="18" font-weight="700">Keep Satisfied</text>
+                </g>
+                <g transform="translate(865, 468)">
+                  <rect width="188" height="40" fill="#0b1220" opacity="0.55" rx="10" ry="10" stroke="#3498db" stroke-width="1.6"/>
+                  <text x="12" y="26" fill="#eaf6ff" font-size="18" font-weight="700">Keep Informed</text>
+                </g>
+                <g transform="translate(615, 468)">
+                  <rect width="130" height="40" fill="#0b1220" opacity="0.55" rx="10" ry="10" stroke="#9b59b6" stroke-width="1.6"/>
+                  <text x="12" y="26" fill="#eaf6ff" font-size="18" font-weight="700">Monitor</text>
+                </g>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Reflection -->
+          <div style="background:var(--card);border:1px solid var(--ring);border-radius:14px;padding:20px;margin:20px 0;">
+            <h4 style="margin-top:0;color:var(--accent);">Reflection: Stakeholder Dynamics</h4>
+            <p style="font-size:14px;line-height:1.6;color:var(--text);">
+              Influence and interest will shift with evidence. If early pilots show lower injuries and stable turn times, operations leaders and unions become stronger champions. If posture analytics feel punitive, support can dip until privacy and non‑punitive coaching policies are explicit. Regulatory attention rises after incidents or new guidance. As tech prices fall and GSE integration improves, vendors' practical influence grows through service and training.
+            </p>
+          </div>
+        </div>
+        <!-- END INTERACTIVE STAKEHOLDER ANALYSIS -->
+        
+      </article>
+    </section>
+
+<!-- 
+JAVASCRIPT TO BE ADDED AT THE BOTTOM OF index.html (before closing </body>):
+This is the same JavaScript from daynamic.html, adapted to work within the main page.
+You'll need to copy the entire <script> section from daynamic.html
+-->
+
+<style>
+/* Additional styles needed from daynamic.html - add to styles.css or inline */
+#stakeholder-tbody td {
+  background: var(--panel);
+  border: 1px solid var(--ring);
+  padding: 10px;
+  vertical-align: top;
+}
+#stakeholder-tbody tr td:first-child {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+#stakeholder-tbody tr td:last-child {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+.stake-type {
+  font-size: 12px;
+  color: var(--muted);
+}
+input[type=range] {
+  width: 160px;
+}
+.tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  border: 1px solid;
+  font-weight: 600;
+}
+.chip {
+  cursor: grab;
+}
+.chip.dragging {
+  cursor: grabbing;
+}
+.chip circle {
+  stroke: #0b1220;
+  stroke-width: 2;
+}
+</style>

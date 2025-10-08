@@ -153,6 +153,41 @@ body{
 
 .tab-panel{margin:8px 0 42px}
 
+/* Subtabs (nested within Part 2) */
+.subtabs{
+  display:flex;
+  gap:6px;
+  margin:20px 0;
+  flex-wrap:wrap;
+}
+.subtab-btn{
+  background:var(--panel);
+  border:1px solid var(--ring);
+  color:var(--text);
+  padding:8px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:14px;
+  transition:transform .08s ease, background .2s;
+}
+.subtab-btn[aria-selected="true"]{
+  background:linear-gradient(135deg, rgba(110,231,183,.15), rgba(110,231,183,.08));
+  border-color:var(--primary);
+  color:var(--primary);
+  font-weight:600;
+}
+.subtab-btn:hover{
+  background:rgba(110,231,183,.08);
+  border-color:rgba(110,231,183,.3);
+}
+.subtab-btn:focus{
+  outline:2px solid var(--primary);
+  outline-offset:2px;
+}
+.subtab-panel{
+  margin-top:20px;
+}
+
 .card{
   background:var(--card);
   border:1px solid var(--ring);

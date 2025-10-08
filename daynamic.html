@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ramp Worker Ergonomics — Stakeholder Analysis</title>
+  <style>
+    :root{
+      --bg:#0b1220; --card:#141c2f; --muted:#8ea3b0; --text:#e9f0f5; --accent:#5dd0ff;
+      --q1:#2ecc71; --q2:#f1c40f; --q3:#3498db; --q4:#9b59b6;
+    }
+    *{box-sizing:border-box}
+    body{margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial; background:var(--bg); color:var(--text); line-height:1.5}
+    header{padding:28px 20px 8px; text-align:center}
+    h1{margin:0 0 6px; font-size:28px}
+    h2{margin:18px 0 8px; font-size:20px}
+    p.lead{color:var(--muted); margin:0 auto 10px; max-width:980px}
+    main{max-width:1200px; margin:0 auto; padding:16px}
+    .card{background:var(--card); border:1px solid #1f2a44; border-radius:14px; padding:16px; box-shadow:0 10px 24px rgba(0,0,0,.25)}
+    .grid{display:grid; gap:16px}
+    @media(min-width:1000px){
+      .grid{grid-template-columns: 1.1fr .9fr}
+    }
+
+    /* Table */
+    table{width:100%; border-collapse:separate; border-spacing:0 8px}
+    thead th{font-weight:600; color:#cfe2ef; text-align:left; font-size:13px; letter-spacing:.02em}
+    tbody td{background:#0f1628; border:1px solid #1f2a44; padding:10px 10px; vertical-align:top}
+    tbody tr td:first-child{border-top-left-radius:10px; border-bottom-left-radius:10px}
+    tbody tr td:last-child{border-top-right-radius:10px; border-bottom-right-radius:10px}
+    .stake-type{font-size:12px; color:var(--muted)}
+    .sliders{display:flex; gap:10px; align-items:center; margin-top:8px; flex-wrap:wrap}
+    input[type=range]{width:160px}
+    .tag{display:inline-block; padding:2px 8px; border-radius:999px; font-size:12px; border:1px solid #264061; background:#0b1322; color:#cfe2ef}
+
+    /* Mini & Full Quadrants */
+    #vizMiniWrap{position:relative; height:340px}
+    #vizFullWrap{position:relative; height:720px; margin-top:16px}
+    svg{width:100%; height:100%; display:block; background:#0e1728; border:1px solid #1f2a44; border-radius:14px}
+    .quad-line{stroke:#264061; stroke-width:2}
+    .quad-label{fill:#cfe2ef; font-size:14px}
+    .axis-label{fill:#eaf6ff; font-size:26px; font-weight:700; letter-spacing:.02em; paint-order:stroke; stroke:#0b1220; stroke-width:4px}
+    .qbadge rect{fill:#0b1220; opacity:.55; rx:10; ry:10; stroke-width:1.6}
+    .qbadge.manage rect{stroke:var(--q1)}
+    .qbadge.satisfy rect{stroke:var(--q2)}
+    .qbadge.inform rect{stroke:var(--q3)}
+    .qbadge.monitor rect{stroke:var(--q4)}
+    .qbadge text{fill:#eaf6ff; font-size:18px; font-weight:700; letter-spacing:.02em}
+    .qhint{fill:#8ea3b0; font-size:12px} 
+    .chip{cursor:grab} .chip.dragging{cursor:grabbing}
+    .chip circle{stroke:#0b1220; stroke-width:2}
+    .legend{display:flex; gap:10px; flex-wrap:wrap; margin-top:8px; color:#cfe2ef}
+    .legend .dot{width:12px; height:12px; border-radius:50%}
+
+    .toolbar{display:flex; gap:10px; flex-wrap:wrap}
+    button, .ghost{appearance:none; border:1px solid #2a4365; background:#0e1728; color:#e9f0f5; padding:8px 12px; border-radius:10px; cursor:pointer}
+    button:hover{border-color:#3b5ea3}
+    .small{font-size:12px; color:#8ea3b0}
+    .center{display:flex; justify-content:center; align-items:center}
+    a.jump{color:var(--accent); text-decoration:none}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Ramp Worker Ergonomics — Stakeholder Analysis (Interactive)</h1>
+    <p class="lead">Goal: reduce physical strain and injury risk for airport ramp workers during baggage loading/unloading—especially in harsh weather and time‑critical turns—without slowing operations. Primary method: Stakeholder Map (Interest × Influence). Optional: Powers‑of‑Ten cross‑check.</p>
+  </header>
+
+  <main class="grid">
+    <section class="card">
+      <h2>Stakeholders & Live Sliders</h2>
+      <p class="small">Drag sliders to change <strong>Interest</strong> and <strong>Influence</strong> (0–100). The quadrant and category update automatically. Export JSON to reuse in your Django app later.</p>
+      <div class="toolbar" style="margin:8px 0 12px">
+        <button id="exportBtn">Export JSON</button>
+        <input id="importInput" type="file" accept="application/json" style="display:none" />
+        <button id="importBtn">Import JSON</button>
+        <button id="resetBtn" title="Reset to defaults">Reset</button>
+      </div>
+      <div class="legend">
+        <div><span class="dot" style="background:var(--q1)"></span> Manage Closely</div>
+        <div><span class="dot" style="background:var(--q2)"></span> Keep Satisfied</div>
+        <div><span class="dot" style="background:var(--q3)"></span> Keep Informed</div>
+        <div><span class="dot" style="background:var(--q4)"></span> Monitor</div>
+      </div>
+
+      <table id="table">
+        <thead>
+          <tr>
+            <th>Stakeholder</th>
+            <th>Interest</th>
+            <th>Influence</th>
+            <th>Category</th>
+            <th>Justification</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>Mini Map (dots only)</h2>
+      <p class="small">Quick glance view. For the full‑size, labeled map, <a class="jump" href="#fullmap">scroll to the bottom</a> or <a class="jump" id="jumpBtn" href="#fullmap">click here</a>.</p>
+      <div id="vizMiniWrap">
+        <svg id="vizMini" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet" aria-label="Mini stakeholder map (dots only)">
+          <defs>
+            <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="2" stdDeviation="4" flood-opacity="0.4"/>
+            </filter>
+          </defs>
+          <rect x="0" y="0" width="1000" height="1000" fill="#0e1728" rx="16"/>
+          <line class="quad-line" x1="500" y1="40" x2="500" y2="960"/>
+          <line class="quad-line" x1="40" y1="500" x2="960" y2="500"/>
+          <text class="quad-label" x="960" y="990" text-anchor="end">Interest →</text>
+          <text class="quad-label" x="20" y="30">↑ Influence</text>
+        </svg>
+      </div>
+    </section>
+  </main>
+
+  <!-- Full width section -->
+  <section class="card" id="fullmap" style="max-width:1200px; margin:16px auto;">
+    <h2>Full‑Size Interest × Influence Map</h2>
+    <p class="small">This larger map stretches the page width for easier reading. Labels are included.</p>
+    <div id="vizFullWrap">
+      <svg id="vizFull" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" aria-label="Full stakeholder quadrant map">
+        <rect x="0" y="0" width="1600" height="900" fill="#0e1728" rx="16"/>
+        <line class="quad-line" x1="800" y1="30" x2="800" y2="870"/>
+        <line class="quad-line" x1="30" y1="450" x2="1570" y2="450"/>
+        
+        <!-- BIG axis labels with outline for readability -->
+        <text class="axis-label" x="1540" y="888" text-anchor="end">INTEREST →</text>
+        <text class="axis-label" x="40" y="56">↑ INFLUENCE</text>
+        <!-- corrected hints: top=HIGH, bottom=LOW -->
+        <text class="qhint" x="1540" y="860" text-anchor="end">low                                                             high</text>
+        <text class="qhint" x="72" y="60">HIGH</text>
+        <text class="qhint" x="72" y="860">LOW</text>
+
+        <!-- Quadrant badges VERY near the crosshair (center ~800,450) -->
+        <g class="qbadge manage" transform="translate(865, 428)">
+          <rect width="200" height="40"/>
+          <text x="12" y="26">Manage Closely</text>
+        </g>
+        <g class="qbadge satisfy" transform="translate(575, 428)">
+          <rect width="180" height="40"/>
+          <text x="12" y="26">Keep Satisfied</text>
+        </g>
+        <g class="qbadge inform" transform="translate(865, 468)">
+          <rect width="188" height="40"/>
+          <text x="12" y="26">Keep Informed</text>
+        </g>
+        <g class="qbadge monitor" transform="translate(615, 468)">
+          <rect width="130" height="40"/>
+          <text x="12" y="26">Monitor</text>
+        </g>
+      </svg>
+    </div>
+
+    <h2 style="margin-top:16px">Reflection (Dynamics)</h2>
+    <p class="small">Influence and interest will shift with evidence. If early pilots show lower injuries and stable turn times, operations leaders and unions become stronger champions. If posture analytics feel punitive, support can dip until privacy and non‑punitive coaching policies are explicit. Regulatory attention rises after incidents or new guidance. As tech prices fall and GSE integration improves, vendors’ practical influence grows through service and training.</p>
+  </section>
+
+  <script>
+    // --- Data model ---
+    const DEFAULT_DATA = [
+      {id:1, name:"Ramp workers (baggage handlers / leads)", type:"Direct", interest:90, influence:70, color:"", justification:"Primary users facing WMSD risk; their buy‑in determines safe adoption of assistive/AI tools and affects turn‑time."},
+      {id:2, name:"Ramp supervisors / turnaround coordinators", type:"Organizational", interest:85, influence:92, color:"", justification:"Control staffing, equipment, and compliance—critical to pilots, training, and on‑time performance."},
+      {id:3, name:"Station operations leadership", type:"Organizational", interest:88, influence:95, color:"", justification:"Own budgets/KPIs (OTP, injuries, damage); sponsorship unlocks procurement and scaling."},
+      {id:4, name:"Safety / Ergonomics / HSSE team", type:"Organizational", interest:88, influence:80, color:"", justification:"Responsible for injury prevention & policy; evaluate WMSD risk and tech/training criteria."},
+      {id:5, name:"Labor union / worker council", type:"Organizational", interest:85, influence:96, color:"", justification:"Strong influence on work rules and acceptance; early engagement on privacy and fairness."},
+      {id:6, name:"Airport authority / apron ops", type:"Ecosystem", interest:60, influence:80, color:"", justification:"Sets ramp safety rules and GSE standards; solutions must align with airport ops."},
+      {id:7, name:"Regulators (OSHA / FAA)", type:"Ecosystem", interest:55, influence:95, color:"", justification:"Compliance shapes permissible practices; data‑driven ergonomics reduces risk."},
+      {id:8, name:"GSE & exoskeleton vendors", type:"Vendor", interest:80, influence:60, color:"", justification:"Provide lift‑assist/exoskeletons; co‑design ensures fit, maintainability, integration."},
+      {id:9, name:"AI / analytics / training tech providers", type:"Vendor", interest:82, influence:60, color:"", justification:"Enable near‑real‑time risk feedback; must support coaching‑first, privacy‑aware use."},
+      {id:10, name:"Insurers / workers’ comp & risk", type:"Ecosystem", interest:75, influence:78, color:"", justification:"Premiums/incentives reflect injury rates; verified WMSD reduction strengthens case."}
+    ];
+
+    let state = JSON.parse(JSON.stringify(DEFAULT_DATA));
+
+    // --- Utilities ---
+    function categoryOf(i, n){
+      const highI = i >= 50; const highN = n >= 50;
+      if(highI && highN) return {name:"Manage Closely", color:"var(--q1)"};
+      if(!highI && highN) return {name:"Keep Satisfied", color:"var(--q2)"};
+      if(highI && !highN) return {name:"Keep Informed", color:"var(--q3)"};
+      return {name:"Monitor", color:"var(--q4)"};
+    }
+
+    // --- Table rendering ---
+    const tbody = document.querySelector('#table tbody');
+
+    function renderTable(){
+      tbody.innerHTML = '';
+      state.forEach(item => {
+        const tr = document.createElement('tr');
+
+        const tdName = document.createElement('td');
+        tdName.innerHTML = `<div><strong>${item.name}</strong></div><div class="stake-type">${item.type}</div>`;
+        tr.appendChild(tdName);
+
+        const tdI = document.createElement('td');
+        tdI.innerHTML = `<div><strong id="val-i-${item.id}">${item.interest}</strong></div>`;
+        const rI = document.createElement('input'); rI.type='range'; rI.min=0; rI.max=100; rI.value=item.interest; rI.dataset.id=item.id; rI.className='slider-interest'; rI.ariaLabel = `Interest slider for ${item.name}`;
+        rI.addEventListener('input', (e)=>{ item.interest = Number(e.target.value); document.getElementById(`val-i-${item.id}`).textContent = item.interest; drawMini(); drawFull(); updateCategoryCell(tdCat,item); });
+        const wrapI = document.createElement('div'); wrapI.className='sliders'; wrapI.appendChild(rI); tdI.appendChild(wrapI); tr.appendChild(tdI);
+
+        const tdN = document.createElement('td');
+        tdN.innerHTML = `<div><strong id="val-n-${item.id}">${item.influence}</strong></div>`;
+        const rN = document.createElement('input'); rN.type='range'; rN.min=0; rN.max=100; rN.value=item.influence; rN.dataset.id=item.id; rN.className='slider-influence'; rN.ariaLabel = `Influence slider for ${item.name}`;
+        rN.addEventListener('input', (e)=>{ item.influence = Number(e.target.value); document.getElementById(`val-n-${item.id}`).textContent = item.influence; drawMini(); drawFull(); updateCategoryCell(tdCat,item); });
+        const wrapN = document.createElement('div'); wrapN.className='sliders'; wrapN.appendChild(rN); tdN.appendChild(wrapN); tr.appendChild(tdN);
+
+        const tdCat = document.createElement('td');
+        updateCategoryCell(tdCat,item);
+        tr.appendChild(tdCat);
+
+        const tdJ = document.createElement('td');
+        tdJ.textContent = item.justification;
+        tr.appendChild(tdJ);
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function updateCategoryCell(td, item){
+      const cat = categoryOf(item.interest, item.influence);
+      td.innerHTML = `<span class="tag" style="border-color:${cat.color}; color:${cat.color}">${cat.name}</span>`;
+    }
+
+    // --- Quadrant rendering: MINI (dots only) ---
+    const svgMini = document.getElementById('vizMini');
+
+    function drawMini(){
+      svgMini.querySelectorAll('.chip').forEach(n => n.remove());
+      state.forEach(item => {
+        const cat = categoryOf(item.interest, item.influence);
+        const x = 40 + (item.interest/100) * 920;
+        const y = 960 - (item.influence/100) * 920;
+        const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+        g.setAttribute('class','chip'); g.dataset.id = item.id; g.setAttribute('filter','url(#shadow)');
+        const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+        c.setAttribute('cx', x); c.setAttribute('cy', y); c.setAttribute('r', 8);
+        c.setAttribute('fill', cat.color);
+        g.appendChild(c);
+        svgMini.appendChild(g);
+        enableDrag(svgMini, g, c, null, item, 'mini');
+      });
+    }
+
+    // --- Quadrant rendering: FULL (labels) ---
+    const svgFull = document.getElementById('vizFull');
+
+    function drawFull(){
+      svgFull.querySelectorAll('.chip').forEach(n => n.remove());
+      state.forEach(item => {
+        const cat = categoryOf(item.interest, item.influence);
+        const x = 30 + (item.interest/100) * 1540; // padding in full map
+        const y = 870 - (item.influence/100) * 840;
+        const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+        g.setAttribute('class','chip'); g.dataset.id = item.id;
+        const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+        c.setAttribute('cx', x); c.setAttribute('cy', y); c.setAttribute('r', 12);
+        c.setAttribute('fill', cat.color);
+        g.appendChild(c);
+        const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+        t.setAttribute('x', x + 16); t.setAttribute('y', y + 4);
+        t.setAttribute('fill', '#e9f0f5'); t.setAttribute('font-size','14');
+        t.textContent = item.name;
+        g.appendChild(t);
+        svgFull.appendChild(g);
+        enableDrag(svgFull, g, c, t, item, 'full');
+      });
+    }
+
+    // --- Drag helpers ---
+    function enableDrag(svg, group, circle, label, item, mode){
+      let dragging = false;
+      function clientToViewBox(evt){
+        const rect = svg.getBoundingClientRect();
+        const vb = svg.viewBox.baseVal; // x=0,y=0, width,height
+        const x = (evt.clientX - rect.left) * (vb.width / rect.width);
+        const y = (evt.clientY - rect.top) * (vb.height / rect.height);
+        return {x,y};
+      }
+      function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
+
+      group.addEventListener('pointerdown', (e)=>{
+        dragging = true; group.classList.add('dragging'); group.setPointerCapture(e.pointerId);
+      });
+      group.addEventListener('pointermove', (e)=>{
+        if(!dragging) return;
+        const p = clientToViewBox(e);
+        if(mode==='mini'){
+          const interest = clamp(((p.x - 40)/920)*100, 0, 100);
+          const influence = clamp(((960 - p.y)/920)*100, 0, 100);
+          item.interest = Math.round(interest); item.influence = Math.round(influence);
+          // live position feedback on this chip only
+          const x = 40 + (item.interest/100) * 920;
+          const y = 960 - (item.influence/100) * 920;
+          circle.setAttribute('cx', x); circle.setAttribute('cy', y);
+        } else {
+          const interest = clamp(((p.x - 30)/1540)*100, 0, 100);
+          const influence = clamp(((870 - p.y)/840)*100, 0, 100);
+          item.interest = Math.round(interest); item.influence = Math.round(influence);
+          const x = 30 + (item.interest/100) * 1540;
+          const y = 870 - (item.influence/100) * 840;
+          circle.setAttribute('cx', x); circle.setAttribute('cy', y);
+          if(label){ label.setAttribute('x', x + 16); label.setAttribute('y', y + 4); }
+        }
+        // sync sliders live
+        const iSpan = document.getElementById(`val-i-${item.id}`);
+        const nSpan = document.getElementById(`val-n-${item.id}`);
+        const iSlider = document.querySelector(`input.slider-interest[data-id='${item.id}']`);
+        const nSlider = document.querySelector(`input.slider-influence[data-id='${item.id}']`);
+        if(iSpan) iSpan.textContent = item.interest; if(nSpan) nSpan.textContent = item.influence;
+        if(iSlider) iSlider.value = item.interest; if(nSlider) nSlider.value = item.influence;
+      });
+      group.addEventListener('pointerup', ()=>{
+        dragging = false; group.classList.remove('dragging');
+        // re-render both maps and update category pill
+        drawMini(); drawFull();
+        const rowCat = document.querySelector(`span.tag`); // fallback: refresh table to update colors
+        // Safer: just recompute the whole table category cell by re-rendering that row
+        // (lightweight approach):
+        renderTable(); // rebuild with fresh values & categories
+      });
+      group.addEventListener('pointercancel', ()=>{ dragging = false; group.classList.remove('dragging'); });
+    }
+
+    // --- Export / Import / Reset ---
+    document.getElementById('exportBtn').addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'stakeholders.json'; a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('importBtn').addEventListener('click', () => {
+      document.getElementById('importInput').click();
+    });
+
+    document.getElementById('importInput').addEventListener('change', (e) => {
+      const file = e.target.files[0]; if(!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try{ state = JSON.parse(reader.result); } catch(err){ alert('Invalid JSON'); return; }
+        renderTable(); drawMini(); drawFull();
+      };
+      reader.readAsText(file);
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      state = JSON.parse(JSON.stringify(DEFAULT_DATA));
+      renderTable(); drawMini(); drawFull();
+    });
+
+    // Smooth jump link
+    const jumpBtn = document.getElementById('jumpBtn');
+    if(jumpBtn){ jumpBtn.addEventListener('click', (e)=>{ e.preventDefault(); document.querySelector('#fullmap').scrollIntoView({behavior:'smooth'}); }); }
+
+    // --- init ---
+    renderTable(); drawMini(); drawFull();
+  </script>
+</body>
+</html>
