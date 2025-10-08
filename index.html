@@ -136,13 +136,17 @@
   <header class="site-header">
     <div class="container header-grid">
       <div class="branding">
-        <!-- Animated SVG Logo -->
-        <svg class="logo-svg" viewBox="0 0 64 64" role="img" aria-label="HCD Project Hub logo">
+        <!-- Animated SVG Logo - Hexagon represents collaboration -->
+        <svg class="logo-svg header-logo" viewBox="0 0 64 64" role="img" aria-label="HCD Project Hub logo">
           <title>HCD Project Hub - Human-Centered Focus</title>
-          <circle class="ring"  cx="32" cy="32" r="28" />
-          <circle class="inner" cx="32" cy="32" r="16" />
+          <!-- Hexagon outer frame -->
+          <path class="hex-outer" d="M32 4 L50 15 L50 37 L32 48 L14 37 L14 15 Z" />
+          <!-- Hexagon inner -->
+          <path class="hex-inner" d="M32 12 L44 20 L44 36 L32 44 L20 36 L20 20 Z" />
+          <!-- Center heartbeat dot -->
+          <circle cx="32" cy="28" r="4" class="heart-dot" />
+          <!-- HCD Text -->
           <text x="32" y="38" text-anchor="middle" font-size="18" class="mark">HCD</text>
-          <circle cx="32" cy="32" r="4" class="orb" />
         </svg>
         <div>
           <h1>HCD Project Hub</h1>
@@ -289,7 +293,7 @@
         This website features two distinct logo animations, each representing a core principle of Human-Centered Design:
       </p>
       <ul style="margin:12px 0 0;padding-left:20px;font-size:14px;line-height:1.7;color:var(--text);">
-        <li><strong style="color:var(--primary);">Heartbeat Animation (Header):</strong> The center dot pulses like a human heart, symbolizing empathy and the human focus at the core of HCD. It reminds us that design is ultimately about people and their needs.</li>
+        <li><strong style="color:var(--primary);">Heartbeat Animation (Header - Hexagon):</strong> The hexagon shape represents collaboration and interconnected stakeholders working together. The center dot pulses like a human heart, symbolizing empathy and the human focus at the core of HCD.</li>
         <li><strong style="color:var(--accent);">Orbiting Circle (Sidebar):</strong> The continuously circling element represents the iterative, cyclical nature of the design process - observe, ideate, prototype, test, and refine in an ongoing loop.</li>
       </ul>
     </aside>

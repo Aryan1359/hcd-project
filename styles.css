@@ -48,6 +48,8 @@ body{
 
 /* Animated Logo Styles */
 .logo-svg { width:44px; height:44px; display:block }
+
+/* Circular logo for module pages (sidebar style) */
 .logo-svg .ring { 
   fill:none; 
   stroke: var(--primary); 
@@ -60,6 +62,32 @@ body{
   stroke-width:1.5; 
   opacity:.7;
 }
+
+/* Hexagon logo for header - represents collaboration */
+.header-logo .hex-outer {
+  fill: none;
+  stroke: var(--primary);
+  stroke-width: 2;
+  stroke-linejoin: miter;
+  filter: drop-shadow(0 0 4px rgba(110,231,183,.3));
+}
+
+.header-logo .hex-inner {
+  fill: none;
+  stroke: #93c5fd;
+  stroke-width: 1.5;
+  stroke-linejoin: miter;
+  opacity: 0.6;
+}
+
+/* Heartbeat dot for header logo */
+.header-logo .heart-dot {
+  fill: var(--primary);
+  filter: drop-shadow(0 0 4px rgba(110,231,183,.6));
+  transform-origin: center;
+  animation: heartbeat 1.2s ease-in-out infinite;
+}
+
 .logo-svg .mark {
   fill: #ffffff;
   letter-spacing: 0.5px;
@@ -68,10 +96,11 @@ body{
   stroke-width: 1.2px;
 }
 
-/* Heartbeat animation for header logo - represents human-centered focus */
+/* Heartbeat animation for module pages orb */
 .logo-svg .orb  { 
   fill: var(--primary);
   filter: drop-shadow(0 0 4px rgba(110,231,183,.6));
+  transform-origin: center;
   animation: heartbeat 1.2s ease-in-out infinite;
 }
 
