@@ -45,6 +45,23 @@ body{
 
 .student-meta{font-size:13px;color:var(--muted);text-align:right}
 
+/* Animated Logo Styles */
+.logo-svg { width:44px; height:44px; display:block }
+.logo-svg .ring { fill:none; stroke: var(--primary); stroke-width:2; filter: drop-shadow(0 0 4px rgba(110,231,183,.25)); }
+.logo-svg .inner{ fill:none; stroke: #93c5fd; stroke-width:1.5; opacity:.7; }
+.logo-svg .mark {
+  fill: #ffffff;
+  letter-spacing: 0.5px;
+  paint-order: stroke fill;
+  stroke: rgba(0,0,0,0.35);
+  stroke-width: 1.2px;
+}
+.logo-svg .orb  { fill: var(--primary) }
+.logo-svg .orbit{ transform-origin: 32px 32px; animation: spin 10s linear infinite; }
+@keyframes spin{ to{ transform: rotate(360deg) } }
+@media (prefers-reduced-motion: reduce){ .logo-svg .orbit{ animation:none } }
+.branding:hover .logo-svg { filter: brightness(1.05); transform: translateY(-1px); transition:.2s ease }
+
 .tabs{
   display:flex;gap:8px;margin:18px auto
 }
