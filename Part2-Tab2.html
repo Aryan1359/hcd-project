@@ -101,10 +101,9 @@
     <!-- How-to -->
     <div class="note"><strong>How to use:</strong>
       <ul style="margin:6px 0 0 18px; padding:0 0 0 4px;">
-        <li>Each stakeholder starts with preset default values for <em>Interest</em> (X) and <em>Influence</em> (Y) — currently 50% unless changed later.</li>
-        <li>Adjust values using the two horizontal sliders under the stakeholder description; the percentages update immediately.</li>
-        <li>Or drag the dot inside the mini quadrant: left↔right changes <em>Interest</em>, up↕down changes <em>Influence</em>.</li>
-        <li>Use <strong>Reset</strong> under a quadrant to return that stakeholder’s dot and sliders to its preset defaults. Reset affects only that row.</li>
+        <li>Each stakeholder starts with <em>preset default</em> values for Interest (X) and Influence (Y).</li>
+        <li>Adjust using the two sliders or drag the dot inside the mini quadrant; values update immediately.</li>
+        <li>Use <strong>Reset</strong> under a row to return that stakeholder to its preset defaults.</li>
       </ul>
     </div>
 
@@ -239,6 +238,9 @@
     <script>
   // ===== Utilities =====
   const svgns = 'http://www.w3.org/2000/svg';
+  const $id = (id) => document.getElementById(id);
+  const safeText = (el, value) => { if (el) el.textContent = value; };
+  const on = (el, evt, fn) => { if (el) el.addEventListener(evt, fn); };
   function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
 
   // Small self-test to ensure newline joining is valid (debug safeguard)
@@ -299,8 +301,8 @@
       const influence = Math.round(100 - yPct);
       tr.dataset.interest = interest; tr.dataset.influence = influence;
       setDot(dot, interest, influence);
-      if(interestInput){ interestInput.value = interest; interestLabel.textContent = interest + '%'; }
-      if(influenceInput){ influenceInput.value = influence; influenceLabel.textContent = influence + '%'; }
+      if(interestInput){ interestInput.value = interest; if(interestLabel) interestLabel.textContent = interest + '%'; }
+      if(influenceInput){ influenceInput.value = influence; if(influenceLabel) influenceLabel.textContent = influence + '%'; }
       syncGlobal(tr.dataset.id, interest, influence);
     }
     svg.addEventListener('pointerdown', (e) => {
@@ -328,6 +330,13 @@
     g.setAttribute('tabindex', '0');
     g.style.cursor = 'grab';
     const r = 3.5;
+
+    // Larger hit target to make dragging easy
+    const hit = document.createElementNS(svgns, 'circle');
+    hit.setAttribute('cx', 0); hit.setAttribute('cy', 0); hit.setAttribute('r', 7);
+    hit.setAttribute('fill', 'transparent');
+    hit.setAttribute('pointer-events', 'all');
+
     let el;
     switch(type){
       case 'circle': el = document.createElementNS(svgns, 'circle'); el.setAttribute('cx', 0); el.setAttribute('cy', 0); el.setAttribute('r', r); el.setAttribute('fill', '#0ea5e9'); break;
@@ -351,6 +360,7 @@
       default:
         el = document.createElementNS(svgns, 'circle'); el.setAttribute('cx', 0); el.setAttribute('cy', 0); el.setAttribute('r', r); el.setAttribute('fill', '#0ea5e9');
     }
+    g.appendChild(hit);
     g.appendChild(el);
     return g;
   }
@@ -380,7 +390,7 @@
 
   // Defaults per stakeholder (1..10). Use null to fall back to 50.
   const DEFAULTS = {
-    1: { interest: 95, influence: 40 }, // Ramp workers / baggage handlers
+    1: { interest: 95, influence: 80 }, // Ramp workers / baggage handlers
     2: { interest: 60, influence: 30 }, // Ground crew leads & safety trainers
     3: { interest: 30, influence: 20 }, // Ramp operations ecosystem
     4: { interest: 30, influence: 30 }, // Operational control & load planning
@@ -395,7 +405,7 @@
   const RATIONALES = {
     1: {
       interest: "Direct exposure and lived experience; we’ll interview and co‑design with them (very high interest).",
-      influence: "Limited formal authority; influence rises via feedback/adoption — set at 40%."
+      influence: "Final users and co-design partners; acceptance and iterative feedback drive the solution — set at 80%."
     },
     2: {
       interest: "Coordinate and train but don’t lift bags themselves — moderate interest (60%).",
@@ -437,51 +447,52 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     const rows = document.querySelectorAll('tbody tr');
-    const tmpl = document.getElementById('sliderTemplate');
-    const boardEl = document.getElementById('bigBoard');
-    const legendEl = document.getElementById('boardLegend');
-    const resetAllBtn = document.getElementById('resetAll');
+    const tmpl = $id('sliderTemplate');
+    const boardEl = $id('bigBoard');
+    const legendEl = $id('boardLegend');
+    const resetAllBtn = $id('resetAll');
 
     // Controls
-    const titleInput = document.getElementById('titleInput');
-    const revInput = document.getElementById('revInput');
-    const printBtn = document.getElementById('printBtn');
-    const exportBtn = document.getElementById('exportBtn');
-    const docTitle = document.getElementById('docTitle');
-    const docRev = document.getElementById('docRev');
-    const docDate = document.getElementById('docDate');
+    const titleInput = $id('titleInput');
+    const revInput = $id('revInput');
+    const printBtn = $id('printBtn');
+    const exportBtn = $id('exportBtn');
+    const docTitle = $id('docTitle');
+    const docRev = $id('docRev');
+    const docDate = $id('docDate');
 
     const DEFAULT_TITLE = 'Ramp Worker Ergonomics — Interest–Influence Map';
-    titleInput.value = DEFAULT_TITLE;
+    if (titleInput) titleInput.value = DEFAULT_TITLE;
+
     function refreshHeader(){
-      docTitle.textContent = titleInput.value || DEFAULT_TITLE;
-      docRev.textContent = 'Revision: ' + (revInput.value || '—');
-      docDate.textContent = new Date().toLocaleString();
+      safeText(docTitle, (titleInput && titleInput.value) ? titleInput.value : DEFAULT_TITLE);
+      safeText(docRev, 'Revision: ' + ((revInput && revInput.value) ? revInput.value : '—'));
+      safeText(docDate, new Date().toLocaleString());
     }
     refreshHeader();
-    titleInput.addEventListener('input', refreshHeader);
-    revInput.addEventListener('input', refreshHeader);
+    on(titleInput, 'input', refreshHeader);
+    on(revInput, 'input', refreshHeader);
 
-    printBtn.addEventListener('click', () => { refreshHeader(); window.print(); });
+    on(printBtn, 'click', () => { refreshHeader(); window.print(); });
 
     // --- Export CSV (Excel friendly) ---
-    exportBtn.addEventListener('click', () => {
+    on(exportBtn, 'click', () => {
       refreshHeader();
       const lines = [];
-      const title = (titleInput.value || DEFAULT_TITLE).replace(/,/g,' ');
-      const rev = (revInput.value || '').replace(/,/g,' ');
+      const title = ((titleInput && titleInput.value) ? titleInput.value : DEFAULT_TITLE).replace(/,/g,' ');
+      const rev = ((revInput && revInput.value) ? revInput.value : '').replace(/,/g,' ');
       lines.push(`Title,${title}`);
       lines.push(`Revision,${rev || '-'}`);
       lines.push(`Exported,${new Date().toLocaleString()}`);
       lines.push('');
       lines.push('#,Stakeholder,Interest (%),Influence (%)');
       Array.from(rows).forEach((tr, i) => {
-        const name = tr.querySelector('.name').textContent.trim().replace(/,/g,';');
+        const nameEl = tr.querySelector('.name');
+        const name = (nameEl ? nameEl.textContent.trim() : `Stakeholder ${i+1}`).replace(/,/g,';');
         const interest = tr.dataset.interest ?? '50';
         const influence = tr.dataset.influence ?? '50';
         lines.push(`${i+1},${name},${interest},${influence}`);
       });
-      // IMPORTANT: use \r\n or \n (no raw newline literal)
       const csv = lines.join('\r\n');
       const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
       const url = URL.createObjectURL(blob);
@@ -492,41 +503,51 @@
       URL.revokeObjectURL(url);
     });
 
+    // --- Guard: required DOM parts ---
+    (function assertElements(){
+      const ids = ['titleInput','revInput','docTitle','docRev','docDate','bigBoard','boardLegend','sliderTemplate'];
+      ids.forEach(id => {
+        console.assert($id(id) !== null, `Missing DOM element: #${id}`);
+      });
+    })();
+
     // --- Init rows (sliders + mini-quads) ---
     rows.forEach((tr, i) => {
       const id = i + 1; // 1..10
       tr.dataset.id = id;
       const stakeholderCell = tr.children[2];
-      const node = tmpl.content.cloneNode(true);
+      const node = tmpl ? tmpl.content.cloneNode(true) : document.createElement('div');
 
-      const interestInput = node.querySelector('input.interest');
-      const influenceInput = node.querySelector('input.influence');
-      const values = node.querySelectorAll('.value');
+      const interestInput = node.querySelector ? node.querySelector('input.interest') : null;
+      const influenceInput = node.querySelector ? node.querySelector('input.influence') : null;
+      const values = node.querySelectorAll ? node.querySelectorAll('.value') : [];
       const interestDefault = (DEFAULTS[id]?.interest ?? 50);
       const influenceDefault = (DEFAULTS[id]?.influence ?? 50);
 
-      interestInput.value = interestDefault;
-      influenceInput.value = influenceDefault;
-      values[0].textContent = interestDefault + '%';
-      values[1].textContent = influenceDefault + '%';
+      if (interestInput) interestInput.value = interestDefault;
+      if (influenceInput) influenceInput.value = influenceDefault;
+      if (values[0]) values[0].textContent = interestDefault + '%';
+      if (values[1]) values[1].textContent = influenceDefault + '%';
 
       // Add rationales under each slider
-      const slidersRoot = node.querySelector('.sliders');
-      const sliderRows = node.querySelectorAll('.slider-row');
-      const rr = RATIONALES[id] || {};
-      const r1 = document.createElement('div'); r1.className = 'rationale'; r1.textContent = rr.interest || '';
-      const r2 = document.createElement('div'); r2.className = 'rationale'; r2.textContent = rr.influence || '';
-      sliderRows[0].insertAdjacentElement('afterend', r1);
-      sliderRows[1].insertAdjacentElement('afterend', r2);
+      if (node.querySelector) {
+        const sliderRows = node.querySelectorAll('.slider-row');
+        const rr = RATIONALES[id] || {};
+        const r1 = document.createElement('div'); r1.className = 'rationale'; r1.textContent = rr.interest || '';
+        const r2 = document.createElement('div'); r2.className = 'rationale'; r2.textContent = rr.influence || '';
+        if (sliderRows[0]) sliderRows[0].insertAdjacentElement('afterend', r1);
+        if (sliderRows[1]) sliderRows[1].insertAdjacentElement('afterend', r2);
+      }
 
       tr.dataset.interest = interestDefault;
       tr.dataset.influence = influenceDefault;
-      stakeholderCell.appendChild(node);
+      if (stakeholderCell) stakeholderCell.appendChild(node);
 
       // Build mini quad & interactions
-      const mini = tr.children[1].querySelector('.miniQuad');
-      const miniSvg = buildMiniQuad(mini, interestDefault, influenceDefault);
-      attachMiniInteractions(mini, tr, (...args)=>syncGlobal(...args));
+      const miniCell = tr.children[1];
+      const mini = miniCell ? miniCell.querySelector('.miniQuad') : null;
+      const miniSvg = mini ? buildMiniQuad(mini, interestDefault, influenceDefault) : null;
+      if (mini && miniSvg) attachMiniInteractions(mini, tr, (...args)=>syncGlobal(...args));
 
       // Slider sync -> mini + global
       const interestEl = tr.querySelector('input.interest');
@@ -534,27 +555,29 @@
       const vInterest = tr.querySelector('.slider-row:nth-child(1) .value');
       const vInfluence = tr.querySelector('.slider-row:nth-child(2) .value');
       function updateFromSliders(){
-        const iVal = Number(interestEl.value);
-        const yVal = Number(influenceEl.value);
+        const iVal = Number(interestEl ? interestEl.value : 50);
+        const yVal = Number(influenceEl ? influenceEl.value : 50);
         tr.dataset.interest = iVal; tr.dataset.influence = yVal;
-        setDot(miniSvg.querySelector('.dot'), iVal, yVal);
-        vInterest.textContent = iVal + '%';
-        vInfluence.textContent = yVal + '%';
+        if (miniSvg) setDot(miniSvg.querySelector('.dot'), iVal, yVal);
+        if (vInterest) vInterest.textContent = iVal + '%';
+        if (vInfluence) vInfluence.textContent = yVal + '%';
         syncGlobal(tr.dataset.id, iVal, yVal);
       }
-      interestEl.addEventListener('input', updateFromSliders);
-      influenceEl.addEventListener('input', updateFromSliders);
+      if (interestEl) on(interestEl, 'input', updateFromSliders);
+      if (influenceEl) on(influenceEl, 'input', updateFromSliders);
 
       // Per-row Reset under mini
-      const zoomCell = tr.children[1].querySelector('.zoomCell');
-      const btn = document.createElement('button');
-      btn.type = 'button'; btn.className = 'miniReset'; btn.textContent = 'Reset';
-      btn.addEventListener('click', () => {
-        const dI = (DEFAULTS[id]?.interest ?? 50);
-        const dY = (DEFAULTS[id]?.influence ?? 50);
-        interestEl.value = dI; influenceEl.value = dY; updateFromSliders();
-      });
-      zoomCell.appendChild(btn);
+      const zoomCell = tr.children[1] ? tr.children[1].querySelector('.zoomCell') : null;
+      if (zoomCell) {
+        const btn = document.createElement('button');
+        btn.type = 'button'; btn.className = 'miniReset'; btn.textContent = 'Reset';
+        btn.addEventListener('click', () => {
+          const dI = (DEFAULTS[id]?.interest ?? 50);
+          const dY = (DEFAULTS[id]?.influence ?? 50);
+          if (interestEl) interestEl.value = dI; if (influenceEl) influenceEl.value = dY; updateFromSliders();
+        });
+        zoomCell.appendChild(btn);
+      }
     });
 
     // --- Build big board & legend ---
@@ -579,35 +602,53 @@
       const id = i + 1; setGroupPos(id, tr.dataset.interest, tr.dataset.influence);
     });
 
+    // Self-test: initial positions match defaults
+    (function sanityPositions(){
+      const tol = 0.7; // tolerance in board units
+      rows.forEach((tr, i) => {
+        const id = i + 1; const g = groupsById[id]; if(!g) return;
+        const m = (g.getAttribute('transform')||'').match(/translate\(([^,]+),([^\)]+)\)/);
+        if(!m) return; const x = parseFloat(m[1]); const y = parseFloat(m[2]);
+        const ex = clamp(Number(tr.dataset.interest),0,100);
+        const ey = 100 - clamp(Number(tr.dataset.influence),0,100);
+        console.assert(Math.abs(x-ex) <= tol && Math.abs(y-ey) <= tol, `Init position mismatch for id ${id}`);
+      });
+    })();
+
     // Legend
-    legendEl.innerHTML = '';
-    rows.forEach((tr, i) => {
-      const id = i + 1; const label = tr.querySelector('.name').textContent.trim();
-      const wrap = document.createElement('div'); wrap.className = 'legendItem';
-      const icon = document.createElementNS(svgns, 'svg'); icon.setAttribute('viewBox','-12 -12 24 24'); icon.classList.add('legendIcon');
-      const iconShape = createShape(SHAPE_FOR_ID[id] || 'circle');
-      iconShape.setAttribute('transform','translate(0,0)');
-      icon.appendChild(iconShape.firstChild.cloneNode(true));
-      const span = document.createElement('span'); span.textContent = label;
-      wrap.append(icon, span); legendEl.appendChild(wrap);
-    });
+    if (legendEl) {
+      legendEl.innerHTML = '';
+      rows.forEach((tr, i) => {
+        const id = i + 1; const labelEl = tr.querySelector('.name');
+        const label = labelEl ? labelEl.textContent.trim() : `Stakeholder ${id}`;
+        const wrap = document.createElement('div'); wrap.className = 'legendItem';
+        const icon = document.createElementNS(svgns, 'svg'); icon.setAttribute('viewBox','-12 -12 24 24'); icon.classList.add('legendIcon');
+        const iconShape = createShape(SHAPE_FOR_ID[id] || 'circle');
+        // Use the visible shape (lastChild), not the transparent hit target (firstChild)
+        const visible = iconShape.lastChild.cloneNode(true);
+        icon.appendChild(visible);
+
+        const span = document.createElement('span'); span.textContent = label;
+        wrap.append(icon, span); legendEl.appendChild(wrap);
+      });
+    }
 
     // Sync functions table <-> board
     function syncGlobal(id, interest, influence){ setGroupPos(id, interest, influence); }
     function syncRowFromBoard(id, interest, influence){
-      const index = Number(id) - 1; const tr = rows[index];
+      const index = Number(id) - 1; const tr = rows[index]; if (!tr) return;
       tr.dataset.interest = interest; tr.dataset.influence = influence;
       const interestEl = tr.querySelector('input.interest');
       const influenceEl = tr.querySelector('input.influence');
       const vInterest = tr.querySelector('.slider-row:nth-child(1) .value');
       const vInfluence = tr.querySelector('.slider-row:nth-child(2) .value');
-      if(interestEl){ interestEl.value = interest; vInterest.textContent = interest + '%'; }
-      if(influenceEl){ influenceEl.value = influence; vInfluence.textContent = influence + '%'; }
-      const miniSvg = tr.children[1].querySelector('.miniQuad svg');
+      if(interestEl){ interestEl.value = interest; if(vInterest) vInterest.textContent = interest + '%'; }
+      if(influenceEl){ influenceEl.value = influence; if(vInfluence) vInfluence.textContent = influence + '%'; }
+      const miniSvg = tr.children[1] ? tr.children[1].querySelector('.miniQuad svg') : null;
       if(miniSvg){ setDot(miniSvg.querySelector('.dot'), interest, influence); }
     }
 
-    // Drag interactions on board
+    // Drag interactions on board (pointer capture on boardSvg)
     let draggingId = null;
     function boardSetFromClient(id, clientX, clientY){
       const rect = boardSvg.getBoundingClientRect();
@@ -615,28 +656,56 @@
       const yPct = clamp(((clientY - rect.top) / rect.height) * 100, 0, 100);
       const interest = Math.round(xPct);
       const influence = Math.round(100 - yPct);
-      syncRowFromBoard(id, interest, influence); setGroupPos(id, interest, influence);
+      syncRowFromBoard(id, interest, influence);
+      setGroupPos(id, interest, influence);
     }
+
     Object.values(groupsById).forEach(g => {
       g.addEventListener('pointerdown', (e) => {
-        draggingId = g.dataset.id; g.style.cursor = 'grabbing';
-        try { g.setPointerCapture(e.pointerId); } catch(_){ }
+        draggingId = g.dataset.id;
+        g.style.cursor = 'grabbing';
+        try { boardSvg.setPointerCapture(e.pointerId); } catch(_){}
         boardSetFromClient(draggingId, e.clientX, e.clientY);
-      });
-      g.addEventListener('pointerup', (e) => {
-        if(draggingId === g.dataset.id){ draggingId = null; g.style.cursor = 'grab'; try { g.releasePointerCapture(e.pointerId); } catch(_){ } }
       });
       g.addEventListener('pointercancel', () => { draggingId = null; g.style.cursor = 'grab'; });
     });
-    boardSvg.addEventListener('pointermove', (e) => { if(!draggingId) return; boardSetFromClient(draggingId, e.clientX, e.clientY); });
+
+    boardSvg.addEventListener('pointermove', (e) => {
+      if(!draggingId) return;
+      boardSetFromClient(draggingId, e.clientX, e.clientY);
+    });
+    boardSvg.addEventListener('pointerup', (e) => {
+      if(!draggingId) return;
+      const g = groupsById[draggingId];
+      if(g) g.style.cursor = 'grab';
+      draggingId = null;
+      try { boardSvg.releasePointerCapture(e.pointerId); } catch(_){}
+    });
+    boardSvg.addEventListener('pointerleave', () => { draggingId = null; });
+    boardSvg.addEventListener('pointercancel', () => { draggingId = null; });
 
     // Reset all
-    resetAllBtn.addEventListener('click', () => {
+    if (resetAllBtn) resetAllBtn.addEventListener('click', () => {
       rows.forEach((tr, i) => {
         const id = i + 1; const dI = (DEFAULTS[id]?.interest ?? 50); const dY = (DEFAULTS[id]?.influence ?? 50);
         syncRowFromBoard(id, dI, dY); setGroupPos(id, dI, dY);
       });
     });
+
+    // ===== Extra Tests =====
+    // 1) Mini->Board sync test on first row (non-destructive):
+    (function syncTest(){
+      const tr = rows[0]; if(!tr) return; const interestEl = tr.querySelector('input.interest');
+      if(!interestEl) return;
+      const original = Number(tr.dataset.interest);
+      const testVal = (original + 7) % 100;
+      interestEl.value = testVal; interestEl.dispatchEvent(new Event('input', {bubbles:true}));
+      const g = document.querySelector('[data-id="1"]');
+      const m = g ? (g.getAttribute('transform')||'').match(/translate\(([^,]+),([^\)]+)\)/) : null;
+      if(m){ const x = Math.round(parseFloat(m[1])); console.assert(x === testVal, 'Mini→Board sync failed for row 1'); }
+      // revert
+      interestEl.value = original; interestEl.dispatchEvent(new Event('input', {bubbles:true}));
+    })();
   });
     </script>
   </div>
