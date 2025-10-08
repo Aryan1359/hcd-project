@@ -77,6 +77,7 @@
   .boardLegend { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:8px; margin-top:10px; max-width: 900px; }
   .legendItem { display:flex; align-items:center; gap:8px; color:#334155; }
   .legendIcon { width:24px; height:24px; display:inline-block; }
+  .rationale { font-size: 12px; color: var(--muted); margin: 2px 0 6px; }
 </style>
 </head>
 <body>
@@ -379,16 +380,59 @@
 
   // Defaults per stakeholder (1..10). Use null to fall back to 50.
   const DEFAULTS = {
-    1: { interest: null, influence: null }, // Ramp workers / baggage handlers
-    2: { interest: null, influence: null }, // Ground crew leads & safety trainers
-    3: { interest: null, influence: null }, // Ramp operations ecosystem
-    4: { interest: null, influence: null }, // Operational control & load planning
-    5: { interest: null, influence: null }, // Airline & ground-handling management
-    6: { interest: null, influence: null }, // Airport authority
-    7: { interest: null, influence: null }, // Regulators (FAA, OSHA, IATA)
-    8: { interest: null, influence: null }, // Passengers / public
-    9: { interest: null, influence: null }, // Occupational health clinicians & PTs
-    10:{ interest: null, influence: null }  // Workers’ comp / injury insurance
+    1: { interest: 95, influence: 40 }, // Ramp workers / baggage handlers
+    2: { interest: 60, influence: 30 }, // Ground crew leads & safety trainers
+    3: { interest: 30, influence: 20 }, // Ramp operations ecosystem
+    4: { interest: 30, influence: 30 }, // Operational control & load planning
+    5: { interest: 80, influence: 60 }, // Airline & ground-handling management
+    6: { interest: 40, influence: 60 }, // Airport authority
+    7: { interest: 25, influence: 50 }, // Regulators (FAA, OSHA, IATA)
+    8: { interest: 15, influence: 15 }, // Passengers / public
+    9: { interest: 10, influence: 20 }, // Occupational health clinicians & PTs
+    10:{ interest: 50, influence: 30 }  // Workers’ comp / injury insurance
+  };
+
+  const RATIONALES = {
+    1: {
+      interest: "Direct exposure and lived experience; we’ll interview and co‑design with them (very high interest).",
+      influence: "Limited formal authority; influence rises via feedback/adoption — set at 40%."
+    },
+    2: {
+      interest: "Coordinate and train but don’t lift bags themselves — moderate interest (60%).",
+      influence: "Consulted for procedures; not primary decision‑makers — 30%."
+    },
+    3: {
+      interest: "Ergonomics is not core to their role; adjacent operations — 30%.",
+      influence: "Sequencing can affect ramp strain but little say in ergonomics — 20%."
+    },
+    4: {
+      interest: "Focus is schedule/load rather than ergonomics — 30%.",
+      influence: "Some leverage via tempo/task order, but low in this project scope — 30%."
+    },
+    5: {
+      interest: "Injury cost, efficiency and safety drive strong interest — 80%.",
+      influence: "Control budgets/staffing/approvals — set at 60%."
+    },
+    6: {
+      interest: "General safety/infrastructure interest, not specific ergonomics — 40%.",
+      influence: "Rules and site access shape what’s possible — 60%."
+    },
+    7: {
+      interest: "Broad safety mandate but not project‑specific — 25%.",
+      influence: "Standards and compliance pressure — 50%."
+    },
+    8: {
+      interest: "Indirect concern (timely, undamaged bags) — 15%.",
+      influence: "Minimal direct influence on ramp ergonomics — 15%."
+    },
+    9: {
+      interest: "Advisory role on WMSDs; limited involvement — 10%.",
+      influence: "Guidance informs design but doesn’t mandate change — 20%."
+    },
+    10: {
+      interest: "Financial exposure to injury claims — 50%.",
+      influence: "Can incentivize programs but not direct day‑to‑day ops — 30%."
+    }
   };
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -460,10 +504,20 @@
       const values = node.querySelectorAll('.value');
       const interestDefault = (DEFAULTS[id]?.interest ?? 50);
       const influenceDefault = (DEFAULTS[id]?.influence ?? 50);
+
       interestInput.value = interestDefault;
       influenceInput.value = influenceDefault;
       values[0].textContent = interestDefault + '%';
       values[1].textContent = influenceDefault + '%';
+
+      // Add rationales under each slider
+      const slidersRoot = node.querySelector('.sliders');
+      const sliderRows = node.querySelectorAll('.slider-row');
+      const rr = RATIONALES[id] || {};
+      const r1 = document.createElement('div'); r1.className = 'rationale'; r1.textContent = rr.interest || '';
+      const r2 = document.createElement('div'); r2.className = 'rationale'; r2.textContent = rr.influence || '';
+      sliderRows[0].insertAdjacentElement('afterend', r1);
+      sliderRows[1].insertAdjacentElement('afterend', r2);
 
       tr.dataset.interest = interestDefault;
       tr.dataset.influence = influenceDefault;
