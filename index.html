@@ -263,7 +263,30 @@
 
         <!-- Subtab 4: Weighted Matrix -->
         <div id="part2-sub4" class="subtab-panel" role="tabpanel" aria-labelledby="part2-tab4" hidden>
-          <p>Ready for your HTML file. I'll add it as an iframe once you provide it.</p>
+          <h3 style="margin:0 0 12px;font-size:18px;color:#035b94;">Weighted Decision Matrix</h3>
+          <p style="margin:0 0 16px;font-size:14px;color:#475569;">Interactive scoring tool with auto-normalized priorities (opens below).</p>
+          <div class="embedded-tool" style="margin-top:4px;">
+            <iframe
+              src="WeightedMetrix.html"
+              title="Weighted Decision Matrix Tool"
+              style="width:100%;height:920px;border:1px solid #e5e7eb;border-radius:12px;background:#fff;"
+              loading="lazy"
+              onload="this.dataset.loaded='1'"
+            ></iframe>
+            <div id="wm-fallback" style="display:none;margin-top:12px;font-size:13px;color:#b91c1c;">
+              Could not load WeightedMetrix.html (check filename and that the file exists in project root).
+            </div>
+          </div>
+          <script>
+            // Fallback if iframe fails to load in ~3s
+            setTimeout(()=>{
+              const ifr = document.querySelector('#part2-sub4 iframe');
+              if(ifr && !ifr.dataset.loaded){
+                const fb = document.getElementById('wm-fallback');
+                if(fb) fb.style.display='block';
+              }
+            },3000);
+          </script>
         </div>
 
         <!-- Subtab 5: Personas -->
@@ -422,3 +445,4 @@
     activateSubtab('sub1');
   </script>
 </body>
+</html>

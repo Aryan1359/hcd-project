@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Weighted Decision Matrix — Single File</title>
+<meta name="description" content="Single-file weighted decision matrix with live scoring, CSV export, printing, localStorage, and formula audit." />
+<style>
+  :root{
+    /* --- Design tokens (mirroring your style language) --- */
+    --bg: #ffffff;
+    --fg: #1f2937;          /* slate-800 */
+    --muted: #6b7280;       /* gray-500 */
+    --brand: #0ea5e9;       /* sky-500 */
+    --brand-600: #0284c7;   /* sky-600 */
+    --accent: #e2f2fb;      /* very light brand tint */
+    --border: #e5e7eb;      /* gray-200 */
+
+    --panel-grad-a: #f0f9ff;
+    --panel-grad-b: #e0f2fe;
+    --panel-border: #bae6fd;
+
+    --ok: #16a34a;          /* green-600 */
+    --warn: #d97706;        /* amber-600 */
+    --bad: #dc2626;         /* red-600 */
+
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow-sm: 0 2px 8px rgba(14,165,233,0.10);
+    --shadow-xs: 0 1px 4px rgba(0,0,0,0.06);
+
+    --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+    --th-bg: #f8fafc;        /* slate-50 */
+    --th-sticky: #f8fafc;
+    --row-alt: #fbfdff;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;padding:16px;background:var(--bg);color:var(--fg);font-family:var(--font);line-height:1.55}
+  .page{max-width:1200px;margin:0 auto}
+
+  /* Controls Header */
+  .controls{background:linear-gradient(135deg,var(--panel-grad-a),var(--panel-grad-b));border:1px solid var(--panel-border);border-radius:var(--radius);padding:16px;margin:0 0 16px;box-shadow:var(--shadow-sm)}
+  .controls h1{margin:0 0 6px;font-size:20px;letter-spacing:.2px}
+  .controls .sub{margin:0 0 12px;color:#0b3d5c;font-size:13px}
+  .controls-grid{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:end}
+  .input-row{display:grid;gap:10px;grid-template-columns:1.3fr .7fr}
+  .form-field{display:grid;gap:6px}
+  .form-field label{font-size:13px;color:#0b3d5c;font-weight:600}
+  .text-input{width:100%;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:14px;background:#fff;box-shadow:var(--shadow-xs)}
+  .text-input:focus{outline:2px solid #bae6fd;outline-offset:2px}
+  .actions{display:flex;flex-wrap:wrap;gap:8px}
+  .btn{appearance:none;border:none;background:var(--brand);color:#fff;font-weight:700;font-size:14px;padding:10px 14px;border-radius:var(--radius-sm);cursor:pointer;transition:transform .04s ease,background-color .2s ease;display:inline-flex;align-items:center;gap:8px}
+  .btn:hover{background:var(--brand-600)}
+  .btn:active{transform:translateY(1px)}
+  .btn.secondary{background:#fff;color:var(--brand-600);border:1px solid var(--panel-border)}
+  .btn.secondary:hover{background:#f0f9ff}
+  .meta-row{margin-top:10px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;font-size:12px;color:var(--muted)}
+  .meta-row .dot{width:4px;height:4px;background:var(--border);border-radius:4px}
+  .student-course-row{
+    margin-top:4px;
+    font-size:12px;
+    color:var(--muted);
+  }
+
+  /* Help */
+  .help{border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin:0 0 16px;background:#fff;box-shadow:var(--shadow-xs)}
+  .help h2{margin:0 0 8px;font-size:16px}
+  .help p{margin:0 0 10px}
+  .steps{margin:0;padding-left:18px}
+  .steps li{margin:4px 0}
+
+  /* Toolbar */
+  .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0}
+  .toggle{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border);background:#fff;padding:8px 10px;border-radius:var(--radius-sm);font-size:13px;color:#0b3d5c}
+  .weightsum{margin-left:auto;display:inline-flex;align-items:center;gap:8px;font-size:13px;border:1px dashed var(--border);padding:6px 10px;border-radius:var(--radius-sm);background:#fff}
+  .weightsum .chip{display:inline-flex;align-items:center;justify-content:center;min-width:52px;padding:3px 8px;border-radius:999px;font-weight:700;color:#fff}
+  .weightsum.ok .chip{background:var(--ok)}
+  .weightsum.warn .chip{background:var(--warn)}
+  .weightsum.bad .chip{background:var(--bad)}
+
+  /* Table */
+  .table-wrap{border:1px solid var(--border);border-radius:var(--radius);background:#fff;overflow:auto;box-shadow:var(--shadow-xs)}
+  table{border-collapse:separate;border-spacing:0;width:100%;min-width:860px}
+  thead th{position:sticky;top:0;z-index:2;background:var(--th-sticky);border-bottom:1px solid var(--border);text-align:left;font-size:13px;padding:10px}
+  tbody td{border-bottom:1px solid var(--border);padding:8px 10px;vertical-align:middle}
+  tbody tr:nth-child(even) td{background:var(--row-alt)}
+  th.sticky-first, td.sticky-first{position:sticky;left:0;z-index:1;background:#fff}
+  thead th.sticky-first{background:var(--th-sticky);z-index:3}
+
+  .criterion-head{display:grid;gap:6px;min-width:160px}
+  .crit-top{display:flex;align-items:center;gap:8px}
+  .crit-name{width:100%;border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;background:#fff}
+  .crit-name:focus{outline:2px solid #bae6fd;outline-offset:1px}
+  
+  /* New weight UI styling */
+  .crit-row{display:grid;gap:8px}
+  .weight-controls{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}
+  .weight-input-group{display:flex;gap:6px;align-items:center}
+  .priority{width:60px;border:1px solid var(--brand);border-radius:6px;padding:8px;font-size:15px;background:#fff;font-family:var(--mono);text-align:center;font-weight:700;color:var(--brand)}
+  .priority:focus{outline:2px solid var(--brand);outline-offset:1px;background:#f0f9ff}
+  .priority.invalid{border-color:var(--bad);background:#fff5f5;color:var(--bad)}
+  .arrow-icon{color:var(--muted);font-size:14px}
+  .weight-display{font-family:var(--mono);font-size:13px;color:var(--brand-600);font-weight:700;min-width:65px;text-align:right;padding:4px 8px;background:rgba(14,165,233,0.08);border-radius:6px}
+  
+  .weight{width:90px;border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;background:#fff;font-family:var(--mono)}
+  .weight.invalid{border-color:var(--bad);background:#fff5f5}
+  .tiny{font-size:11px;color:var(--muted);margin-top:2px}
+  .tiny.highlight{color:var(--brand-600);font-weight:600}
+  .del{appearance:none;border:1px solid var(--border);background:#fff;color:#b91c1c;padding:6px 8px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700}
+  .del:hover{background:#fff1f2;border-color:#fecdd3}
+  .op-name{width:100%;border:1px solid var(--border);border-radius:6px;padding:8px 10px;font-size:14px;background:#fff;min-width:200px}
+  .rating{width:70px;border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:14px;text-align:center;font-family:var(--mono)}
+  .rating.invalid{border-color:var(--bad);background:#fff5f5}
+  .score{font-weight:800;font-variant-numeric:tabular-nums;border-radius:6px;padding:6px 8px;display:inline-block}
+  .rank{font-weight:800}
+  .add-row{display:flex;gap:8px;margin:10px 0}
+  .score[data-score]{background:rgba(14,165,233,.06)}
+  .warn-text{font-size:11px;color:var(--bad);margin-top:4px}
+  .kbd{font-family:var(--mono);border:1px solid var(--border);background:#fff;padding:2px 6px;border-radius:6px;font-size:12px}
+
+  /* Suggestion pills */
+  .suggest{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .pill{border:1px solid var(--panel-border);background:#fff;border-radius:999px;padding:4px 10px;font-size:12px;cursor:pointer}
+  .pill:hover{background:#f0f9ff}
+
+  /* Formula audit */
+  .audit{margin-top:12px;border:1px dashed var(--panel-border);border-radius:var(--radius);padding:10px;background:#fff}
+  .audit h3{margin:0 0 6px;font-size:14px}
+  .audit pre{background:#f8fafc;border:1px solid var(--border);padding:10px;border-radius:8px;overflow:auto;font-family:var(--mono);font-size:12px}
+
+  /* Print */
+  @media print {
+    .controls, .help, .toolbar, .add-row, .del, .btn, .suggest, .audit { display:none !important }
+    body{padding:0}
+    .print-header{display:block !important;margin:0 0 10px;padding:12px 0 10px;border-bottom:2px dashed var(--border)}
+    .print-header h1{margin:0 0 4px;font-size:18px}
+    .print-meta{font-size:12px;color:var(--muted)}
+    .legend{font-size:12px;color:var(--muted);margin-top:6px}
+    thead th{top:0 !important}
+    .table-wrap{box-shadow:none !important;border:none !important}
+    table{page-break-inside:auto}
+    tr{page-break-inside:avoid;page-break-after:auto}
+  }
+
+  @media (max-width:720px){
+    .controls-grid{grid-template-columns:1fr}
+    .input-row{grid-template-columns:1fr}
+    .weightsum{margin-left:0}
+  }
+  /* Remove numeric spinners (UI arrows) so users type values only */
+  input[type=number]::-webkit-outer-spin-button,
+  input[type=number]::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+  input[type=number]{ -moz-appearance:textfield; appearance:textfield; }
+  /* Compact layout helpers */
+  .index-wrap, .compact-wrap{border:1px solid var(--border);border-radius:var(--radius);background:#fff;box-shadow:var(--shadow-xs);margin:12px 0;overflow:auto}
+  .index-wrap table, .compact-wrap table{width:100%;border-collapse:separate;border-spacing:0;min-width:480px}
+  .index-wrap thead th, .compact-wrap thead th{position:sticky;top:0;background:var(--th-sticky);border-bottom:1px solid var(--border);text-align:left;font-size:13px;padding:10px}
+  .index-wrap tbody td, .compact-wrap tbody td{border-bottom:1px solid var(--border);padding:8px 10px;vertical-align:middle}
+  .code-badge{font-family:var(--mono);font-weight:700;border:1px solid var(--panel-border);background:#fff;border-radius:999px;padding:2px 8px;font-size:12px}
+  .rating{width:56px}
+  .op-name{min-width:140px}
+  .crit-name{min-width:140px}
+  .compact-wrap th, .compact-wrap td{white-space:nowrap}
+  .meta-edu{
+    margin-top:12px;
+    padding:10px 12px;
+    background:#f8fafc;
+    border:1px solid var(--border);
+    border-radius:8px;
+    font-size:13px;
+    color:#0b3d5c;
+    line-height:1.4;
+  }
+  .print-edu{
+    margin:6px 0 10px;
+    font-size:12px;
+    color:#0b3d5c;
+  }
+  @media print {
+    /* keep snapshot visible */
+    #printCalc{display:block;}
+  }
+  .print-snapshot{margin-top:24px}
+  @media print {
+    #printSnapshot{display:block !important;}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <!-- Print header -->
+  <section class="print-header" style="display:none;">
+    <h1 id="printTitle">Weighted Decision Matrix</h1>
+    <div class="print-meta">Revision: <span id="printRev">v1</span> • Printed/Exported on: <span id="printStamp">—</span></div>
+    <div class="legend">Legend: Scores = Σ(rating × weight) on a 1–5 scale.</div>
+    <div class="print-edu">
+      Student: Aryan Yaghobi • Course: Human-Centered Design Methods I
+    </div>
+    <!-- Live Calculation Snapshot moved to end -->
+  </section>
+
+  <!-- Controls header -->
+  <section class="controls" aria-label="Controls header">
+    <h1>Weighted Decision Matrix</h1>
+    <p class="sub">Live scoring • Clean PDF • Excel CSV • Local persistence • Formula audit.</p>
+    <div class="controls-grid">
+      <div class="input-row">
+        <div class="form-field">
+          <label for="docTitle">Document Title</label>
+          <input id="docTitle" class="text-input" type="text" placeholder="e.g., Ramp Worker Ergonomics — Opportunity Evaluation" aria-label="Document Title">
+        </div>
+        <div class="form-field">
+          <label for="docRev">Revision</label>
+          <input id="docRev" class="text-input" type="text" placeholder="e.g., v1.0" aria-label="Revision">
+        </div>
+      </div>
+      <div class="actions" role="group" aria-label="Actions">
+        <button class="btn" id="btnPrint" aria-label="Print to PDF">🖨️ Print PDF</button>
+        <button class="btn" id="btnExport" aria-label="Export CSV for Excel">⬇️ Export CSV</button>
+        <button class="btn secondary" id="btnReset" aria-label="Reset to initial presets">↺ Reset Matrix</button>
+        <button class="btn secondary" id="btnClear" aria-label="Clear local storage to blank">🧹 Clear Storage</button>
+      </div>
+    </div>
+    <div class="meta-row" aria-live="polite">
+      <span>Printed/Exported on: <strong id="stamp">—</strong></span>
+    </div>
+    <div class="meta-row student-course-row">
+      <span>Student: Aryan Yaghobi • Course: Human-Centered Design Methods I</span>
+    </div>
+  </section>
+
+  <!-- Help -->
+  <section class="help" aria-label="How to use this matrix">
+    <h2>How to Use</h2>
+    <p><strong>Weighted matrix</strong> compares options (design opportunities) against criteria with importance <em>weights</em> (0–1). Rate each opportunity 1–5 per criterion. Score = Σ(rating × weight). Sort by score to reveal winners.</p>
+    <ol class="steps">
+      <li>Set <em>Title</em> and <em>Revision</em>.</li>
+      <li>Edit <em>criteria</em> names and set <em>priority</em> (1–9, higher = more important). Weights auto-normalize to Σ=1.00.</li>
+      <li>Edit or add <em>opportunities</em>; set ratings (1–5).</li>
+      <li>Live <strong>Score</strong> and <strong>Rank</strong> update as you type.</li>
+      <li><strong>Export CSV</strong> for Excel; <strong>Print PDF</strong> for clean sharing.</li>
+      <li>Use <strong>Audit</strong> to verify Σ(r×w) per row.</li>
+    </ol>
+
+    <div class="meta-edu">
+      <strong>Student:</strong> Aryan Yaghobi<br>
+      <strong>Course:</strong> Human-Centered Design Methods I
+    </div>
+  </section>
+
+  <!-- Toolbar -->
+  <div class="toolbar" role="group" aria-label="Matrix options">
+    <label class="toggle">
+      <input type="checkbox" id="sortMode" checked aria-label="Sort opportunities by weighted score"> Sort by Score (desc)
+    </label>
+    <label class="toggle">
+      <input type="checkbox" id="compactMode" checked aria-label="Compact mode with codes"> Compact table (codes)
+    </label>
+    <div class="weightsum" id="wsum" aria-live="polite">
+      Σweights: <span class="chip" id="wsumVal">1.00</span>
+      <span class="tiny" id="wsumHint">OK</span>
+    </div>
+  </div>
+
+  <!-- Index tables for compact mode -->
+  <div class="index-wrap" id="oppIndexWrap" role="region" aria-label="Opportunities index" tabindex="0">
+    <table>
+      <thead><tr><th style="width:90px;">Code</th><th>Opportunity</th><th style="width:60px;"></th></tr></thead>
+      <tbody id="oppIndexBody"></tbody>
+    </table>
+  </div>
+  <div class="index-wrap" id="critIndexWrap" role="region" aria-label="Criteria index" tabindex="0">
+    <table>
+      <thead><tr><th style="width:90px;">Code</th><th>Criterion</th><th style="width:180px;">Priority → Weight</th><th style="width:60px;"></th></tr></thead>
+      <tbody id="critIndexBody"></tbody>
+    </table>
+  </div>
+
+  <!-- Compact ratings matrix (codes) -->
+  <div class="compact-wrap" id="compactWrap" role="region" aria-label="Compact matrix table">
+    <table>
+      <thead id="compactHead"></thead>
+      <tbody id="compactBody"></tbody>
+    </table>
+  </div>
+
+  <!-- Original full matrix (hidden when compact) -->
+  <div class="table-wrap" id="fullWrap" role="region" aria-label="Weighted matrix table (full names)" tabindex="0" style="display:none;">
+    <table id="matrix" aria-describedby="wsumHint">
+      <thead id="thead"></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+  <div class="add-row" role="group" aria-label="Add items">
+    <button class="btn" id="addOpportunity" aria-label="Add a new opportunity">＋ Add Opportunity</button>
+    <button class="btn secondary" id="addCriterion" aria-label="Add a new criterion">＋ Add Criterion</button>
+  </div>
+
+  <!-- Formula audit -->
+  <div class="audit" id="audit">
+    <h3>Live Calculation</h3>
+    <pre id="auditWeights">—</pre>
+    <pre id="auditOut">Click a row to see Σ(rating × weight) details…</pre>
+  </div>
+
+  <!-- Print-only snapshot at end -->
+  <section id="printSnapshot" class="print-snapshot" style="display:none;">
+    <h3 style="margin:10px 0 6px;font-size:14px;">Live Calculation Snapshot</h3>
+    <pre id="printCalc" style="white-space:pre-wrap;font-size:11px;background:#f8fafc;border:1px solid #e5e7eb;padding:10px;border-radius:8px;">—</pre>
+  </section>
+</div>
+
+<script>
+(() => {
+  // ==============================
+  // Controls header
+  // ==============================
+  const el = {
+    title: document.getElementById('docTitle'),
+    rev: document.getElementById('docRev'),
+    stamp: document.getElementById('stamp'),
+    printTitle: document.getElementById('printTitle'),
+    printRev: document.getElementById('printRev'),
+    printStamp: document.getElementById('printStamp'),
+    btnPrint: document.getElementById('btnPrint'),
+    btnExport: document.getElementById('btnExport'),
+    btnReset: document.getElementById('btnReset'),
+    btnClear: document.getElementById('btnClear'),
+    sortMode: document.getElementById('sortMode'),
+    compactMode: document.getElementById('compactMode'),
+    wsum: document.getElementById('wsum'),
+    wsumVal: document.getElementById('wsumVal'),
+    wsumHint: document.getElementById('wsumHint'),
+    // full table
+    thead: document.getElementById('thead'),
+    tbody: document.getElementById('tbody'),
+    fullWrap: document.getElementById('fullWrap'),
+    // compact elements
+    oppIndexBody: document.getElementById('oppIndexBody'),
+    critIndexBody: document.getElementById('critIndexBody'),
+    compactHead: document.getElementById('compactHead'),
+    compactBody: document.getElementById('compactBody'),
+    compactWrap: document.getElementById('compactWrap'),
+    // adders
+    addOpportunity: document.getElementById('addOpportunity'),
+    addCriterion: document.getElementById('addCriterion'),
+    // audit
+    audit: document.getElementById('audit'),
+    auditOut: document.getElementById('auditOut'),
+    auditWeights: document.getElementById('auditWeights'),
+    // suggestions
+    suggestCriteria: document.getElementById('suggestCriteria'),
+    suggestOpps: document.getElementById('suggestOpps'),
+  };
+
+  // ==============================
+  // Model
+  // ==============================
+  const STORAGE_KEY = 'weighted-matrix-v2';
+  const TOL = 0.001;
+  const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+  const uid = () => 'id' + Math.random().toString(36).slice(2,8);
+  const formatTime = (d=new Date()) => d.toLocaleString(undefined,{year:'numeric',month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const sanitizeFile = (name) => (name||'').toString().trim().replace(/[^a-z0-9._-]+/gi,'_');
+  const escapeHtml = (s) => String(s??'').replace(/[&<>"']/g,(ch)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[ch]));
+
+  const presets = {
+    title: 'Weighted Decision Matrix',
+    revision: 'v1',
+    sortByScore: true,
+    compactMode: true,
+    criteria: [
+      { id: uid(), name: 'Impact',                 priority: 6, weight: 0 },
+      { id: uid(), name: 'Feasibility',            priority: 5, weight: 0 },
+      { id: uid(), name: 'Time to Implement',      priority: 3, weight: 0 },
+      { id: uid(), name: 'Cost Efficiency',        priority: 3, weight: 0 },
+      { id: uid(), name: 'Stakeholder Acceptance', priority: 3, weight: 0 },
+    ],
+    opportunities: [
+      { id: uid(), name: 'Early dehydration recognition (training/app prompts)', ratings: {}, score: 0 },
+      { id: uid(), name: 'Hydration access infrastructure', ratings: {}, score: 0 },
+      { id: uid(), name: 'Exoskeleton / lift-assist devices', ratings: {}, score: 0 },
+      { id: uid(), name: 'Micro-break scheduling policy', ratings: {}, score: 0 },
+      { id: uid(), name: 'Weather-aware cooling vests', ratings: {}, score: 0 },
+    ]
+  };
+
+  function seedRatings(m){
+    const cids = m.criteria.map(c=>c.id);
+    for(const op of m.opportunities){
+      op.ratings = op.ratings||{};
+      for(const cid of cids) op.ratings[cid] = 3;
+    }
+    // demo: first row Impact=5, Feasibility=4
+    const C = m.criteria;
+    const first = m.opportunities[0];
+    if(first){
+      const impact = C.find(c=>/impact/i.test(c.name));
+      const feas = C.find(c=>/feas/i.test(c.name));
+      if(impact) first.ratings[impact.id] = 5;
+      if(feas) first.ratings[feas.id] = 4;
+    }
+  }
+
+  let model = null;
+  let lastSelOpId = null;
+
+  // ==============================
+  // Auto-normalize weights from priorities (1-9)
+  // ==============================
+  function normalizeWeights(){
+    const total = model.criteria.reduce((sum, c) => sum + (Number(c.priority) || 0), 0);
+    if(total <= 0){
+      // If all priorities are 0, distribute equally
+      const equalWeight = model.criteria.length > 0 ? 1 / model.criteria.length : 0;
+      for(const c of model.criteria) c.weight = equalWeight;
+    } else {
+      for(const c of model.criteria){
+        c.weight = (Number(c.priority) || 0) / total;
+      }
+    }
+  }
+
+  // ==============================
+  // Persistence
+  // ==============================
+  function save(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(model)); }catch(e){} }
+  function load(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return null;
+      const m = JSON.parse(raw);
+      if(!m || !Array.isArray(m.criteria) || !Array.isArray(m.opportunities)) return null;
+      // Ensure all criteria have priority field
+      for(const c of m.criteria){
+        if(c.priority === undefined) c.priority = 5;
+      }
+      return m;
+    }catch(e){return null}
+  }
+  function resetToPresets(){ 
+    model = structuredClone(presets); 
+    normalizeWeights();
+    seedRatings(model); 
+    recalcRender(); 
+    save(); 
+  }
+  function clearStorageToBlank(){ 
+    try{localStorage.removeItem(STORAGE_KEY)}catch(e){}; 
+    model={title:'',revision:'',sortByScore:true,compactMode:true,criteria:[],opportunities:[]}; 
+    recalcRender(); 
+    save(); 
+  }
+
+  // ==============================
+  // Validation
+  // ==============================
+  function validatePriority(p){ 
+    const num = Number(p); 
+    if(Number.isNaN(num)) return {ok:false,val:5}; 
+    const v = Math.round(num); 
+    return {ok: v>=1 && v<=9, val: clamp(v, 1, 9)}; 
+  }
+  function validateRating(r){ 
+    const num = Number(r); 
+    if(Number.isNaN(num)) return {ok:false,val:3}; 
+    const v=Math.round(num); 
+    return {ok:v>=1&&v<=5, val:clamp(v,1,5)}; 
+  }
+  function weightSum(){ return model.criteria.reduce((s,c)=>s+(Number(c.weight)||0),0) }
+  function updateWeightBadge(){
+    const sum = weightSum();
+    el.wsumVal.textContent = sum.toFixed(2);
+    const diff = Math.abs(sum-1);
+    el.wsum.classList.remove('ok','warn','bad');
+    if(diff<=TOL){ el.wsum.classList.add('ok'); el.wsumHint.textContent='OK'; }
+    else if(sum>0 && diff<0.1){ el.wsum.classList.add('warn'); el.wsumHint.textContent='Adjust priorities'; }
+    else { el.wsum.classList.add('bad'); el.wsumHint.textContent='Invalid sum'; }
+  }
+
+  // ==============================
+  // Scoring & Ranking
+  // ==============================
+  function computeScores(){
+    for(const op of model.opportunities){
+      let s=0;
+      for(const c of model.criteria){ s += (Number(op.ratings?.[c.id]||0)) * (Number(c.weight||0)); }
+      op.score = s;
+    }
+  }
+  function computeRanks(){
+    const rounded = (x)=> Math.round(x*10000)/10000;
+    const sorted = [...model.opportunities].sort((a,b)=> rounded(b.score)-rounded(a.score));
+    const map = new Map();
+    let idx=0, rank=0, prev=null;
+    for(const op of sorted){
+      idx++;
+      const rs = rounded(op.score);
+      if(prev===null || rs!==prev){ rank = idx; prev=rs; }
+      map.set(op.id, rank);
+    }
+    return map;
+  }
+
+  // ==============================
+  // Rendering
+  // ==============================
+  function getCodes(){
+    const cCodes = new Map();
+    const oCodes = new Map();
+    model.criteria.forEach((c,i)=>cCodes.set(c.id, `C${i+1}`));
+    model.opportunities.forEach((o,i)=>oCodes.set(o.id, `O${i+1}`));
+    return {cCodes,oCodes};
+  }
+
+  function renderFull(){
+    const rankMap = computeRanks();
+    const th = [];
+    th.push(`<tr>
+      <th class="sticky-first">Opportunity</th>
+      ${model.criteria.map(c=>`
+        <th>
+          <div class="criterion-head">
+            <div class="crit-top">
+              <input class="crit-name" data-crit="${c.id}" type="text" value="${escapeHtml(c.name)}" aria-label="Criterion name">
+              <button class="del" data-del-crit="${c.id}" aria-label="Delete criterion">✕</button>
+            </div>
+            <div class="crit-row">
+              <div class="weight-controls">
+                <div class="weight-input-group">
+                  <input class="priority" data-priority="${c.id}" type="number" min="1" max="9" step="1" value="${Number(c.priority)}" aria-label="Priority 1-9" title="Priority (1-9): Higher = More Important">
+                  <span class="arrow-icon">→</span>
+                  <span class="weight-display">${(Number(c.weight)*100).toFixed(1)}%</span>
+                </div>
+              </div>
+              <div class="tiny highlight">Priority 1–9 (auto-normalized)</div>
+            </div>
+          </div>
+        </th>`).join('')}
+      <th>Weighted Score</th>
+      <th>Rank</th>
+      <th></th>
+    </tr>`);
+    el.thead.innerHTML = th.join('');
+
+    let rows = [...model.opportunities];
+    if(model.sortByScore) rows.sort((a,b)=>b.score-a.score);
+
+    const body = [];
+    for(const op of rows){
+      const score = Number(op.score||0);
+      const scStr = score.toFixed(2);
+      const heatAlpha = (score-1)/4*0.22 + 0.03;
+      body.push(`<tr data-op="${op.id}">
+        <td class="sticky-first"><input class="op-name" data-op-name="${op.id}" type="text" value="${escapeHtml(op.name)}" aria-label="Opportunity name"></td>
+        ${model.criteria.map(c=>{
+          const val = op.ratings?.[c.id] ?? 3;
+          return `<td>
+            <select class="rating" data-rating="${op.id}:${c.id}" aria-label="Rating 1 to 5">
+              <option value="1" ${val===1?"selected":""}> 1</option>
+              <option value="2" ${val===2?"selected":""}> 2</option>
+              <option value="3" ${val===3?"selected":""}> 3</option>
+              <option value="4" ${val===4?"selected":""}> 4</option>
+              <option value="5" ${val===5?"selected":""}> 5</option>
+            </select>
+          </td>`;
+        }).join('')}
+        <td><span class="score" data-score="${scStr}" style="background: rgba(14,165,233, ${heatAlpha.toFixed(3)});">${scStr}</span></td>
+        <td><span class="rank">${computeRanks().get(op.id)}</span></td>
+        <td><button class="del" data-del-op="${op.id}" aria-label="Delete opportunity">✕</button></td>
+      </tr>`);
+    }
+    el.tbody.innerHTML = body.join('');
+  }
+
+  function renderCompact(){
+    const {cCodes,oCodes} = getCodes();
+    const rankMap = computeRanks();
+
+    // Opp index
+    const oppRows = [];
+    let opps = [...model.opportunities];
+    if(model.sortByScore) opps.sort((a,b)=>b.score-a.score);
+    for(const op of opps){
+      oppRows.push(`<tr>
+        <td><span class="code-badge" title="${escapeHtml(op.name)}">${oCodes.get(op.id)}</span></td>
+        <td><input class="op-name" data-op-name="${op.id}" type="text" value="${escapeHtml(op.name)}" aria-label="Opportunity name"></td>
+        <td><button class="del" data-del-op="${op.id}" aria-label="Delete opportunity">✕</button></td>
+      </tr>`);
+    }
+    el.oppIndexBody.innerHTML = oppRows.join('');
+
+    // Crit index
+    const critRows = [];
+    for(const c of model.criteria){
+      critRows.push(`<tr>
+        <td><span class="code-badge" title="${escapeHtml(c.name)}">${cCodes.get(c.id)}</span></td>
+        <td><input class="crit-name" data-crit="${c.id}" type="text" value="${escapeHtml(c.name)}" aria-label="Criterion name"></td>
+        <td>
+          <div class="weight-input-group">
+            <input class="priority" data-priority="${c.id}" type="number" min="1" max="9" step="1" value="${Number(c.priority)}" aria-label="Priority 1-9" title="Priority (1-9)">
+            <span class="arrow-icon">→</span>
+            <span class="weight-display">${(Number(c.weight)*100).toFixed(1)}%</span>
+          </div>
+        </td>
+        <td><button class="del" data-del-crit="${c.id}" aria-label="Delete criterion">✕</button></td>
+      </tr>`);
+    }
+    el.critIndexBody.innerHTML = critRows.join('');
+
+    // Compact matrix
+    const head = [];
+    head.push(`<tr><th style="width:90px;">Opp</th>${model.criteria.map(c=>`<th title="${escapeHtml(c.name)} (${(Number(c.weight)*100).toFixed(1)}%)">${cCodes.get(c.id)}</th>`).join('')}<th>Score</th><th>Rank</th></tr>`);
+    el.compactHead.innerHTML = head.join('');
+
+    const body = [];
+    for(const op of opps){
+      const score = Number(op.score||0);
+      const scStr = score.toFixed(2);
+      body.push(`<tr data-op="${op.id}">
+        <td><span class="code-badge" title="${escapeHtml(op.name)}">${oCodes.get(op.id)}</span></td>
+        ${model.criteria.map(c=>{
+          const val = op.ratings?.[c.id] ?? 3;
+          return `<td>
+            <select class="rating" data-rating="${op.id}:${c.id}" aria-label="Rating 1 to 5" title="${cCodes.get(c.id)}: ${escapeHtml(c.name)}">
+              <option value="1" ${val===1?"selected":""}> 1</option>
+              <option value="2" ${val===2?"selected":""}> 2</option>
+              <option value="3" ${val===3?"selected":""}> 3</option>
+              <option value="4" ${val===4?"selected":""}> 4</option>
+              <option value="5" ${val===5?"selected":""}> 5</option>
+            </select>
+          </td>`;
+        }).join('')}
+        <td><span class="score">${scStr}</span></td>
+        <td><span class="rank">${rankMap.get(op.id)}</span></td>
+      </tr>`);
+    }
+    el.compactBody.innerHTML = body.join('');
+  }
+
+  function render(){
+    el.title.value = model.title||'';
+    el.rev.value = model.revision||'';
+    el.sortMode.checked = !!model.sortByScore;
+    el.compactMode.checked = !!model.compactMode;
+    updateWeightBadge();
+
+    // Show/hide wrappers
+    el.fullWrap.style.display = model.compactMode ? 'none' : '';
+    el.compactWrap.style.display = model.compactMode ? '' : 'none';
+    document.getElementById('oppIndexWrap').style.display = model.compactMode ? '' : 'none';
+    document.getElementById('critIndexWrap').style.display = model.compactMode ? '' : 'none';
+
+    if(model.compactMode){ renderCompact(); }
+    else { renderFull(); }
+  }
+
+  // ==============================
+  // Pipeline
+  // ==============================
+  function recalcRender(){ 
+    normalizeWeights(); 
+    computeScores(); 
+    render(); 
+    renderAuditWeights(); 
+    if(lastSelOpId) renderAuditRow(lastSelOpId); 
+    save(); 
+  }
+  let raf=null; 
+  const debounced=()=>{ if(raf) cancelAnimationFrame(raf); raf=requestAnimationFrame(recalcRender); };
+
+  // ==============================
+  // Events
+  // ==============================
+  let editingRating = false;
+  let pendingResort = false;
+
+  function onTableInput(e){
+    const t = e.target;
+    if(t.matches('select.rating')) return; // handled in change
+    const critId = t.getAttribute('data-crit');
+    if(critId){
+      const c=model.criteria.find(x=>x.id===critId);
+      if(c){ c.name=t.value; debounced(); }
+      return;
+    }
+    const prioId = t.getAttribute('data-priority');
+    if(prioId){
+      const c=model.criteria.find(x=>x.id===prioId);
+      if(c){
+        const numVal = Number(t.value);
+        if(!isNaN(numVal) && numVal>0){
+          c.priority = numVal;
+          const {ok} = validatePriority(t.value);
+          t.classList.toggle('invalid', !ok);
+        } else {
+          c.priority = 0;
+          t.classList.add('invalid');
+        }
+        debounced();
+      }
+      return;
+    }
+    const opNameId = t.getAttribute('data-op-name');
+    if(opNameId){
+      const o=model.opportunities.find(x=>x.id===opNameId);
+      if(o){ o.name=t.value; debounced(); }
+      return;
+    }
+  }
+
+  function onTableChange(e){
+    const t = e.target;
+    if(!t.matches('select.rating')) return;
+    const ratingKey = t.getAttribute('data-rating');
+    if(!ratingKey) return;
+    editingRating = true;
+    const [opId,cid] = ratingKey.split(':');
+    const op = model.opportunities.find(o=>o.id===opId);
+    if(op){
+      op.ratings[cid] = Number(t.value);
+      // Delay resorting until after this frame for stability
+      if(model.sortByScore){
+        pendingResort = true;
+      }
+      debounced();
+    }
+    editingRating = false;
+    if(pendingResort){
+      pendingResort = false;
+      debounced();
+    }
+  }
+
+  function onTableBlur(e){
+    const t = e.target;
+    if(t.classList.contains('priority')){
+      const prioId = t.getAttribute('data-priority');
+      const c = model.criteria.find(x=>x.id===prioId);
+      if(c){
+        const {val} = validatePriority(t.value);
+        c.priority = val;
+        t.value = val;
+        t.classList.remove('invalid');
+        debounced();
+      }
+    }
+    // Rating blur no longer needed
+  }
+
+  // Replace existing listeners
+  document.removeEventListener('input', onTableInput);
+  document.removeEventListener('blur', onTableBlur, true);
+
+  document.addEventListener('input', onTableInput, {passive:true});
+  document.addEventListener('change', onTableChange); // for select ratings
+  document.addEventListener('blur', onTableBlur, true);
+
+  // Debug helper to detect duplicate criterion IDs (should be none)
+  function debugIds(){
+    const ids = model.criteria.map(c=>c.id);
+    const dup = ids.filter((id,i)=> ids.indexOf(id)!==i);
+    if(dup.length){
+      console.warn('Duplicate criterion IDs detected:', dup);
+    }
+  }
+
+  // Call after load/init
+  const origInit = init;
+  init = function(){
+    origInit();
+    debugIds();
+  }
+
+  // ---- Audit helpers ----
+  function renderAuditWeights(){
+    const lines=[]; 
+    lines.push('Priority → Weight Calculation:');
+    lines.push('');
+    const totalPriority = model.criteria.reduce((s,c)=>s+(Number(c.priority)||0), 0);
+    for(const c of model.criteria){ 
+      const p=Number(c.priority||0); 
+      const w=Number(c.weight||0);
+      lines.push(`${c.name}: priority ${p} ÷ ${totalPriority} = ${w.toFixed(4)} (${(w*100).toFixed(1)}%)`); 
+    }
+    lines.push('---------------------------');
+    lines.push(`Σweights = ${weightSum().toFixed(4)} (target 1.0000)`);
+    el.auditWeights.textContent = lines.join('\n');
+  }
+  
+  function renderAuditRow(id){
+    const op = model.opportunities.find(o=>o.id===id);
+    if(!op){ el.auditOut.textContent='—'; return; }
+    const parts=[`Opportunity: ${op.name}`,'']; 
+    let total=0;
+    for(const c of model.criteria){ 
+      const r=Number(op.ratings?.[c.id]||0); 
+      const w=Number(c.weight||0); 
+      const p=r*w; 
+      total+=p; 
+      parts.push(`${c.name}: ${r} × ${w.toFixed(4)} = ${p.toFixed(4)}`); 
+    }
+    parts.push('---------------------------'); 
+    parts.push(`Score = ${total.toFixed(4)}`);
+    el.auditOut.textContent = parts.join('\n');
+  }
+
+  // ---- Unit tests ----
+  function approx(a,b,eps=1e-9){ return Math.abs(a-b) <= eps; }
+  function runUnitTests(){
+    try{
+      console.group('%cWeighted Matrix – Self Tests','color:#0284c7;font-weight:bold');
+      
+      // Test 1: Priority normalization
+      const m1={
+        criteria:[{id:'c1',priority:3,weight:0},{id:'c2',priority:6,weight:0}],
+        opportunities:[]
+      };
+      const testNorm = (crit) => {
+        const total = crit.reduce((s,c)=>s+(Number(c.priority)||0), 0);
+        for(const c of crit) c.weight = (Number(c.priority)||0) / total;
+      };
+      testNorm(m1.criteria);
+      console.assert(approx(m1.criteria[0].weight, 0.333333), 'Test1: c1 weight should be ~0.333');
+      console.assert(approx(m1.criteria[1].weight, 0.666667), 'Test1: c2 weight should be ~0.667');
+      console.assert(approx(m1.criteria[0].weight + m1.criteria[1].weight, 1.0), 'Test1: sum should be 1.0');
+
+      // Test 2: Scoring
+      const m2={
+        criteria:[{id:'c1',weight:0.4},{id:'c2',weight:0.6}],
+        opportunities:[
+          {id:'o1',ratings:{c1:5,c2:3},score:0}
+        ]
+      };
+      const s = m2.opportunities[0].ratings.c1*m2.criteria[0].weight + m2.opportunities[0].ratings.c2*m2.criteria[1].weight; // 5*0.4 + 3*0.6 = 3.8
+      console.assert(approx(s, 3.8), 'Test2: score should be 3.8');
+
+      console.log('%c✓ All tests passed!','color:#16a34a;font-weight:bold');
+      console.groupEnd();
+    }catch(e){ 
+      console.error('Test error',e); 
+      console.groupEnd();
+    }
+  }
+
+  // ADD: helpers to create items
+  function makeOpportunity(name='New Opportunity'){
+    return { id: uid(), name, ratings: Object.fromEntries(model.criteria.map(c=>[c.id,3])), score:0 };
+  }
+  function makeCriterion(name='New Criterion'){
+    return { id: uid(), name, priority:5, weight:0 };
+  }
+
+  // ADD: CSV export
+  function exportCsv(){
+    const {cCodes,oCodes} = getCodes();
+    const header = ['Opportunity Code','Opportunity Name', ...model.criteria.map(c=>`${cCodes.get(c.id)} (${c.name})`),'Score','Rank'];
+    const rankMap = computeRanks();
+    const rows = [...model.opportunities];
+    if(model.sortByScore) rows.sort((a,b)=>b.score-a.score);
+    const lines = [header.join(',')];
+    for(const op of rows){
+      const ratings = model.criteria.map(c=> op.ratings?.[c.id] ?? '');
+      lines.push([
+        oCodes.get(op.id),
+        `"${op.name.replace(/"/g,'""')}"`,
+        ...ratings,
+        op.score.toFixed(4),
+        rankMap.get(op.id)
+      ].join(','));
+    }
+    const csv = lines.join('\n');
+    const blob = new Blob([csv], {type:'text/csv'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const base = sanitizeFile(el.title.value||'matrix');
+    a.download = base + '.csv';
+    a.href = url;
+    a.click();
+    URL.revokeObjectURL(url);
+    el.stamp.textContent = formatTime();
+    el.printStamp.textContent = el.stamp.textContent;
+  }
+
+  // ADD: Print
+  function doPrint(){
+    el.printTitle.textContent = el.title.value || 'Weighted Decision Matrix';
+    el.printRev.textContent = el.rev.value || 'v1';
+    el.stamp.textContent = formatTime();
+    el.printStamp.textContent = el.stamp.textContent;
+    window.print();
+  }
+
+  // ADD: Delete handlers
+  function deleteOpportunity(id){
+    const i = model.opportunities.findIndex(o=>o.id===id);
+    if(i>=0){ model.opportunities.splice(i,1); recalcRender(); }
+  }
+  function deleteCriterion(id){
+    const i = model.criteria.findIndex(c=>c.id===id);
+    if(i>=0){
+      model.criteria.splice(i,1);
+      for(const op of model.opportunities){
+        if(op.ratings) delete op.ratings[id];
+      }
+      recalcRender();
+    }
+  }
+
+  // ADD: Event delegation for deletes & audit row click
+  document.addEventListener('click', (e)=>{
+    const t = e.target;
+    if(t.matches('button.del[data-del-op]')){
+      deleteOpportunity(t.getAttribute('data-del-op'));
+    } else if(t.matches('button.del[data-del-crit]')){
+      deleteCriterion(t.getAttribute('data-del-crit'));
+    } else {
+      const tr = t.closest('tr[data-op]');
+      if(tr){
+        lastSelOpId = tr.getAttribute('data-op');
+        renderAuditRow(lastSelOpId);
+      }
+    }
+  });
+
+  // ADD: Suggestions (guarded after removal)
+  if(el.suggestCriteria){
+    el.suggestCriteria.addEventListener('click', (e)=>{ 
+      const p=e.target.closest('.pill'); 
+      if(!p) return; 
+      addCriterion(p.getAttribute('data-crit'), 5); 
+    });
+  }
+  if(el.suggestOpps){
+    el.suggestOpps.addEventListener('click', (e)=>{ 
+      const p=e.target.closest('.pill'); 
+      if(!p) return; 
+      addOpportunity(p.getAttribute('data-opp')); 
+    });
+  }
+
+  // ADD: Main init (restored)
+  function init(){
+    model = load();
+    if(!model){
+      model = structuredClone(presets);
+      normalizeWeights();
+      seedRatings(model);
+      computeScores();
+      save();
+    } else {
+      normalizeWeights();
+      computeScores();
+    }
+    render();
+    renderAuditWeights();
+
+    // Wire top-level controls
+    el.title.addEventListener('input', ()=>{ model.title = el.title.value; save(); });
+    el.rev.addEventListener('input', ()=>{ model.revision = el.rev.value; save(); });
+
+    el.sortMode.addEventListener('change', ()=>{
+      model.sortByScore = el.sortMode.checked;
+      recalcRender();
+    });
+    el.compactMode.addEventListener('change', ()=>{
+      model.compactMode = el.compactMode.checked;
+      recalcRender();
+    });
+
+    el.addOpportunity.addEventListener('click', ()=>{
+      model.opportunities.push(makeOpportunity());
+      recalcRender();
+    });
+    el.addCriterion.addEventListener('click', ()=>{
+      const c = makeCriterion();
+      model.criteria.push(c);
+      // Add rating slot to each existing opportunity
+      for(const op of model.opportunities){ op.ratings[c.id] = 3; }
+      recalcRender();
+    });
+
+    el.btnReset.addEventListener('click', ()=>{
+      resetToPresets();
+    });
+    el.btnClear.addEventListener('click', ()=>{
+      clearStorageToBlank();
+    });
+    el.btnExport.addEventListener('click', exportCsv);
+    el.btnPrint.addEventListener('click', doPrint);
+
+    // Initial audit select first row if exists
+    if(model.opportunities[0]){
+      lastSelOpId = model.opportunities[0].id;
+      renderAuditRow(lastSelOpId);
+    }
+  }
+
+  // REMOVE broken origInit override block if present
+  // (Previous code tried: const origInit = init; init = function(){ origInit(); debugIds(); })
+  // We keep debugIds simple:
+  function debugIds(){
+    const ids = model.criteria.map(c=>c.id);
+    const dup = ids.filter((id,i)=> ids.indexOf(id)!==i);
+    if(dup.length) console.warn('Duplicate criterion IDs:', dup);
+  }
+
+  // Call init now
+  init();
+  debugIds();
+
+  // Build full live calc for print
+  function buildPrintCalc(){
+    if(!model) return;
+    const lines = [];
+    lines.push('Priority → Normalized Weight:');
+    const totalPriority = model.criteria.reduce((s,c)=>s+(Number(c.priority)||0),0)||0;
+    for(const c of model.criteria){
+      const p = Number(c.priority)||0;
+      const w = Number(c.weight)||0;
+      lines.push(` - ${c.name}: ${p} ÷ ${totalPriority} = ${w.toFixed(4)} (${(w*100).toFixed(1)}%)`);
+    }
+    lines.push('');
+    lines.push('Opportunity Calculations:');
+    const rankMap = computeRanks();
+    let ops = [...model.opportunities];
+    if(model.sortByScore) ops.sort((a,b)=>b.score-a.score);
+    for(const op of ops){
+      lines.push(`• ${op.name} (Rank ${rankMap.get(op.id)}, Score ${op.score.toFixed(4)})`);
+      for(const c of model.criteria){
+        const r = Number(op.ratings?.[c.id]||0);
+        const w = Number(c.weight)||0;
+        lines.push(`   ${c.name}: ${r} × ${w.toFixed(4)} = ${(r*w).toFixed(4)}`);
+      }
+      lines.push('   Σ = '+op.score.toFixed(4));
+      lines.push('');
+    }
+    const pre = document.getElementById('printCalc');
+    if(pre) pre.textContent = lines.join('\n');
+  }
+
+  // Update before print
+  window.addEventListener('beforeprint', ()=>{
+    el.printTitle.textContent = model.title || 'Weighted Decision Matrix';
+    el.printRev.textContent = model.revision || 'v1';
+    const stamp = formatTime();
+    el.printStamp.textContent = stamp;
+    buildPrintCalc();
+  });
+
+  // Keep snapshot fresh
+  const origRecalc = recalcRender;
+  recalcRender = function(){
+    origRecalc();
+    buildPrintCalc();
+  };
+
+  // ...existing code (audit helpers, tests etc.)...
+})();
+</script>
+</body>
+</html>
