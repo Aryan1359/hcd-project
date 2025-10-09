@@ -528,6 +528,7 @@
       body.push(`<tr data-op="${op.id}">
         <td class="sticky-first"><input class="op-name" data-op-name="${op.id}" type="text" value="${escapeHtml(op.name)}" aria-label="Opportunity name"></td>
         ${model.criteria.map(c=>{
+          const val = op.ratings?.[c.id] ?? '';
           const val = op.ratings?.[c.id] ?? 3;
           return `<td>
             <select class="rating" data-rating="${op.id}:${c.id}" aria-label="Rating 1 to 5">
@@ -594,6 +595,7 @@
       body.push(`<tr data-op="${op.id}">
         <td><span class="code-badge" title="${escapeHtml(op.name)}">${oCodes.get(op.id)}</span></td>
         ${model.criteria.map(c=>{
+          const val = op.ratings?.[c.id] ?? '';
           const val = op.ratings?.[c.id] ?? 3;
           return `<td>
             <select class="rating" data-rating="${op.id}:${c.id}" aria-label="Rating 1 to 5" title="${cCodes.get(c.id)}: ${escapeHtml(c.name)}">
@@ -646,104 +648,297 @@
   // ==============================
   // Events
   // ==============================
-  let editingRating = false;
-  let pendingResort = false;
-
   function onTableInput(e){
     const t = e.target;
-    if(t.matches('select.rating')) return; // handled in change
     const critId = t.getAttribute('data-crit');
-    if(critId){
-      const c=model.criteria.find(x=>x.id===critId);
-      if(c){ c.name=t.value; debounced(); }
-      return;
+    if(critId){ 
+      const c=model.criteria.find(x=>x.id===critId); 
+      if(c){ c.name=t.value; debounced(); } 
+      return; 
     }
+
     const prioId = t.getAttribute('data-priority');
-    if(prioId){
-      const c=model.criteria.find(x=>x.id===prioId);
-      if(c){
+    if(prioId){ 
+      const c=model.criteria.find(x=>x.id===prioId); 
+      if(c){ 
         const numVal = Number(t.value);
-        if(!isNaN(numVal) && numVal>0){
+        if(!isNaN(numVal) && numVal !== 0){
           c.priority = numVal;
-          const {ok} = validatePriority(t.value);
-          t.classList.toggle('invalid', !ok);
-        } else {
+          const {ok} = validatePriority(t.value); 
+          t.classList.toggle('invalid', !ok); 
+          debounced(); 
+        } else if(t.value === '' || t.value === '0'){
+          // Allow empty or 0 temporarily during typing
           c.priority = 0;
           t.classList.add('invalid');
+          debounced();
         }
-        debounced();
-      }
-      return;
+      } 
+      return; 
     }
+
     const opNameId = t.getAttribute('data-op-name');
-    if(opNameId){
-      const o=model.opportunities.find(x=>x.id===opNameId);
-      if(o){ o.name=t.value; debounced(); }
-      return;
+    if(opNameId){ 
+      const o=model.opportunities.find(x=>x.id===opNameId); 
+      if(o){ o.name=t.value; debounced(); } 
+      return; 
     }
-  }
 
-  function onTableChange(e){
-    const t = e.target;
-    if(!t.matches('select.rating')) return;
     const ratingKey = t.getAttribute('data-rating');
-    if(!ratingKey) return;
-    editingRating = true;
-    const [opId,cid] = ratingKey.split(':');
-    const op = model.opportunities.find(o=>o.id===opId);
-    if(op){
-      op.ratings[cid] = Number(t.value);
-      // Delay resorting until after this frame for stability
-      if(model.sortByScore){
-        pendingResort = true;
-      }
-      debounced();
-    }
-    editingRating = false;
-    if(pendingResort){
-      pendingResort = false;
-      debounced();
+    if(ratingKey){ 
+      const [opId,cid]=ratingKey.split(':'); 
+      const op=model.opportunities.find(o=>o.id===opId); 
+      if(op){ 
+        const numVal = Number(t.value);
+        if(!isNaN(numVal) && numVal !== 0){
+          op.ratings[cid] = numVal;
+          const {ok} = validateRating(t.value); 
+          t.classList.toggle('invalid', !ok); 
+          debounced(); 
+        } else if(t.value === '' || t.value === '0'){
+          // Allow empty or 0 temporarily during typing
+          op.ratings[cid] = 0;
+          t.classList.add('invalid');
+          debounced();
+        }
+      } 
+      return; 
     }
   }
-
+  
   function onTableBlur(e){
     const t = e.target;
-    if(t.classList.contains('priority')){
-      const prioId = t.getAttribute('data-priority');
-      const c = model.criteria.find(x=>x.id===prioId);
-      if(c){
-        const {val} = validatePriority(t.value);
-        c.priority = val;
-        t.value = val;
-        t.classList.remove('invalid');
-        debounced();
+    if(t.classList.contains('priority')){ 
+      const prioId=t.getAttribute('data-priority'); 
+      const c=model.criteria.find(x=>x.id===prioId); 
+      if(c){ 
+        const {val}=validatePriority(t.value); 
+        c.priority=val; 
+        t.value=val; 
+        t.classList.remove('invalid'); 
+        debounced(); 
+      } 
+    }
+    if(t.classList.contains('rating')){ 
+      const [opId,cid]=t.getAttribute('data-rating').split(':'); 
+      const op=model.opportunities.find(o=>o.id===opId); 
+      if(op){ 
+        const {val}=validateRating(t.value); 
+        op.ratings[cid]=val; 
+        t.value=val; 
+        t.classList.remove('invalid'); 
+        debounced(); 
+      } 
+    }
+  }
+  
+  function onClick(e){
+    const btn = e.target.closest('button');
+    if(!btn) return;
+    const delCrit = btn.getAttribute('data-del-crit');
+    if(delCrit){ 
+      const c=model.criteria.find(x=>x.id===delCrit); 
+      if(c && confirm(`Delete criterion "${c.name}"?`)){ 
+        model.criteria=model.criteria.filter(x=>x.id!==delCrit); 
+        for(const op of model.opportunities){ delete op.ratings[delCrit]; } 
+        debounced(); 
+      } 
+      return; 
+    }
+    const delOp = btn.getAttribute('data-del-op');
+    if(delOp){ 
+      const o=model.opportunities.find(x=>x.id===delOp); 
+      if(o && confirm(`Delete opportunity "${o.name}"?`)){ 
+        model.opportunities=model.opportunities.filter(x=>x.id!==delOp); 
+        debounced(); 
+      } 
+      return; 
+    }
+  }
+
+  function addCriterion(name='Criterion '+(model.criteria.length+1), priority=5){
+    const id=uid();
+    model.criteria.push({id, name, priority, weight: 0});
+    for(const op of model.opportunities){ op.ratings[id]=3; }
+    debounced();
+  }
+  
+  function addOpportunity(name='Opportunity '+(model.opportunities.length+1)){
+    const id=uid(); 
+    const ratings={}; 
+    for(const c of model.criteria) ratings[c.id]=3;
+    model.opportunities.push({id,name,ratings,score:0});
+    debounced();
+  }
+
+  function onHeaderChange(){ 
+    model.title=el.title.value||''; 
+    model.revision=el.rev.value||''; 
+    debounced(); 
+  }
+  
+  function onToggleChange(){
+    model.sortByScore=!!el.sortMode.checked;
+    model.compactMode=!!el.compactMode.checked;
+    debounced();
+  }
+
+  // Suggestions
+  el.suggestCriteria.addEventListener('click', (e)=>{ 
+    const p=e.target.closest('.pill'); 
+    if(!p) return; 
+    addCriterion(p.getAttribute('data-crit'), 5); 
+  });
+  el.suggestOpps.addEventListener('click', (e)=>{ 
+    const p=e.target.closest('.pill'); 
+    if(!p) return; 
+    addOpportunity(p.getAttribute('data-opp')); 
+  });
+
+  // Export CSV
+  function exportCSV(){
+    const now = new Date();
+    const title = model.title || 'Weighted Decision Matrix';
+    const rev = model.revision || 'v0';
+    const timestamp = formatTime(now);
+
+    const lines = [];
+    const E = (s)=> '"'+String(s).replace(/"/g,'""')+'"';
+    const push = (arr)=> lines.push(arr.join(','));
+
+    push([E('Title'), E(title)]);
+    push([E('Revision'), E(rev)]);
+    push([E('Exported'), E(timestamp)]);
+    lines.push('');
+
+    push([E('Criteria Weights')]);
+    push([E('Criterion'),E('Priority (1-9)'),E('Normalized Weight')]);
+    for(const c of model.criteria){ 
+      push([E(c.name), Number(c.priority), Number(c.weight).toFixed(4)]); 
+    }
+    lines.push('');
+
+    const {cCodes,oCodes} = getCodes();
+    push([E('Opportunity Codes')]);
+    push([E('Code'),E('Name')]);
+    for(const o of model.opportunities){ push([E(oCodes.get(o.id)), E(o.name)]); }
+    lines.push('');
+
+    const rankMap = computeRanks();
+    push(['Opportunity Code', ...model.criteria.map(c=>cCodes.get(c.id)), 'Weighted Score', 'Rank'].map(E));
+    let rows = [...model.opportunities];
+    if(model.sortByScore) rows.sort((a,b)=>b.score-a.score);
+    for(const op of rows){
+      const row=[oCodes.get(op.id)];
+      for(const c of model.criteria){ row.push(Number(op.ratings?.[c.id]??'')); }
+      row.push(Number(op.score.toFixed(2)));
+      row.push(rankMap.get(op.id));
+      push(row.map(v=> typeof v==='string'?E(v):v));
+    }
+
+    const csv = lines.join('\r\n');
+    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = sanitizeFile(title)+'_'+sanitizeFile(rev)+'.csv';
+    document.body.appendChild(a); 
+    a.click(); 
+    URL.revokeObjectURL(a.href); 
+    a.remove();
+
+    const stamp = formatTime(now); 
+    el.stamp.textContent = stamp; 
+    el.printStamp.textContent = stamp; 
+    save();
+  }
+
+  // Print
+  function doPrint(){
+    const now=new Date(); 
+    const stamp=formatTime(now);
+    el.stamp.textContent=stamp; 
+    el.printStamp.textContent=stamp;
+    el.printTitle.textContent=model.title||'Weighted Decision Matrix';
+    el.printRev.textContent=model.revision||'v1';
+    window.print();
+  }
+  window.addEventListener('beforeprint',()=>{
+    el.printTitle.textContent=model.title||'Weighted Decision Matrix';
+    el.printRev.textContent=model.revision||'v1';
+  });
+
+  // Keyboard shortcuts
+  window.addEventListener('keydown',(e)=>{
+    if(!e.altKey) return;
+    const k=e.key.toLowerCase();
+    if(k==='n'){ e.preventDefault(); addOpportunity(); }
+    if(k==='c'){ e.preventDefault(); addCriterion(); }
+    if(k==='r'){ e.preventDefault(); if(confirm('Reset to initial presets?')) resetToPresets(); }
+    if(k==='p'){ e.preventDefault(); doPrint(); }
+    if(k==='f'){ e.preventDefault(); el.audit.hidden = !el.audit.hidden; }
+  });
+
+  // Formula audit
+  document.addEventListener('click',(e)=>{
+    const tr = e.target.closest('tr[data-op]');
+    if(!tr) return;
+    const id = tr.getAttribute('data-op');
+    lastSelOpId = id;
+    renderAuditRow(id);
+  });
+
+  // Header & buttons
+  el.title.addEventListener('input', onHeaderChange);
+  el.rev.addEventListener('input', onHeaderChange);
+  el.sortMode.addEventListener('change', onToggleChange);
+  el.compactMode.addEventListener('change', onToggleChange);
+  el.btnExport.addEventListener('click', exportCSV);
+  el.btnPrint.addEventListener('click', doPrint);
+  el.btnReset.addEventListener('click', ()=>{ if(confirm('Reset to initial presets?')) resetToPresets(); });
+  el.btnClear.addEventListener('click', ()=>{ if(confirm('Clear local storage and start from a blank state?')) clearStorageToBlank(); });
+
+  // Table input/blur/delete
+  document.addEventListener('input', onTableInput, {passive:true});
+  document.addEventListener('blur', onTableBlur, true);
+  document.addEventListener('click', onClick);
+
+  // Adders
+  el.addCriterion.addEventListener('click', ()=> addCriterion());
+  el.addOpportunity.addEventListener('click', ()=> addOpportunity());
+
+  // Disable wheel & arrow increment
+  document.addEventListener('wheel', (e)=>{
+    if (e.target && e.target.matches('input[type=number]')) {
+      e.preventDefault();
+    }
+  }, {passive:false});
+  document.addEventListener('keydown', (e)=>{
+    if (e.target && e.target.matches('input[type=number]')) {
+      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        e.preventDefault();
       }
     }
-    // Rating blur no longer needed
-  }
+  });
 
-  // Replace existing listeners
-  document.removeEventListener('input', onTableInput);
-  document.removeEventListener('blur', onTableBlur, true);
-
-  document.addEventListener('input', onTableInput, {passive:true});
-  document.addEventListener('change', onTableChange); // for select ratings
-  document.addEventListener('blur', onTableBlur, true);
-
-  // Debug helper to detect duplicate criterion IDs (should be none)
-  function debugIds(){
-    const ids = model.criteria.map(c=>c.id);
-    const dup = ids.filter((id,i)=> ids.indexOf(id)!==i);
-    if(dup.length){
-      console.warn('Duplicate criterion IDs detected:', dup);
+  // Init
+  function init(){
+    const cached = load();
+    if(cached){ 
+      model=cached;
+      normalizeWeights(); 
+    } else { 
+      model=structuredClone(presets); 
+      normalizeWeights();
+      seedRatings(model); 
     }
+    recalcRender();
+    runUnitTests();
   }
-
-  // Call after load/init
-  const origInit = init;
-  init = function(){
-    origInit();
-    debugIds();
+  
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
   }
 
   // ---- Audit helpers ----
@@ -816,185 +1011,6 @@
       console.groupEnd();
     }
   }
-
-  // ADD: helpers to create items
-  function makeOpportunity(name='New Opportunity'){
-    return { id: uid(), name, ratings: Object.fromEntries(model.criteria.map(c=>[c.id,3])), score:0 };
-  }
-  function makeCriterion(name='New Criterion'){
-    return { id: uid(), name, priority:5, weight:0 };
-  }
-
-  // ADD: CSV export
-  function exportCsv(){
-    const {cCodes,oCodes} = getCodes();
-    const header = ['Opportunity Code','Opportunity Name', ...model.criteria.map(c=>`${cCodes.get(c.id)} (${c.name})`),'Score','Rank'];
-    const rankMap = computeRanks();
-    const rows = [...model.opportunities];
-    if(model.sortByScore) rows.sort((a,b)=>b.score-a.score);
-    const lines = [header.join(',')];
-    for(const op of rows){
-      const ratings = model.criteria.map(c=> op.ratings?.[c.id] ?? '');
-      lines.push([
-        oCodes.get(op.id),
-        `"${op.name.replace(/"/g,'""')}"`,
-        ...ratings,
-        op.score.toFixed(4),
-        rankMap.get(op.id)
-      ].join(','));
-    }
-    const csv = lines.join('\n');
-    const blob = new Blob([csv], {type:'text/csv'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    const base = sanitizeFile(el.title.value||'matrix');
-    a.download = base + '.csv';
-    a.href = url;
-    a.click();
-    URL.revokeObjectURL(url);
-    el.stamp.textContent = formatTime();
-    el.printStamp.textContent = el.stamp.textContent;
-  }
-
-  // ADD: Print
-  function doPrint(){
-    el.printTitle.textContent = el.title.value || 'Weighted Decision Matrix';
-    el.printRev.textContent = el.rev.value || 'v1';
-    el.stamp.textContent = formatTime();
-    el.printStamp.textContent = el.stamp.textContent;
-    window.print();
-  }
-
-  // ADD: Delete handlers
-  function deleteOpportunity(id){
-    const i = model.opportunities.findIndex(o=>o.id===id);
-    if(i>=0){ model.opportunities.splice(i,1); recalcRender(); }
-  }
-  function deleteCriterion(id){
-    const i = model.criteria.findIndex(c=>c.id===id);
-    if(i>=0){
-      model.criteria.splice(i,1);
-      for(const op of model.opportunities){
-        if(op.ratings) delete op.ratings[id];
-      }
-      recalcRender();
-    }
-  }
-
-  // ADD: Event delegation for deletes & audit row click
-  document.addEventListener('click', (e)=>{
-    const t = e.target;
-    if(t.matches('button.del[data-del-op]')){
-      deleteOpportunity(t.getAttribute('data-del-op'));
-    } else if(t.matches('button.del[data-del-crit]')){
-      deleteCriterion(t.getAttribute('data-del-crit'));
-    } else {
-      const tr = t.closest('tr[data-op]');
-      if(tr){
-        lastSelOpId = tr.getAttribute('data-op');
-        renderAuditRow(lastSelOpId);
-      }
-    }
-  });
-
-  // ADD: Suggestions
-  function wireSuggestions(){
-    if(el.suggestCriteria){
-      el.suggestCriteria.addEventListener('click', (e)=>{
-        const pill = e.target.closest('.pill[data-crit]');
-        if(!pill) return;
-        const name = pill.getAttribute('data-crit');
-        model.criteria.push(makeCriterion(name));
-        // Add default rating to existing ops
-        const newCid = model.criteria[model.criteria.length-1].id;
-        for(const op of model.opportunities){ op.ratings[newCid] = 3; }
-        recalcRender();
-      });
-    }
-    if(el.suggestOpps){
-      el.suggestOpps.addEventListener('click',(e)=>{
-        const pill = e.target.closest('.pill[data-opp]');
-        if(!pill) return;
-        const name = pill.getAttribute('data-opp');
-        model.opportunities.push(makeOpportunity(name));
-        recalcRender();
-      });
-    }
-  }
-
-  // ADD: Main init (restored)
-  function init(){
-    model = load();
-    if(!model){
-      model = structuredClone(presets);
-      normalizeWeights();
-      seedRatings(model);
-      computeScores();
-      save();
-    } else {
-      normalizeWeights();
-      computeScores();
-    }
-    render();
-    renderAuditWeights();
-
-    // Wire top-level controls
-    el.title.addEventListener('input', ()=>{ model.title = el.title.value; save(); });
-    el.rev.addEventListener('input', ()=>{ model.revision = el.rev.value; save(); });
-
-    el.sortMode.addEventListener('change', ()=>{
-      model.sortByScore = el.sortMode.checked;
-      recalcRender();
-    });
-    el.compactMode.addEventListener('change', ()=>{
-      model.compactMode = el.compactMode.checked;
-      recalcRender();
-    });
-
-    el.addOpportunity.addEventListener('click', ()=>{
-      model.opportunities.push(makeOpportunity());
-      recalcRender();
-    });
-    el.addCriterion.addEventListener('click', ()=>{
-      const c = makeCriterion();
-      model.criteria.push(c);
-      // Add rating slot to each existing opportunity
-      for(const op of model.opportunities){ op.ratings[c.id] = 3; }
-      recalcRender();
-    });
-
-    el.btnReset.addEventListener('click', ()=>{
-      resetToPresets();
-    });
-    el.btnClear.addEventListener('click', ()=>{
-      clearStorageToBlank();
-    });
-    el.btnExport.addEventListener('click', exportCsv);
-    el.btnPrint.addEventListener('click', doPrint);
-
-    wireSuggestions();
-
-    // Initial audit select first row if exists
-    if(model.opportunities[0]){
-      lastSelOpId = model.opportunities[0].id;
-      renderAuditRow(lastSelOpId);
-    }
-  }
-
-  // REMOVE broken origInit override block if present
-  // (Previous code tried: const origInit = init; init = function(){ origInit(); debugIds(); })
-  // We keep debugIds simple:
-  function debugIds(){
-    const ids = model.criteria.map(c=>c.id);
-    const dup = ids.filter((id,i)=> ids.indexOf(id)!==i);
-    if(dup.length) console.warn('Duplicate criterion IDs:', dup);
-  }
-
-  // Call init now
-  init();
-  debugIds();
-
-  // ...existing code (audit helpers, tests etc.)...
 })();
 </script>
 </body>

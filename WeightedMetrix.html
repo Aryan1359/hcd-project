@@ -360,7 +360,7 @@
   // ==============================
   // Model
   // ==============================
-  const STORAGE_KEY = 'weighted-matrix-v2';
+  const STORAGE_KEY = 'weighted-matrix-v3'; // bumped key to force fresh presets
   const TOL = 0.001;
   const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
   const uid = () => 'id' + Math.random().toString(36).slice(2,8);
@@ -369,6 +369,7 @@
   const escapeHtml = (s) => String(s??'').replace(/[&<>"']/g,(ch)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[ch]));
 
   const presets = {
+    version: 2,
     title: 'Weighted Decision Matrix',
     revision: 'v1',
     sortByScore: true,
@@ -381,11 +382,10 @@
       { id: uid(), name: 'Stakeholder Acceptance', priority: 3, weight: 0 },
     ],
     opportunities: [
-      { id: uid(), name: 'Early dehydration recognition (training/app prompts)', ratings: {}, score: 0 },
-      { id: uid(), name: 'Hydration access infrastructure', ratings: {}, score: 0 },
-      { id: uid(), name: 'Exoskeleton / lift-assist devices', ratings: {}, score: 0 },
-      { id: uid(), name: 'Micro-break scheduling policy', ratings: {}, score: 0 },
-      { id: uid(), name: 'Weather-aware cooling vests', ratings: {}, score: 0 },
+      { id: uid(), name: 'Robotic and Mechanical Lift-Assist Systems', ratings: {}, score: 0 },
+      { id: uid(), name: 'Thermal and Fatigue Prevention Technologies', ratings: {}, score: 0 },
+      { id: uid(), name: 'Human-Centered Ergonomic Management', ratings: {}, score: 0 },
+      { id: uid(), name: 'Data-Driven Safety and AI Monitoring Tools', ratings: {}, score: 0 },
     ]
   };
 
@@ -435,7 +435,16 @@
       if(!raw) return null;
       const m = JSON.parse(raw);
       if(!m || !Array.isArray(m.criteria) || !Array.isArray(m.opportunities)) return null;
-      // Ensure all criteria have priority field
+      // Migration: if version mismatch or old opportunity names, return null to force presets
+      const oldNames = [
+        'Early dehydration recognition (training/app prompts)',
+        'Hydration access infrastructure',
+        'Exoskeleton / lift-assist devices',
+        'Micro-break scheduling policy',
+        'Weather-aware cooling vests'
+      ];
+      const hasOld = m.opportunities.some(o => oldNames.includes(o.name));
+      if(m.version !== presets.version || hasOld) return null;
       for(const c of m.criteria){
         if(c.priority === undefined) c.priority = 5;
       }
@@ -1018,19 +1027,25 @@
     if(!model) return;
     const lines = [];
     lines.push('Priority → Normalized Weight:');
-    const totalPriority = model.criteria.reduce((s,c)=>s+(Number(c.priority)||0),0)||0;
+    const totalPriority = model.criteria.reduce((s,c)=>s+(Number(c.priority)||0), 0);
     for(const c of model.criteria){
       const p = Number(c.priority)||0;
       const w = Number(c.weight)||0;
       lines.push(` - ${c.name}: ${p} ÷ ${totalPriority} = ${w.toFixed(4)} (${(w*100).toFixed(1)}%)`);
     }
     lines.push('');
-    lines.push('Opportunity Calculations:');
+    lines.push('Opportunity Calculations (sorted high → low score):');
     const rankMap = computeRanks();
-    let ops = [...model.opportunities];
-    if(model.sortByScore) ops.sort((a,b)=>b.score-a.score);
+
+    // ALWAYS sort descending for print clarity
+    const ops = [...model.opportunities].sort((a,b)=>b.score - a.score);
+
+    // Determine winner (highest score)
+    const topScore = ops.length ? ops[0].score : null;
+
     for(const op of ops){
-      lines.push(`• ${op.name} (Rank ${rankMap.get(op.id)}, Score ${op.score.toFixed(4)})`);
+      const isWinner = (op.score === topScore);
+      lines.push(`• ${op.name} (Score ${op.score.toFixed(4)}, Rank ${rankMap.get(op.id)}${isWinner?' ← Winner':''})`);
       for(const c of model.criteria){
         const r = Number(op.ratings?.[c.id]||0);
         const w = Number(c.weight)||0;
@@ -1058,8 +1073,6 @@
     origRecalc();
     buildPrintCalc();
   };
-
-  // ...existing code (audit helpers, tests etc.)...
 })();
 </script>
 </body>
