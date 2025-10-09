@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Opportunity Space Report — Ramp Worker Ergonomics</title>
+<meta name="description" content="Opportunity Space Report summarizing four design clusters for ramp worker ergonomics." />
+<style>
+  :root{
+    --bg:#ffffff; --fg:#1f2937; --muted:#6b7280;
+    --brand:#0ea5e9; --brand-600:#0284c7; --border:#e5e7eb;
+    --grad-a:#f0f9ff; --grad-b:#e0f2fe; --panel:#ffffff;
+    --radius:12px; --radius-sm:8px; --shadow:0 2px 8px rgba(14,165,233,.12);
+    --mono: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+    --maxw: 960px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif;line-height:1.55}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:16px}
+
+  .title{
+    background:linear-gradient(135deg,var(--grad-a),var(--grad-b));
+    border:1px solid #bae6fd; border-radius:var(--radius);
+    padding:18px; box-shadow:var(--shadow);
+  }
+  .title h1{margin:0 0 6px;font-size:22px}
+  .title .sub{margin:0;color:#0b3d5c;font-size:13px}
+
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin:14px 0;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+  h2{margin:0 0 6px;font-size:18px}
+  h3{margin:10px 0 6px;font-size:16px}
+  p{margin:8px 0}
+  ul{margin:8px 0 0 18px}
+  .muted{color:var(--muted)}
+  .grid{display:grid;gap:12px}
+  @media(min-width:760px){ .grid{grid-template-columns:1fr 1fr} }
+  .tag{display:inline-block;border:1px solid var(--border);border-radius:999px;padding:3px 8px;margin:2px 6px 0 0;font-size:12px}
+  .tbl{width:100%;border-collapse:collapse;margin-top:8px}
+  .tbl th,.tbl td{border:1px solid var(--border);padding:8px;text-align:left}
+  .tbl th{background:#f8fafc}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <!-- HEADER -->
+    <section class="title">
+      <h1>Opportunity Space Report — Ramp Worker Ergonomics</h1>
+      <p class="sub">Four high-potential clusters derived from synthesis and stakeholder insights.</p>
+    </section>
+
+    <!-- OVERVIEW -->
+    <section class="card">
+      <h2>Overview</h2>
+      <p>
+        This report summarizes four <strong>Spaces of Opportunities</strong> identified for reducing musculoskeletal strain and improving the wellbeing of ramp workers who load and unload aircraft baggage. Each space represents a coherent theme of solutions emerging from clustering of observations, interviews, and ergonomic research.
+      </p>
+      <div>
+        <span class="tag">Impact-driven</span>
+        <span class="tag">Feasible Pilots</span>
+        <span class="tag">Human–Computer Collaboration</span>
+        <span class="tag">Data-Enabled Design</span>
+      </div>
+    </section>
+
+    <!-- SPACE 1 -->
+    <section class="card">
+      <h2>1) Robotic and Mechanical Lift-Assist Systems</h2>
+      <p><em>Why chosen:</em> Directly targets repetitive heavy lifting—the core ergonomic risk—by augmenting or automating bag transfer between carts and conveyors.</p>
+      <h3>Representative Concepts</h3>
+      <ul>
+        <li>Humanoid robotic loader at the cart–conveyor interface</li>
+        <li>Cart-mounted robotic lift arm (retrofit)</li>
+        <li>Adaptive conveyor feed robot (auto height/angle)</li>
+        <li>Collaborative exoskeletons for shared lifting</li>
+      </ul>
+      <p class="muted"><em>Promise:</em> Measurable injury reduction; scalable tech; strong fit with human–computer collaboration research.</p>
+    </section>
+
+    <!-- SPACE 2 -->
+    <section class="card">
+      <h2>2) Thermal and Fatigue Prevention Technologies</h2>
+      <p><em>Why chosen:</em> Heat, dehydration, and fatigue contribute to errors and injuries; addressing physiology sustains safe performance.</p>
+      <h3>Representative Concepts</h3>
+      <ul>
+        <li>Weather-aware cooling vests</li>
+        <li>Dehydration recognition (wearable + app prompts)</li>
+        <li>Hydration infrastructure near loading zones</li>
+      </ul>
+      <p class="muted"><em>Promise:</em> Improves endurance and safety; complementary to mechanical assist solutions.</p>
+    </section>
+
+    <!-- SPACE 3 -->
+    <section class="card">
+      <h2>3) Human-Centered Ergonomic Management</h2>
+      <p><em>Why chosen:</em> Organizational practices (micro-breaks, rotation) strongly influence cumulative load and recovery.</p>
+      <h3>Representative Concepts</h3>
+      <ul>
+        <li>Micro-break scheduling policy</li>
+        <li>Rotation management system</li>
+        <li>Targeted ergonomics training</li>
+      </ul>
+      <p class="muted"><em>Promise:</em> Low-cost, high-feasibility interventions with system-wide impact.</p>
+    </section>
+
+    <!-- SPACE 4 -->
+    <section class="card">
+      <h2>4) Data-Driven Safety and AI Monitoring Tools</h2>
+      <p><em>Why chosen:</em> Real-time posture/risk detection and predictive alerts enable proactive prevention and data-informed iteration.</p>
+      <h3>Representative Concepts</h3>
+      <ul>
+        <li>Vision-based posture analytics with feedback</li>
+        <li>Predictive heat-stress alerts (sensor fusion)</li>
+        <li>Safety trends dashboard (posture risk, fatigue, breaks)</li>
+      </ul>
+      <p class="muted"><em>Promise:</em> Moves from reactive to preventive safety; supports design cognition research via captured data.</p>
+    </section>
+
+    <!-- SUMMARY TABLE -->
+    <section class="card">
+      <h2>Summary</h2>
+      <table class="tbl" role="table" aria-label="Opportunity Space Summary">
+        <thead>
+          <tr><th>Space</th><th>Core Need Addressed</th><th>Why Promising</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Robotic & Mechanical Lift-Assist</td>
+            <td>Reduce physical lifting strain</td>
+            <td>Direct injury reduction, scalable automation</td>
+          </tr>
+          <tr>
+            <td>Thermal & Fatigue Prevention</td>
+            <td>Mitigate heat stress & dehydration</td>
+            <td>Supports endurance and safe operation</td>
+          </tr>
+          <tr>
+            <td>Human-Centered Ergonomic Management</td>
+            <td>Improve recovery & workload balance</td>
+            <td>Low cost, high feasibility, cultural impact</td>
+          </tr>
+          <tr>
+            <td>Data-Driven Safety & AI Monitoring</td>
+            <td>Real-time risk visibility & prediction</td>
+            <td>Proactive prevention, data-enabled iteration</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- FOOTER NOTE -->
+    <section class="card">
+       
+    </section>
+  </div>
+</body>
+</html>
