@@ -965,24 +965,15 @@ if (legendEl) {
   });
     </script>
     
-    <!-- Brief Reflection Section -->
+    <!-- Opportunity Statement Section -->
     <section class="reflection-section" style="margin-top: 32px; padding-top: 24px; border-top: 2px solid var(--border);">
-      <h2 style="font-size: 20px; font-weight: 700; color: #0c4a6e; margin-bottom: 12px;">Brief Reflection</h2>
-      <div id="reflection-content" style="background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 16px; line-height: 1.7; color: #334155;">
-        <!-- Content will be loaded from shared source -->
+      <h2 style="font-size: 20px; font-weight: 700; color: #0c4a6e; margin-bottom: 12px;">Opportunity Statement</h2>
+      <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 16px; line-height: 1.7; color: #334155;">
+        <h3 style="margin:0 0 8px;font-size:16px;color:#035b94;">Opportunity Framing</h3>
+        <p><strong>Final Opportunity Statement:</strong> How might we reduce musculoskeletal strain and communication breakdowns for airport ramp workers during high‑traffic operations by providing real‑time ergonomic feedback and supervisor visibility, without slowing task throughput?</p>
+        <p><strong>Rationale &amp; Selection:</strong> In Part 1, I compared multiple opportunities using SET analysis and a weighted decision screen. Each alternative was evaluated by five weighted criteria to ensure objective prioritization.</p>
       </div>
     </section>
-
-    <script src="reflection-content.js"></script>
-    <script>
-      // Load shared reflection content
-      if (typeof BRIEF_REFLECTION !== 'undefined') {
-        const reflectionDiv = document.getElementById('reflection-content');
-        if (reflectionDiv) {
-          reflectionDiv.textContent = BRIEF_REFLECTION;
-        }
-      }
-    </script>
   </div>
 </body>
 </html>

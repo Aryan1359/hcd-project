@@ -176,6 +176,26 @@ body{
   color:var(--primary);
   font-weight:600;
 }
+
+/* Special styling for Design Research tab button */
+#part2-tab-designresearch{
+  position:relative;
+  background:linear-gradient(135deg,#4d3b00,#2a2100);
+  border:1px solid #a67c00;
+  color:#f5d768;
+}
+#part2-tab-designresearch:hover{
+  background:linear-gradient(135deg,#6b5200,#3a2c00);
+  border-color:#c08e00;
+  color:#ffe189;
+}
+#part2-tab-designresearch[aria-selected="true"]{
+  background:linear-gradient(135deg,#b38600,#d4b032 55%,#917000);
+  border-color:#f5d768;
+  color:#fff8d1;
+  box-shadow:0 0 0 2px rgba(243,209,96,.35),0 4px 16px rgba(0,0,0,.4);
+  font-weight:700;
+}
 .subtab-btn:hover{
   background:rgba(110,231,183,.08);
   border-color:rgba(110,231,183,.3);

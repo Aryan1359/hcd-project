@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Module 5 – Practice: User Observation (Ramp Worker Ergonomics)</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --card: #111938;
+      --accent: #5eead4;
+      --text: #e7eefc;
+      --muted: #9bb1d4;
+      --border: #20315f;
+    }
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji", "Segoe UI Emoji"}
+    .container{max-width:1100px;margin:40px auto;padding:0 20px}
+    header{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-bottom:24px}
+    header h1{font-size:clamp(1.4rem,2.2vw,2rem);margin:0}
+    .tag{border:1px solid var(--border);padding:4px 10px;border-radius:999px;color:var(--muted)}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.0));border:1px solid var(--border);border-radius:18px;padding:18px 18px;margin:18px 0}
+    h2{font-size:1.25rem;margin:0 0 6px 0}
+    .meta{color:var(--muted);font-size:0.95rem}
+    table{width:100%;border-collapse:separate;border-spacing:0;background:rgba(255,255,255,0.01);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+    th,td{padding:12px 14px;vertical-align:top;border-bottom:1px solid var(--border)}
+    th{width:220px;color:var(--accent);text-transform:uppercase;letter-spacing:.04em;font-weight:700;background:rgba(94,234,212,0.06)}
+    tr:last-child td{border-bottom:none}
+    ul{margin:8px 0 0 18px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Module 5 – Practice: User Observation (Ramp Worker Ergonomics)</h1>
+      <span class="tag">Student: Aryan Yaghobi</span>
+      <span class="tag">Course: Human-Centered Design Methods I</span>
+      <span class="tag">Context: Integrated Final Assessment – Part 1</span>
+    </header>
+
+    <div class="card">
+      <h2>Project Opportunity</h2>
+      <div class="meta">How might we reduce physical strain and injury risk for airport ramp workers during baggage loading and unloading—especially in harsh weather and time-critical turns—without slowing operations?</div>
+    </div>
+
+    <div class="card">
+      <h2>Observation #1 — Direct Observation (Afternoon, Hot Weather)</h2>
+      <div class="meta">Goal: Understand strain, coordination, and workflow under heat and time pressure. • <strong>Method: AEIOU</strong></div>
+      <table>
+        <tr><th>Activities</th><td>Workers unload a B737: lifting 45–50 lb bags, twisting while stacking, scanning barcodes, moving carts to conveyors; minimal breaks.</td></tr>
+        <tr><th>Environments</th><td>Concrete ramp, ~95°F; very noisy jet environment; 30‑min quick turn; cargo hold height ≈ 39 in causing crouched postures.</td></tr>
+        <tr><th>Interactions</th><td>Verbal shouts and hand signals; tight coupling between belt operator and stower; visible fatigue after ~20 minutes (pace slows, posture degrades).</td></tr>
+        <tr><th>Objects</th><td>Belt loader, baggage carts, handheld scanners, gloves, knee pads. Lift-assist device present but unused—perceived as slowing the process.</td></tr>
+        <tr><th>Users</th><td>Three ramp agents + one lead (ages ~25–45). A newer worker mirrors peers’ motions.</td></tr>
+        <tr><th>Insights</th><td><ul><li>Frequent trunk twisting and occasional overhead lifts in confined space.</li><li>Heat and noise elevate stress and reduce situational awareness.</li><li>Low adoption of assist tools due to speed culture and skepticism.</li></ul></td></tr>
+        <tr><th>Opportunities</th><td><ul><li>Ergonomic aids that do not slow workflow.</li><li>Subtle smart feedback (e.g., posture sensing, micro‑coaching).</li><li>Wearable support suitable for tight holds.</li></ul></td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Observation #2 — Participant Observation (Morning, Cold &amp; Wet)</h2>
+      <div class="meta">Goal: Experience task flow to capture sensory and emotional aspects. • <strong>Method: AEIOU</strong></div>
+      <table>
+        <tr><th>Activities</th><td>Simulated loading with 30–35 lb crates: bending, pulling, pushing, aligning luggage; cycle: load → scan → close → secure; role rotation every 15 min.</td></tr>
+        <tr><th>Environments</th><td>~40°F, light rain; wet, slippery tarmac; low light in hold; cold metal reduces comfort and grip; PPE used.</td></tr>
+        <tr><th>Interactions</th><td>Humor to manage stress; senior agent advises posture (“use knees”); supervisor monitors balance and timing; rushed yet positive team dynamic.</td></tr>
+        <tr><th>Objects</th><td>Belt loader, headlamp, gloves, barcode scanner; safety cones and chalk lines marking load zones; manual belt speed control.</td></tr>
+        <tr><th>Users</th><td>Mixed experience; one new hire shadowing a senior worker; frequent kneeling; average height 67–71 in.</td></tr>
+        <tr><th>Insights</th><td><ul><li>Cold decreases dexterity and grip reliability.</li><li>Safety shortcuts emerge (e.g., skipping knee pads) under time pressure.</li><li>Cumulative stiffness develops even when fatigue isn’t obvious.</li></ul></td></tr>
+        <tr><th>Opportunities</th><td><ul><li>Thermal comfort and high‑grip solutions for cold/wet conditions.</li><li>Low-profile exoskeletal or assistive supports.</li><li>AI-driven rotation and rest prompts to prevent overexertion.</li></ul></td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Cross-Observation Themes</h2>
+      <table>
+        <tr><th>Physical Strain</th><td>Both sessions show repeated bending/twisting under time pressure → confirms WMSD risk.</td></tr>
+        <tr><th>Technology Adoption</th><td>Existing lift devices observed but underused → design must feel “invisible” to workflow.</td></tr>
+        <tr><th>Environment</th><td>Heat and cold/wet conditions alter performance and safety → opportunity for adaptive gear + monitoring.</td></tr>
+        <tr><th>Team Dynamics</th><td>Informal coaching and humor mitigate stress → designs can leverage social reinforcement.</td></tr>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

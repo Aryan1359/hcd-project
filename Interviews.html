@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Module 5 – Practice: User Interviews (Ramp Worker Ergonomics)</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --card: #111938;
+      --accent: #5eead4;
+      --text: #e7eefc;
+      --muted: #9bb1d4;
+      --border: #20315f;
+      --ok: #34d399;
+    }
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial}
+    .container{max-width:1100px;margin:40px auto;padding:0 20px}
+    header{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-bottom:24px}
+    header h1{font-size:clamp(1.4rem,2.2vw,2rem);margin:0}
+    .tag{border:1px solid var(--border);padding:4px 10px;border-radius:999px;color:var(--muted)}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.0));border:1px solid var(--border);border-radius:18px;padding:18px 18px;margin:18px 0}
+    h2{font-size:1.25rem;margin:0 0 6px 0}
+    h3{font-size:1.05rem;margin:14px 0 6px}
+    .meta{color:var(--muted);font-size:0.95rem}
+    table{width:100%;border-collapse:separate;border-spacing:0;background:rgba(255,255,255,0.01);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+    th,td{padding:12px 14px;vertical-align:top;border-bottom:1px solid var(--border)}
+    th{width:220px;color:var(--accent);text-transform:uppercase;letter-spacing:.04em;font-weight:700;background:rgba(94,234,212,0.06)}
+    tr:last-child td{border-bottom:none}
+    ul{margin:8px 0 0 18px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+    .callout{border-left:4px solid var(--accent);padding:10px 14px;background:rgba(94,234,212,0.06);border-radius:10px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Module 5 – Practice: User Interviews (Ramp Worker Ergonomics)</h1>
+      <span class="tag">Student: Aryan Yaghobi</span>
+      <span class="tag">Course: Human-Centered Design Methods I</span>
+      <span class="tag">Context: Integrated Final Assessment – Part 1</span>
+    </header>
+
+    <div class="card">
+      <h2>Interview Plan (Quick)</h2>
+      <div class="grid">
+        <div class="callout"><strong>Objective:</strong> Hear ramp workers’ and supervisors’ needs, pain points, and adoption barriers for ergonomic aids that do not slow operations.</div>
+        <div class="callout"><strong>Participants:</strong> (1) Ramp Agent (frontline) • (2) Ramp Supervisor/Safety Lead</div>
+        <div class="callout"><strong>Method:</strong> 1:1 semi-structured interviews • 15–25 minutes each • Notes + optional audio (with consent)</div>
+        <div class="callout"><strong>Logistics:</strong> Location: break room / quiet corner • Timing: off-peak or post-shift • Tools: phone timer, notes app, <em>phone voice recorder</em></div>
+      </div>
+      <h3>Consent &amp; Ethics</h3>
+      <ul>
+        <li>Explain purpose (class project), voluntary participation, no personal identifiers, no company secrets. Ask: “Is it okay if I take notes? Audio recording optional.”</li>
+        <li>Safety first: do not interview on the ramp during active operations.</li>
+      </ul>
+      <h3>Script (10 prompts)</h3>
+      <ol>
+        <li>Can you walk me through a typical turn when loading/unloading bags?</li>
+        <li>Where does the work feel most physically demanding?</li>
+        <li>What postures or motions bother you the most during a busy day?</li>
+        <li>How do weather and time pressure change the way you work?</li>
+        <li>What tools or aids (if any) help reduce strain? What makes you use or avoid them?</li>
+        <li>Tell me about a recent moment when you felt discomfort or risk. What happened?</li>
+        <li>If you could change one thing about the workflow or space, what would it be?</li>
+        <li>How would you feel about a wearable or lift-assist that claims to save effort but adds steps?</li>
+        <li>What would make a new tool easy to adopt for your team (training, speed, trust)?</li>
+        <li>Anything else I should know to make this job safer without slowing you down?</li>
+      </ol>
+      <h3>Data Capture Template</h3>
+      <table>
+        <tr><th>Participant</th><td>Role, years on job</td></tr>
+        <tr><th>Context</th><td>Shift, weather, aircraft type, location (no identifiers)</td></tr>
+        <tr><th>Top Needs</th><td>Bullets</td></tr>
+        <tr><th>Pain Points</th><td>Bullets</td></tr>
+        <tr><th>Quotes</th><td>Short verbatim lines (no names)</td></tr>
+        <tr><th>Ideas</th><td>Workarounds, suggestions</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Interview #1 — Ramp Agent (Frontline)</h2>
+      <div class="meta">Type: 1:1 semi-structured • Duration: ~18 min • Setting: break room after afternoon turn</div>
+      <table>
+        <tr><th>Participant</th><td>Ramp Agent, 6 years</td></tr>
+        <tr><th>Context</th><td>Hot day (~95°F), tight 30-min turn, narrow-body cargo hold</td></tr>
+        <tr><th>Top Needs</th><td>
+          <ul>
+            <li>Reduce bending/twisting in tight holds</li>
+            <li>Keep pace—no extra steps that slow the team</li>
+            <li>Better grip and comfort in extreme weather</li>
+          </ul>
+        </td></tr>
+        <tr><th>Pain Points</th><td>
+          <ul>
+            <li>Awkward crouch inside hold; hitting knees/shoulders</li>
+            <li>Lift-assist tools feel bulky; setup takes time</li>
+            <li>Heat makes gloves slippery and drains energy</li>
+          </ul>
+        </td></tr>
+        <tr><th>Quotes</th><td>
+          <ul>
+            <li>“If it adds even 30 seconds per cart, we won’t use it.”</li>
+            <li>“I know the right posture, but when the clock is ticking, you just move.”</li>
+            <li>“Give me something low-profile that doesn’t get in the way.”</li>
+          </ul>
+        </td></tr>
+        <tr><th>Ideas/Workarounds</th><td>
+          <ul>
+            <li>Rotate roles every 15–20 min to avoid overuse</li>
+            <li>Use knee pads/headlamp; quick stretch during belt jams</li>
+            <li>Preference for lighter, wearable support vs. big devices</li>
+          </ul>
+        </td></tr>
+        <tr><th>Opportunities</th><td>
+          <ul>
+            <li>Low-profile support for crouching/stacking</li>
+            <li>Weather-adaptive gloves with better grip</li>
+            <li>Micro-coaching cues that are private and not disruptive</li>
+          </ul>
+        </td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Interview #2 — Ramp Supervisor / Safety Lead</h2>
+      <div class="meta">Type: 1:1 semi-structured • Duration: ~22 min • Setting: quiet corner near ops office</div>
+      <table>
+        <tr><th>Participant</th><td>Ramp Supervisor, 12 years (Safety lead)</td></tr>
+        <tr><th>Context</th><td>Cool morning, mixed crew (new + experienced), two simultaneous turns</td></tr>
+        <tr><th>Top Needs</th><td>
+          <ul>
+            <li>Reduce injury rates without hurting on-time performance</li>
+            <li>Simple training; quick to learn for new hires</li>
+            <li>Clear ROI evidence for any new tool</li>
+          </ul>
+        </td></tr>
+        <tr><th>Pain Points</th><td>
+          <ul>
+            <li>Low adoption of assist devices after the first week</li>
+            <li>New hires copy bad habits under time pressure</li>
+            <li>Hard to justify gear if ROI isn’t obvious</li>
+          </ul>
+        </td></tr>
+        <tr><th>Quotes</th><td>
+          <ul>
+            <li>“Anything that slows a turn will collect dust.” — If a new tool slows baggage handling, crews will abandon it.</li>
+            <li>“We need proof—less strains, fewer call-outs.” — Supervisors want measurable reductions in injuries and absences.</li>
+            <li>“Make it fool-proof and it’ll stick past training day.” — Simple, intuitive designs sustain adoption beyond day-one training.</li>
+          </ul>
+        </td></tr>
+        <tr><th>Ideas/Workarounds</th><td>
+          <ul>
+            <li>Micro-training: 2-minute tips at start of shift</li>
+            <li>Visual cues in the hold for better stacking posture</li>
+            <li>Trial gear on one gate; measure incidents vs. baseline</li>
+          </ul>
+        </td></tr>
+        <tr><th>Opportunities</th><td>
+          <ul>
+            <li>Lightweight assist that doesn’t require setup</li>
+            <li>Adoption metrics dashboard (incidents, pace, use rate)</li>
+            <li>Starter kit for new hires (knee pads, gloves, quick guide)</li>
+          </ul>
+        </td></tr>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Empathy Maps — ErgoAssist</title>
+<style>
+  :root{--ink:#1a1a1a;--line:#d8d8d8;--head:#2c3e50;}
+  html,body{margin:0;padding:0;background:#fff;color:var(--ink);
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.55}
+  .page{max-width:880px;margin:24px auto;padding:0 16px 40px}
+  h1,h2{color:var(--head);margin:.2rem 0 .6rem}
+  .map{border:1px solid var(--line);padding:10px;margin:10px 0 22px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .cell{border:1px solid var(--line);padding:10px;min-height:120px;background:#fff}
+  .cell h3{margin:0 0 .35rem;font-size:1rem;color:#6a5e2a}
+  ul{margin:.15rem 0 0 1rem;padding:0}
+  li{margin:.2rem 0}
+  small{color:#555}
+  @media print{.page{margin:0 auto;padding:0 6mm}}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <h1>Empathy Maps — ErgoAssist</h1>
+  <small>Purpose: capture key insights from observations and interviews for two core personas.</small>
+
+  <!-- Persona 1 -->
+  <h2>Persona 1 — Luis Santos (Ramp Operator)</h2>
+  <div class="map" role="group" aria-label="Empathy Map — Luis">
+    <div class="row">
+      <section class="cell" aria-labelledby="luis-says"><h3 id="luis-says">SAYS</h3>
+        <ul>
+          <li>“Don’t slow me down—make it simple.”</li>
+          <li>“Gate change? Tell me early.”</li>
+          <li>“These gloves make small grips tough.”</li>
+        </ul>
+      </section>
+      <section class="cell" aria-labelledby="luis-does"><h3 id="luis-does">DOES</h3>
+        <ul>
+          <li>Rushes to meet ETD; improvises tools for tight angles.</li>
+          <li>Switches hand-signals/radio in high noise.</li>
+          <li>Repositions often in cramped spaces.</li>
+        </ul>
+      </section>
+    </div>
+    <div class="row">
+      <section class="cell" aria-labelledby="luis-thinks"><h3 id="luis-thinks">THINKS</h3>
+        <ul>
+          <li>Hands-free or one-tap is essential.</li>
+          <li>Won’t trust tech that fails in rain/glare.</li>
+          <li>Wants fewer re-handles/strains as proof.</li>
+        </ul>
+      </section>
+      <section class="cell" aria-labelledby="luis-feels"><h3 id="luis-feels">FEELS</h3>
+        <ul>
+          <li>Fatigued from repetitive awkward lifts.</li>
+          <li>Frustrated by glare/rain/noise.</li>
+          <li>Proud when turn-times improve.</li>
+        </ul>
+      </section>
+    </div>
+  </div>
+
+  <!-- Persona 2 -->
+  <h2>Persona 2 — Amira Lee (Ops Coordinator)</h2>
+  <div class="map" role="group" aria-label="Empathy Map — Amira">
+    <div class="row">
+      <section class="cell" aria-labelledby="amira-says"><h3 id="amira-says">SAYS</h3>
+        <ul>
+          <li>“I need real-time status, not end-of-shift reports.”</li>
+          <li>“One screen I can read at a glance.”</li>
+          <li>“Don’t flood me—only priority alerts.”</li>
+        </ul>
+      </section>
+      <section class="cell" aria-labelledby="amira-does"><h3 id="amira-does">DOES</h3>
+        <ul>
+          <li>Monitors multiple gates; triages during push windows.</li>
+          <li>Checks logs; briefs leads; escalates as needed.</li>
+          <li>Balances on-time performance with safety.</li>
+        </ul>
+      </section>
+    </div>
+    <div class="row">
+      <section class="cell" aria-labelledby="amira-thinks"><h3 id="amira-thinks">THINKS</h3>
+        <ul>
+          <li>Needs explainable indicators (no black box).</li>
+          <li>If not actionable fast, it’s noise.</li>
+          <li>Trends over time > raw streams.</li>
+        </ul>
+      </section>
+      <section class="cell" aria-labelledby="amira-feels"><h3 id="amira-feels">FEELS</h3>
+        <ul>
+          <li>Overloaded by cluttered dashboards.</li>
+          <li>Confident with clear, actionable alerts.</li>
+          <li>Protective of crew trust/privacy.</li>
+        </ul>
+      </section>
+    </div>
+  </div>
+
+  <small>Sources: Observations & Interviews. More context: https://aryan1359.github.io/hcd-project/#part2</small>
+
+</div>
+</body>
+</html>

@@ -12,20 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <script src="shared-header.js"></script>
   <script src="reflection-content.js"></script>
-  <script>
-    // Load shared reflection content into Part 2 - Subtab 3
-    document.addEventListener('DOMContentLoaded', () => {
-      if (typeof BRIEF_REFLECTION !== 'undefined') {
-        const subtab3 = document.getElementById('part2-sub3');
-        if (subtab3) {
-          const p = subtab3.querySelector('p');
-          if (p) {
-            p.textContent = BRIEF_REFLECTION;
-          }
-        }
-      }
-    });
-  </script>
+  
 </head>
 <body>
   <div id="header-placeholder" data-page-type="home"></div>
@@ -125,20 +112,26 @@
         <p class="muted">  </p>
         <hr />
         
-        <!-- Part 2 Subtabs -->
+        <!-- Part 2 Subtabs (reordered: Opportunity Statement moved to first position) -->
         <nav class="subtabs" role="tablist" aria-label="Part 2 Sections" style="margin:20px 0;">
-          <button class="subtab-btn" role="tab" aria-selected="true" aria-controls="part2-sub1" id="part2-tab1" data-subtab="sub1">Powers of Ten</button>
+          <button class="subtab-btn" role="tab" aria-selected="true" aria-controls="part2-sub3" id="part2-tab3" data-subtab="sub3">Opportunity Statement</button>
+          <button class="subtab-btn" role="tab" aria-selected="false" aria-controls="part2-sub1" id="part2-tab1" data-subtab="sub1">Powers of Ten</button>
           <button class="subtab-btn" role="tab" aria-selected="false" aria-controls="part2-sub2" id="part2-tab2" data-subtab="sub2">Stakeholder Map</button>
-          <button class="subtab-btn" role="tab" aria-selected="false" aria-controls="part2-sub3" id="part2-tab3" data-subtab="sub3">Brief Reflection</button>
+          <button class="subtab-btn" role="tab" aria-selected="false" aria-controls="part2-sub4" id="part2-tab4" data-subtab="sub4">Weighted Matrix</button>
           <!-- Added new tab button -->
           <button class="subtab-btn" role="tab" aria-selected="false" aria-controls="part2-sub-opportunity" id="part2-tab-opportunity" data-subtab="sub-opportunity">opportunity-space-report</button>
-          <button class="subtab-btn" role="tab" aria-selected="false" aria-controls="part2-sub4" id="part2-tab4" data-subtab="sub4">Weighted Matrix</button>
+          <button class="subtab-btn" role="tab" aria-selected="false" aria-controls="part2-sub-observations" id="part2-tab-observations" data-subtab="sub-observations">Observations</button>
+          <button class="subtab-btn" role="tab" aria-selected="false" aria-controls="part2-sub-interviews" id="part2-tab-interviews" data-subtab="sub-interviews">Interviews</button>
           <button class="subtab-btn" role="tab" aria-selected="false" aria-controls="part2-sub5" id="part2-tab5" data-subtab="sub5">Personas</button>
+          <button class="subtab-btn" role="tab" aria-selected="false" aria-controls="part2-sub-empathy" id="part2-tab-empathy" data-subtab="sub-empathy">Empathy Maps</button>
           <button class="subtab-btn" role="tab" aria-selected="false" aria-controls="part2-sub6" id="part2-tab6" data-subtab="sub6">Journey Map</button>
+          <button class="subtab-btn" role="tab" aria-selected="false" aria-controls="part2-sub-designresearch" id="part2-tab-designresearch" data-subtab="sub-designresearch">Design Research</button>
         </nav>
 
-        <!-- Subtab 1: Powers of Ten -->
-        <div id="part2-sub1" class="subtab-panel" role="tabpanel" aria-labelledby="part2-tab1">
+        
+
+  <!-- Subtab 1: Powers of Ten -->
+  <div id="part2-sub1" class="subtab-panel" role="tabpanel" aria-labelledby="part2-tab1" hidden>
           <div style="background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:12px 14px;margin:14px 0 18px;">
             <strong style="color:#0369a1;">Opportunity Statement:</strong> <span style="color:#1e293b;">How might we reduce physical strain and injury risk for airport ramp workers during baggage loading/unloading — especially in harsh weather and time-critical turns — without slowing operations?</span>
           </div>
@@ -246,30 +239,32 @@
           </p>
         </div>
 
-        <!-- Subtab 2: Stakeholder Map -->
-        <div id="part2-sub2" class="subtab-panel" role="tabpanel" aria-labelledby="part2-tab2" hidden>
+  <!-- Subtab 2: Stakeholder Map -->
+  <div id="part2-sub2" class="subtab-panel" role="tabpanel" aria-labelledby="part2-tab2" hidden>
           <div style="width: 100%; overflow: auto; background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
             <iframe 
               src="Part2-Tab2.html" 
-              style="width: 100%; height: 1400px; border: none; display: block;"
+              style="width:100%;min-height:800px;border:none;display:block;" 
               title="Interactive Stakeholder Interest-Influence Map"
-              loading="lazy">
-            </iframe>
+              loading="lazy"
+              data-auto-height></iframe>
           </div>
         </div>
 
-        <!-- Subtab 3: Brief Reflection -->
-        <div id="part2-sub3" class="subtab-panel" role="tabpanel" aria-labelledby="part2-tab3" hidden>
-          <p>I started by talking with a few ramp workers who do the heavy lifting. Their day‑to‑day reality helped me zoom in and out to identify the rest of the stakeholders. Because they're the final users, I give them the most influence; their comfort and ability to use the solution are the main success test. If we later loop in leads, ops control, management, or the airport team, interest and influence could shift around approvals, staffing, or training. If lift‑assist tools or AI posture feedback enter the picture, regulators may move up; clinicians' injury data and insurer incentives could also rebalance priorities, while passenger impact stays mostly indirect (on‑time, damage‑free handling).</p>
+  <!-- Subtab 3: Opportunity Statement -->
+  <div id="part2-sub3" class="subtab-panel" role="tabpanel" aria-labelledby="part2-tab3">
+          <h3 style="margin:0 0 12px;font-size:18px;color:#035b94;">Opportunity Framing</h3>
+          <p><strong>Final Opportunity Statement:</strong> How might we reduce musculoskeletal strain and communication breakdowns for airport ramp workers during high‑traffic operations by providing real‑time ergonomic feedback and supervisor visibility, without slowing task throughput.</p>
+          <p><strong>Rationale &amp; Selection:</strong> In Part 1, I compared multiple opportunities using SET analysis and a weighted decision screen. Each alternative was evaluated by five weighted criteria to ensure objective prioritization.</p>
         </div>
 
         <!-- Added new Subtab: opportunity-space-report -->
         <div id="part2-sub-opportunity" class="subtab-panel" role="tabpanel" aria-labelledby="part2-tab-opportunity" hidden>
           <iframe 
             src="Opportunity-space-report.html" 
-            style="width:100%;height:1200px;border:1px solid #e5e7eb;border-radius:10px;background:#fff;" 
+            style="width:100%;min-height:800px;border:1px solid #e5e7eb;border-radius:10px;background:#fff;" 
             title="Opportunity Space Report"
-            loading="lazy"></iframe>
+            loading="lazy" data-auto-height></iframe>
         </div>
 
         <!-- Subtab 4: Weighted Matrix -->
@@ -280,8 +275,9 @@
             <iframe
               src="WeightedMetrix.html"
               title="Weighted Decision Matrix Tool"
-              style="width:100%;height:920px;border:1px solid #e5e7eb;border-radius:12px;background:#fff;"
+              style="width:100%;min-height:600px;border:1px solid #e5e7eb;border-radius:12px;background:#fff;"
               loading="lazy"
+              data-auto-height
               onload="this.dataset.loaded='1'"
             ></iframe>
             <div id="wm-fallback" style="display:none;margin-top:12px;font-size:13px;color:#b91c1c;">
@@ -300,14 +296,100 @@
           </script>
         </div>
 
+        <!-- Subtab: Observations -->
+        <div id="part2-sub-observations" class="subtab-panel" role="tabpanel" aria-labelledby="part2-tab-observations" hidden>
+          <iframe 
+            src="Observations.html" 
+            style="width:100%;min-height:800px;border:1px solid #e5e7eb;border-radius:10px;background:#fff;" 
+            title="Observations"
+            loading="lazy" data-auto-height></iframe>
+        </div>
+
+        <!-- Subtab: Interviews -->
+        <div id="part2-sub-interviews" class="subtab-panel" role="tabpanel" aria-labelledby="part2-tab-interviews" hidden>
+          <iframe 
+            src="Interviews.html" 
+            style="width:100%;min-height:800px;border:1px solid #e5e7eb;border-radius:10px;background:#fff;" 
+            title="Interviews"
+            loading="lazy" data-auto-height></iframe>
+        </div>
+
         <!-- Subtab 5: Personas -->
         <div id="part2-sub5" class="subtab-panel" role="tabpanel" aria-labelledby="part2-tab5" hidden>
-          <p><strong>Coming soon:</strong> User personas based on stakeholder research.</p>
+          <h3 style="margin:0 0 12px;font-size:18px;color:#035b94;">Personas</h3>
+          
+          <!-- In-panel view toggles -->
+          <div class="persona-controls" role="tablist" aria-label="Personas view" style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 14px;">
+            <button class="persona-toggle" role="tab" aria-selected="false" data-view="p1" id="persona-tab-1" style="padding:8px 12px;border:1px solid #e5e7eb;border-radius:8px;background:#f8fafc;color:#0f172a;font-weight:600;cursor:pointer;">Persona 1</button>
+            <button class="persona-toggle" role="tab" aria-selected="false" data-view="p2" id="persona-tab-2" style="padding:8px 12px;border:1px solid #e5e7eb;border-radius:8px;background:#f8fafc;color:#0f172a;font-weight:600;cursor:pointer;">Persona 2</button>
+            <button class="persona-toggle" role="tab" aria-selected="true" data-view="split" id="persona-tab-split" style="padding:8px 12px;border:1px solid #e5e7eb;border-radius:8px;background:#e6f0ff;color:#0f172a;font-weight:700;cursor:pointer;">Split View</button>
+          </div>
+
+          <!-- Responsive container: split or single -->
+          <style>
+            /* Scoped to Personas panel only */
+            #part2-sub5 #personas-container{display:grid;gap:20px;align-items:start}
+            #part2-sub5 #personas-container[data-view="split"]{grid-template-columns:repeat(auto-fit,minmax(420px,1fr))}
+            #part2-sub5 #personas-container[data-view="p1"],
+            #part2-sub5 #personas-container[data-view="p2"]{grid-template-columns:1fr}
+            #part2-sub5 #personas-container[data-view="p1"] #personas-2{display:none}
+            #part2-sub5 #personas-container[data-view="p2"] #personas-1{display:none}
+            #part2-sub5 .persona-toggle[aria-selected="true"]{background:#e6f0ff;border-color:#93c5fd;font-weight:700}
+          </style>
+
+          <div id="personas-container" data-view="split">
+            <iframe
+              id="personas-1"
+              src="Personas1.html"
+              title="Personas Set 1"
+              style="width:100%;min-height:800px;border:1px solid #e5e7eb;border-radius:12px;background:#fff;"
+              loading="lazy" data-auto-height></iframe>
+            <iframe
+              id="personas-2"
+              src="Personas2.html"
+              title="Personas Set 2"
+              style="width:100%;min-height:800px;border:1px solid #e5e7eb;border-radius:12px;background:#fff;"
+              loading="lazy" data-auto-height></iframe>
+          </div>
+
+          <script>
+            // Personas view switcher (Split / Persona 1 / Persona 2)
+            (function(){
+              const panel = document.getElementById('part2-sub5');
+              if(!panel) return;
+              const container = panel.querySelector('#personas-container');
+              const toggles = panel.querySelectorAll('.persona-toggle');
+              toggles.forEach(btn=>btn.addEventListener('click',()=>{
+                const view = btn.dataset.view;
+                if(!view) return;
+                container.setAttribute('data-view', view);
+                toggles.forEach(b=>b.setAttribute('aria-selected', b===btn ? 'true' : 'false'));
+              }));
+            })();
+          </script>
+        </div>
+
+        <!-- Subtab: Empathy Maps -->
+        <div id="part2-sub-empathy" class="subtab-panel" role="tabpanel" aria-labelledby="part2-tab-empathy" hidden>
+          <iframe 
+            src="EmpathyMaps.html" 
+            style="width:100%;min-height:800px;border:1px solid #e5e7eb;border-radius:10px;background:#fff;" 
+            title="Empathy Maps"
+            loading="lazy" data-auto-height></iframe>
         </div>
 
         <!-- Subtab 6: Journey Map -->
         <div id="part2-sub6" class="subtab-panel" role="tabpanel" aria-labelledby="part2-tab6" hidden>
           <p><strong>Coming soon:</strong> User journey mapping and touchpoint analysis.</p>
+        </div>
+
+        <!-- Subtab: Design Research -->
+        <div id="part2-sub-designresearch" class="subtab-panel" role="tabpanel" aria-labelledby="part2-tab-designresearch" hidden>
+          <iframe 
+            src="DesignResearch.html" 
+            style="width:100%;min-height:800px;border:1px solid #e5e7eb;border-radius:10px;background:#fff;" 
+            title="Design Research"
+            loading="lazy" data-auto-height></iframe>
         </div>
 
       </article>
@@ -442,9 +524,13 @@
                   || (subId==='sub2' && p.id==='part2-sub2')
                   || (subId==='sub3' && p.id==='part2-sub3')
                   || (subId==='sub-opportunity' && p.id==='part2-sub-opportunity') /* added */
+                  || (subId==='sub-interviews' && p.id==='part2-sub-interviews')
+                  || (subId==='sub-observations' && p.id==='part2-sub-observations')
                   || (subId==='sub4' && p.id==='part2-sub4')
                   || (subId==='sub5' && p.id==='part2-sub5')
-                  || (subId==='sub6' && p.id==='part2-sub6');
+                  || (subId==='sub-empathy' && p.id==='part2-sub-empathy')
+                  || (subId==='sub6' && p.id==='part2-sub6')
+                  || (subId==='sub-designresearch' && p.id==='part2-sub-designresearch');
         p.hidden = !show;
       });
     }
@@ -453,8 +539,36 @@
       activateSubtab(b.dataset.subtab);
     }));
     
-    // Initialize first subtab
-    activateSubtab('sub1');
+    // Initialize first subtab (default to Opportunity Statement)
+    activateSubtab('sub3');
+
+    // Auto-resize iframes to eliminate internal scroll bars
+    function autoSizeIframes(){
+      document.querySelectorAll('iframe[data-auto-height]').forEach(ifr=>{
+        try {
+          const doc = ifr.contentDocument || ifr.contentWindow.document;
+          if(!doc) return;
+          const bodyH = doc.body ? doc.body.scrollHeight : 0;
+          const htmlH = doc.documentElement ? doc.documentElement.scrollHeight : 0;
+          const newH = Math.max(600, bodyH, htmlH);
+          // Only update if significantly different to reduce layout thrash
+          if(Math.abs(ifr.offsetHeight - newH) > 30){
+            ifr.style.height = newH + 'px';
+          }
+        } catch(e){ /* cross-origin safeguard (not expected here) */ }
+      });
+    }
+    // Initial + delayed adjustments
+    window.addEventListener('load', ()=>{
+      autoSizeIframes();
+      setTimeout(autoSizeIframes, 300);
+      setTimeout(autoSizeIframes, 1000);
+    });
+    // Resize again when a subtab is activated
+    subtabs.forEach(b=>b.addEventListener('click', ()=>{setTimeout(autoSizeIframes, 200);}));
+    // Also on window resize
+    window.addEventListener('resize', ()=>{setTimeout(autoSizeIframes,200);});
+  
   </script>
 </body>
 </html>
