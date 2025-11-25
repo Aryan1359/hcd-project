@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Part 3 – Design Journey Memo – AI RampLift Ergonomic System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{
+      --ink:#121826;
+      --bg:#eef1f6;
+      --card:#ffffff;
+      --accent:#1d4ed8;
+      --accent-soft:#e3ecff;
+      --muted:#6b7280;
+      --border:#dce1eb;
+      --gold:#b45309;
+      --shadow:0 18px 40px rgba(15,23,42,0.08);
+      --radius:18px;
+      --max-ch:75ch;
+    }
+    *{box-sizing:border-box;}
+    body{
+      margin:0;
+      padding:0;
+      background:var(--bg);
+      color:var(--ink);
+      font-family:"Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height:1.75;
+      font-size:17px;
+      -webkit-font-smoothing:antialiased;
+    }
+    .page{
+      max-width:980px;
+      margin:56px auto 64px;
+      padding:0 28px 48px;
+      position:relative;
+    }
+    h1,h2,h3,h4{
+      color:var(--accent);
+      margin-top:0;
+    }
+    h1{
+      font-size:2.2rem;
+      margin-bottom:0.5rem;
+      letter-spacing:-0.01em;
+    }
+    h2{
+      font-size:1.55rem;
+      margin-top:2.2rem;
+      margin-bottom:0.6rem;
+      padding-top:0.8rem;
+      border-top:3px solid var(--border);
+      letter-spacing:-0.01em;
+    }
+    h3{
+      font-size:1.16rem;
+      margin-top:1.3rem;
+      margin-bottom:0.35rem;
+      letter-spacing:-0.005em;
+    }
+    p{
+      margin:0.2rem 0 0.9rem;
+      max-width:var(--max-ch);
+    }
+    .card{
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:28px 32px;
+      margin:22px 0;
+      border:1px solid var(--border);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(6px);
+      page-break-inside:avoid;
+    }
+    .card-hero{
+      position:relative;
+      overflow:hidden;
+      color:#f8fafc;
+      padding:36px 36px 34px;
+      background:linear-gradient(180deg,rgba(15,23,42,0.72) 0%,rgba(15,23,42,0.88) 100%),
+        url('Pics/1.jpg') center/cover no-repeat;
+      border:none;
+      box-shadow:0 24px 45px rgba(15,23,42,0.3);
+    }
+    .card-hero::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(160deg,rgba(14,23,42,0.65) 0%,rgba(29,78,216,0.32) 60%,rgba(14,116,144,0.25) 100%);
+      mix-blend-mode:multiply;
+    }
+    .card-hero > *{position:relative;z-index:1;}
+    .card-hero .tag{
+      background:rgba(59,130,246,0.25);
+      color:#f1f5f9;
+      border:1px solid rgba(148,163,184,0.3);
+    }
+    .card-hero h1{color:#f8fafc;}
+    .card-hero .meta{color:#e2e8f0;}
+    .meta{
+      font-size:0.96rem;
+      color:var(--muted);
+      max-width:var(--max-ch);
+    }
+    .website-note{
+      text-align:left;
+      hyphens:none;
+    }
+    a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(29,78,216,0.25);}
+    a:hover{border-bottom-color:rgba(29,78,216,0.5);}
+    .website-note{margin-top:0.8rem;}
+    .tag{
+      display:inline-block;
+      font-size:0.7rem;
+      text-transform:uppercase;
+      letter-spacing:0.12em;
+      padding:2px 8px;
+
+      .card-hero{
+        background:linear-gradient(180deg,rgba(15,23,42,0.68) 0%,rgba(15,23,42,0.85) 100%),
+          url('Pics/1.jpg') center/cover no-repeat;
+        box-shadow:none;
+        border:1px solid #1e3a8a;
+        padding:0.18in 0.22in 0.2in;
+      }
+      border-radius:999px;
+      background:var(--accent-soft);
+      color:var(--accent);
+      margin-bottom:0.4rem;
+    }
+    .highlight{
+      background:#fffbeb;
+      border-left:4px solid var(--gold);
+      padding:10px 12px;
+      border-radius:10px;
+      margin:12px 0 18px;
+      font-size:0.95rem;
+      box-shadow:inset 0 0 0 1px rgba(180,83,9,0.08);
+    }
+    .grid-2{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:18px;
+    }
+    ul{
+      padding-left:1.2rem;
+      margin:0.2rem 0 0.9rem;
+      max-width:var(--max-ch);
+    }
+    ol{
+      padding-left:1.25rem;
+      margin:0.2rem 0 1rem;
+      max-width:var(--max-ch);
+    }
+    li{margin-bottom:0.35rem;}
+    .small{font-size:0.9rem;}
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:0.92rem;
+      margin:0.6rem 0 1.1rem;
+      border-radius:12px;
+      overflow:hidden;
+      box-shadow:0 8px 24px rgba(15,23,42,0.06);
+    }
+    th,td{
+      border:1px solid var(--border);
+      padding:10px 12px;
+      vertical-align:top;
+      text-align:left;
+    }
+    th{
+      background:#eef2ff;
+      font-weight:600;
+    }
+    .section-note{
+      font-size:0.82rem;
+      color:var(--muted);
+      margin-top:0.3rem;
+      max-width:var(--max-ch);
+    }
+    .appendix-list li{
+      margin-bottom:0.3rem;
+    }
+    .gallery-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:18px;
+      margin-top:1.2rem;
+    }
+    .gallery-item{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:14px;
+      box-shadow:0 12px 26px rgba(15,23,42,0.08);
+      overflow:hidden;
+      page-break-inside:avoid;
+    }
+    .gallery-item img{
+      display:block;
+      width:100%;
+      height:auto;
+    }
+    .gallery-item figcaption{
+      padding:10px 14px;
+      font-size:0.85rem;
+      color:var(--muted);
+      text-align:center;
+      background:#f8fafc;
+    }
+    .card > :last-child{margin-bottom:0;}
+    .card h2 + p,.card h2 + ul,.card h2 + div{margin-top:0;}
+    .card h3 + p{margin-top:0.3rem;}
+    .card h3 + ul,.card h3 + ol{margin-top:0.35rem;}
+
+    @media (prefers-reduced-motion: reduce){
+      *{scroll-behavior:auto;}
+    }
+
+    @media screen and (max-width:768px){
+      body{font-size:16px;}
+      .page{margin:32px auto 40px;padding:0 18px 36px;}
+      .card{padding:22px 22px;}
+      table{font-size:0.9rem;}
+    }
+
+    /* PRINT LAYOUT FOR CHROME → PDF */
+    @media print{
+      @page{
+        size:letter;
+        margin:1.1in 0.8in 0.95in;
+      }
+
+      html,body{
+        background:#ffffff !important;
+        color:#000000;
+        margin:0;
+        padding:0;
+        font-size:11pt;
+        line-height:1.5;
+      }
+
+      body{
+        -webkit-print-color-adjust:exact;
+        print-color-adjust:exact;
+      }
+
+      .page{
+        max-width:6.9in;
+        margin:0 auto;
+        padding:0.2in 0.1in 0.1in;
+      }
+
+      .card{
+        border:none;
+        box-shadow:none;
+        border-radius:0;
+        padding:0.08in 0 0.1in;
+        margin:0 0 18pt;
+        page-break-inside:avoid;
+        break-inside:avoid-page;
+        background:#fff;
+      }
+
+      .card:first-of-type{
+        border-top:4pt solid #1d4ed8;
+        padding-top:0.2in;
+      }
+
+      .card + .card{
+        margin-top:24pt;
+      }
+
+      h1,h2,h3{
+        page-break-after:avoid;
+        page-break-inside:avoid;
+      }
+
+      h1{
+        font-size:20pt;
+        margin:4pt 0 12pt;
+        color:#1d4ed8;
+      }
+
+      h2{
+        font-size:15pt;
+        color:#1d4ed8;
+        border-top:none;
+        border-bottom:1px solid #cbd5f5;
+        margin:22pt 0 10pt;
+        padding:4pt 0 6pt;
+      }
+
+      h3{
+        font-size:12pt;
+        color:#1d4ed8;
+        margin:14pt 0 6pt;
+      }
+
+      p,ul,ol{
+        font-size:11pt;
+        color:#111827;
+        line-height:1.55;
+        widows:2;
+        orphans:2;
+      }
+
+      ul,ol{
+        padding-left:1.05rem;
+      }
+
+      p{
+        text-align:justify;
+        hyphens:auto;
+      }
+
+      .website-note{
+        text-align:left;
+        hyphens:none;
+      }
+
+      a{
+        color:#1d4ed8;
+        text-decoration:underline;
+      }
+
+      table{
+        width:100%;
+        box-shadow:none;
+        border:1px solid #cbd5f5;
+        font-size:10.5pt;
+        page-break-inside:avoid;
+      }
+
+      th{
+        background:#f3f4f6;
+      }
+
+      th,td{
+        padding:8pt 9pt;
+      }
+
+      .tag{
+        display:inline-block;
+        background:#dbe7ff;
+        color:#1d4ed8;
+        padding:3pt 7pt;
+        border-radius:12pt;
+        font-weight:600;
+      }
+
+      .highlight{
+        border-left:3px solid #b45309;
+        background:#fff8e1;
+        padding:8pt 10pt;
+        margin:12pt 0 16pt;
+        box-shadow:none;
+      }
+
+      section{
+        break-inside:avoid-page;
+      }
+
+      .gallery-grid{
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(2.4in,1fr));
+        gap:14pt;
+      }
+
+      .gallery-item{
+        border:1px solid #ccd6f6;
+        box-shadow:none;
+        border-radius:10pt;
+        background:#f8fafc;
+      }
+
+      .gallery-item figcaption{
+        background:#eef2ff;
+        color:#334155;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- TITLE PAGE -->
+  <div class="card">
+    <span class="tag">Integrated Final Assessment – Part 3</span>
+    <h1>Design Journey Memo – AI RampLift Ergonomic System</h1>
+    <p class="meta">
+      Student: <strong>Aryan Yaghobi</strong><br/>
+      Course: ENGIN 202A – Human-Centered Design Methods I<br/>
+      Instructor: Dr. Kosa Goucher-Lambert<br/>
+      Module 7 – Part 3: Design Journey and Technical Design Report
+    </p>
+    <p class="meta website-note">
+      See the main project site for complete references and artifacts:
+      <a href="https://aryan1359.github.io/hcd-project/" target="_blank" rel="noopener">https://aryan1359.github.io/hcd-project/</a>
+    </p>
+  </div>
+
+  <!-- ABSTRACT -->
+  <section id="abstract" class="card">
+    <h2>Abstract</h2>
+    <p>
+      This memo synthesizes my integrated design journey across Parts 1, 2, and 3 of a
+      project on <strong>ramp worker ergonomics</strong> in airport baggage handling. In Part 1,
+      I used SET analysis and a weighted decision matrix to identify
+      <em>Robotic and Mechanical Lift-Assist Systems</em> as the most promising opportunity
+      to reduce musculoskeletal strain for ramp workers without slowing aircraft turn time.
+      In Part 2, I conducted direct and participant observations and semi-structured
+      interviews with ramp agents and supervisors, then synthesized the data into
+      personas, empathy maps, and key findings. These emphasized zero-friction adoption,
+      harsh environmental constraints (heat, cold, rain, noise), the need for real-time
+      supervisory visibility, and the importance of trust and transparency.
+    </p>
+    <p>
+      In Part 3, I translate these insights into a concrete concept called
+      <strong>AI RampLift</strong>: an AI-enabled robotic and mechanical lift-assist system that
+      integrates with existing belt loaders and telescopic conveyors to take over
+      high-strain “last-touch” baggage handling. Using Value Opportunity Analysis (VOA),
+      I compare AI RampLift to a realistic benchmark (Power Stow Rollertrack + manual
+      last-touch handling) and articulate where the new concept should match, exceed,
+      or differentiate on value dimensions such as ergonomics, impact, and core
+      technology. I then outline high-level product requirements, an updated scenario,
+      and a final design proposal, and reflect on how this work connects to my broader
+      background in aviation operations, engineering, and human–machine collaboration.
+    </p>
+    <p class="section-note">
+      Sources: Part 1 PDF; Part 2 Design Research PDF; Opportunity Space report; Weighted Matrix;
+      Observations; Interviews; Personas; Empathy Map; Module 7 VOA/Kano practice (AI RampLift).
+    </p>
+  </section>
+
+  <!-- PART 1 OVERVIEW -->
+  <section id="part1-overview" class="card">
+    <h2>1. Integrated Part 1 Overview</h2>
+
+    <h3>1.1 Topic and Opportunity</h3>
+    <p>
+      The project focuses on <strong>ramp worker ergonomics</strong> during baggage loading and
+      unloading in time-critical, harsh-weather airport operations. Part 1 framed the
+      problem around high rates of musculoskeletal disorders among baggage handlers and
+      the operational impact of injuries and delays for airlines and ground-handling
+      organizations, using SET analysis to surface social, economic, and technological
+      drivers.
+    </p>
+
+    <h3>1.2 Initial Opportunity Statement and SET Factors</h3>
+    <p>
+      The initial opportunity statement asked how we might reduce physical strain and
+      injury risk for ramp workers, especially in harsh weather and time-critical turns,
+      without slowing operations. SET analysis highlighted:
+    </p>
+    <ul>
+      <li><strong>Social:</strong> worker health, fatigue, safety culture, and retention.</li>
+      <li><strong>Economic:</strong> costs of injuries, lost time, and schedule disruption.</li>
+      <li><strong>Technological:</strong> emerging ergonomic assist devices and data-driven safety tools.</li>
+    </ul>
+
+    <h3>1.3 Weighted Decision Matrix and Selected Direction</h3>
+    <p>
+      A weighted decision matrix compared several opportunity areas using criteria such as
+      <em>Impact, Feasibility, Time to Implement, Cost Efficiency,</em> and
+      <em>Stakeholder Acceptance</em>. The top-scoring direction was
+      <strong>Robotic and Mechanical Lift-Assist Systems</strong>, with a total score of
+      <strong>3.85 / 5</strong>, balancing potential injury reduction with realistic integration into
+      airport operations. This choice guided Part 2, and in Part 3 it becomes the basis
+      for the AI RampLift concept.
+    </p>
+
+    <h3>1.4 Concept Definition – AI RampLift (from Module 7 Practice)</h3>
+    <p>
+      Building on the selected opportunity, I refined the idea in Module 7 into a more
+      concrete concept:
+    </p>
+    <p class="highlight">
+      <strong>AI RampLift – an AI-enabled robotic &amp; mechanical lift-assist system that integrates
+      with existing belt loaders and Rollertrack-type conveyors to take over the highest-strain
+      “last-touch” baggage handling between carts, belts, and aircraft holds.</strong>
+    </p>
+    <p>
+      AI RampLift uses computer vision to recognize bags, belt positions, and available
+      spaces inside the aircraft hold and on carts. Robotic/mechanical actuators then
+      pick up bags from baggage carts, place them on the belt, and perform last-touch
+      placement inside the hold (and the reverse during unloading). The concept aims to:
+    </p>
+    <ul>
+      <li>Substantially <strong>reduce manual lifting and twisting</strong> for rampers.</li>
+      <li><strong>Maintain or improve turn time</strong>, not slow it down.</li>
+      <li>Provide a <strong>retrofit path</strong> by building on equipment airports already use.</li>
+    </ul>
+
+    <p class="section-note">
+      Sources: Part 1 PDF; Weighted Matrix; Module 7 AI RampLift VOA practice.
+    </p>
+  </section>
+
+  <!-- PROBLEM STATEMENT + POG -->
+  <section id="problem" class="card">
+    <h2>2. Revised Problem Statement and Product Opportunity Gap (POG)</h2>
+
+    <h3>2.1 Revised Problem Statement</h3>
+    <p>
+      Integrating Part 1 framing with Part 2 research and the AI RampLift concept, my
+      revised problem statement is:
+    </p>
+    <p class="highlight">
+      <strong>
+        How might we reduce musculoskeletal strain and communication breakdowns for airport ramp
+        workers during high-traffic operations by providing AI-enabled, real-time ergonomic support
+        and supervisor visibility, without slowing task throughput?
+      </strong>
+    </p>
+
+    <h3>2.2 Updated Product Opportunity Gap (POG)</h3>
+    <p>
+      Today, most airports rely on:
+    </p>
+    <ul>
+      <li>
+        <strong>Standard belt loaders</strong>, where rampers manually transfer bags between
+        carts, belts, and aircraft holds.
+      </li>
+      <li>
+        <strong>Power Stow Rollertrack conveyors</strong> at some airports, which extend into
+        the hold and reduce walking, but still leave all last-touch lifting and placement
+        to humans.
+      </li>
+    </ul>
+    <p>
+      Even with Rollertrack, rampers perform the most awkward, high-strain movements at
+      the interface of belt, cart, and hold. There is currently no system that takes over
+      last-touch placement of bags automatically. The POG is the space where a system like
+      AI RampLift could remove much of this last-touch strain while preserving or improving
+      speed and coordination.
+    </p>
+
+    <p class="section-note">
+      Sources: Part 1 PDF; Observations; Module 7 AI RampLift practice document.
+    </p>
+  </section>
+
+  <!-- STAKEHOLDERS -->
+  <section id="stakeholders" class="card">
+    <h2>3. Stakeholder Map and Roles</h2>
+
+    <h3>3.1 Stakeholder Landscape</h3>
+    <p>
+      Using the Powers of Ten exercise and interest–influence mapping, I identified a
+      multi-layer stakeholder ecosystem:
+    </p>
+    <div class="grid-2 small">
+      <div>
+        <ul>
+          <li><strong>Ramp agents</strong> – primary users, high interest, low formal power.</li>
+          <li><strong>Ramp leads / crew chiefs</strong> – coordinate teams during turns.</li>
+          <li><strong>Operations coordinators / supervisors</strong> – secondary users, high influence and high interest.</li>
+          <li><strong>Airline station management</strong> – oversee safety and performance metrics.</li>
+          <li><strong>Ground handling companies</strong> – own equipment, contracts, and training.</li>
+        </ul>
+      </div>
+      <div>
+        <ul>
+          <li><strong>Health &amp; safety teams</strong> – track injuries, compliance, and prevention.</li>
+          <li><strong>Regulators</strong> – aviation and occupational safety standards bodies.</li>
+          <li><strong>Unions / worker advocacy groups</strong> – represent worker perspectives.</li>
+          <li><strong>Passengers and airlines</strong> – indirectly affected by reliability and delays.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>3.2 Prioritization by Interest and Influence</h3>
+    <p>
+      The interest–influence map showed:
+    </p>
+    <ul>
+      <li>
+        <strong>Ramp agents</strong> have high interest in reduced strain and clear, non-punitive
+        tools but relatively low organizational power. Their needs drive many ergonomic and
+        interaction requirements.
+      </li>
+      <li>
+        <strong>Supervisors / operations coordinators</strong> have both high interest and
+        high influence. Their need for concise, actionable status information shapes
+        AI RampLift’s feedback and dashboards.
+      </li>
+    </ul>
+    <p>
+      Adoption and impact depend on meeting both groups where they are: respecting speed
+      culture and workflows for rampers, and providing meaningful, low-cognitive insights
+      for supervisors.
+    </p>
+
+    <p class="section-note">
+      Sources: Powers of Ten stakeholder HTML; Stakeholder Map HTML; Part 2 PDF.
+    </p>
+  </section>
+
+  <!-- PART 2 OVERVIEW -->
+  <section id="part2-overview" class="card">
+    <h2>4. Integrated Part 2 Overview – Design Methods</h2>
+
+    <h3>4.1 Methods Used and Why</h3>
+    <p>
+      In Part 2, I used:
+    </p>
+    <ul>
+      <li>
+        <strong>Direct and participant observation (AEIOU)</strong> in hot and cold/wet
+        conditions to see posture, movement, and communication patterns in situ.
+      </li>
+      <li>
+        <strong>Semi-structured interviews</strong> with a ramp agent and a supervisor/safety
+        lead to understand perceived risks, attitudes toward equipment, and adoption barriers.
+      </li>
+      <li>
+        <strong>Synthesis techniques</strong> (personas, empathy maps, key findings) to turn
+        raw data into structured design knowledge.
+      </li>
+    </ul>
+    <p>
+      Observations provided behavioral evidence; interviews captured motivations and
+      perceptions; synthesis methods combined them into clear user needs and constraints.
+    </p>
+
+    <p class="section-note">
+      Sources: Observations HTML; Interviews HTML; Part 2 PDF.
+    </p>
+  </section>
+
+  <!-- RESEARCH SYNTHESIS -->
+  <section id="synthesis" class="card">
+    <h2>5. Research Synthesis – Personas, Empathy, and Key Findings</h2>
+
+    <h3>5.1 Personas and Empathy Maps</h3>
+    <p>
+      Two core personas emerged:
+    </p>
+    <ul>
+      <li>
+        <strong>Ramp operator persona (e.g., “Luis Santos”):</strong> experienced, proud of
+        speed and teamwork, but concerned about back and shoulder strain; skeptical of
+        anything that slows down the turn.
+      </li>
+      <li>
+        <strong>Supervisor / operations coordinator persona (e.g., “Marcus / Amira Lee”):</strong>
+        manages multiple flights and crews; wants real-time clarity about risk and status,
+        but cannot monitor complex dashboards continuously.
+      </li>
+    </ul>
+    <p>
+      Empathy maps showed that rampers say things like “Don’t slow me down—make it simple”
+      and feel fatigue, weather stress, and frustration when equipment feels slow or awkward.
+      Supervisors say “I need real-time status, not just end-of-shift reports” and feel
+      overloaded by raw data but under-informed about emerging issues.
+    </p>
+
+    <h3>5.2 Major Takeaways</h3>
+    <ol>
+      <li>
+        <strong>Zero-friction adoption is non-negotiable.</strong> Anything that adds even
+        small delays or extra steps will be abandoned.
+      </li>
+      <li>
+        <strong>Environmental conditions shape ergonomics.</strong> Heat, cold, rain, noise,
+        and glare must be assumed, not treated as edge cases.
+      </li>
+      <li>
+        <strong>Supervisors need low-cognitive, real-time visibility.</strong> Clear signals,
+        not dense data streams.
+      </li>
+      <li>
+        <strong>Trust and transparency are critical.</strong> Workers and supervisors must
+        understand what AI RampLift measures and how it helps them.
+      </li>
+    </ol>
+
+    <p class="section-note">
+      Sources: Personas PDFs; Empathy Map HTML; Part 2 key findings.
+    </p>
+  </section>
+
+  <!-- COMPETITORS + VOA -->
+  <section id="competitors-voa" class="card">
+    <h2>6. Competitors and Value Opportunity Analysis (VOA)</h2>
+
+    <h3>6.1 Competitor Landscape</h3>
+    <p>
+      In Module 7, I used VOA to compare AI RampLift against a realistic advanced
+      competitor:
+    </p>
+    <p class="highlight">
+      <strong>Benchmark competitor:</strong> Power Stow Rollertrack conveyor + manual last-touch
+      handling by rampers.
+    </p>
+    <p>
+      Rollertrack already improves on a basic belt loader by extending into the hold and
+      reducing walking. However, rampers still perform all last-touch lifting and placement
+      of bags. This makes it a strong benchmark: a widely used, high-function solution that
+      leaves the last-touch gap open.
+    </p>
+
+    <h3>6.2 VOA Comparison – Power Stow vs. AI RampLift (Goal State)</h3>
+    <p>
+      Using the seven VOA dimensions, I scored the benchmark and the AI RampLift goal state
+      on a 1–5 scale (conceptual guidance for design priorities):
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>VO Dimension</th>
+          <th>Power Stow Rollertrack<br/>(Benchmark)</th>
+          <th>AI RampLift<br/>(Goal State)</th>
+          <th>Rationale</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Emotion</strong></td>
+          <td>3 – Reduces some strain and walking; still many high-strain lifts; possible frustration if jams or slowdowns occur.</td>
+          <td>4 – Most heavy, awkward last-touch lifts handled by the system; if motion is predictable and safe, workers and supervisors feel more protected.</td>
+          <td>Target: noticeable emotional relief without making the system feel threatening or out of control.</td>
+        </tr>
+        <tr>
+          <td><strong>Aesthetics</strong></td>
+          <td>3 – Functional machinery; controls and status are usable but not especially legible at a glance.</td>
+          <td>4 – Integrated design with clear status cues, safe zones, and smooth motion that communicates safety and reliability.</td>
+          <td>Visual clarity and motion patterns support training and trust.</td>
+        </tr>
+        <tr>
+          <td><strong>Identity</strong></td>
+          <td>3 – Signals “modern equipment” but not a major identity shift for the airline or ramp culture.</td>
+          <td>4 – Embodies a “smart, safety-first ramp” identity that crews can feel proud of.</td>
+          <td>Identity is used as a lever for adoption and internal support.</td>
+        </tr>
+        <tr>
+          <td><strong>Impact</strong></td>
+          <td>3–4 – Reduces some effort and walking; last-touch strain and many MSD risk factors remain.</td>
+          <td>5 – Measurable reductions in high-risk lifts, awkward postures, and injuries over time.</td>
+          <td>Impact is a core justification for investment in AI RampLift.</td>
+        </tr>
+        <tr>
+          <td><strong>Ergonomics</strong></td>
+          <td>3 – Better than a basic belt loader but still leaves frequent heavy, twisted lifts in the hold.</td>
+          <td>5 – AI handles most last-touch motions cart→belt and belt→hold (and reverse); humans focus on exceptions and supervision.</td>
+          <td>Primary dimension where we seek a step-change in value.</td>
+        </tr>
+        <tr>
+          <td><strong>Core Technology</strong></td>
+          <td>3–4 – Robust mechanical tech with powered extension; limited sensing, no AI.</td>
+          <td>4–5 – Adds computer vision, robotic handling, and safety sensing while maintaining high reliability.</td>
+          <td>Big opportunity but also risk: complexity cannot undermine uptime or trust.</td>
+        </tr>
+        <tr>
+          <td><strong>Quality</strong></td>
+          <td>4 – Proven durability for ramp environments.</td>
+          <td>4–5 – Target: match or exceed durability with modular components and clear diagnostics.</td>
+          <td>AI RampLift must not underperform Rollertrack on robustness.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>6.3 Design Priorities from VOA</h3>
+    <ul class="small">
+      <li>
+        <strong>Must-match:</strong> Core Technology and Quality – AI RampLift must be at least
+        as reliable and durable as Rollertrack, or crews will revert to manual methods.
+      </li>
+      <li>
+        <strong>Should-exceed:</strong> Ergonomics and Impact – the main reason to deploy
+        AI RampLift is to dramatically cut high-risk last-touch motions and reduce injuries.
+      </li>
+      <li>
+        <strong>Strategic enhancers:</strong> Emotion and Identity – positioning the system
+        as something that protects and empowers workers helps adoption.
+      </li>
+      <li>
+        <strong>Managed trade-off:</strong> Aesthetics vs. complexity – legibility and
+        perceived safety matter more than futuristic styling.
+      </li>
+    </ul>
+
+    <p class="section-note">
+      Sources: Module 7 AI RampLift VOA practice (competitor analysis and scoring).
+    </p>
+  </section>
+
+  <!-- KANO + REQUIREMENTS -->
+  <section id="kano-reqs" class="card">
+    <h2>7. Kano Classification and Emerging Product Requirements</h2>
+
+    <h3>7.1 Kano Categories</h3>
+    <ul>
+      <li>
+        <strong>Basic (Must-haves)</strong><br/>
+        Safe, predictable motion; throughput at least comparable to current Rollertrack +
+        manual workflows; compatibility with existing ramp layouts and procedures.
+      </li>
+      <li>
+        <strong>Performance features</strong><br/>
+        Reduced number of high-risk last-touch lifts per turn; fewer near-miss or strain
+        incidents; lower cognitive load for supervisors monitoring multiple gates.
+      </li>
+      <li>
+        <strong>Delighters</strong><br/>
+        Transparent ergonomic insights and simple visuals showing how risk decreases over
+        time; the feeling of working with state-of-the-art AI support rather than being
+        “on your own.”
+      </li>
+    </ul>
+
+    <h3>7.2 High-Level Requirements (Aligned with VOA + Kano)</h3>
+    <ul class="small">
+      <li>
+        <strong>R1 – Zero-friction workflow integration:</strong>
+        AI RampLift must not increase typical turn time compared to Rollertrack + manual
+        last-touch, under representative conditions.
+      </li>
+      <li>
+        <strong>R2 – Ergonomic performance:</strong>
+        The system should significantly reduce the number of heavy, awkward last-touch
+        lifts per turn for rampers relative to baseline.
+      </li>
+      <li>
+        <strong>R3 – Environmental robustness:</strong>
+        The system must operate reliably with gloved hands, in rain, heat, cold, and noise.
+      </li>
+      <li>
+        <strong>R4 – Supervisor visibility:</strong>
+        Provide concise indicators (e.g., risk levels and event flags) instead of raw
+        data streams, supporting quick decisions during busy push windows.
+      </li>
+      <li>
+        <strong>R5 – Trust and transparency:</strong>
+        Clearly communicate what the AI is detecting, how it responds to uncertainty,
+        and how data is used for safety rather than punishment.
+      </li>
+    </ul>
+    <p>
+      A detailed Must/Should/Could specification table (as introduced in Module 7) can
+      turn these into measurable acceptance criteria and link them to verification
+      methods (inspection, analysis, tests, and demonstrations).
+    </p>
+
+    <p class="section-note">
+      Sources: Part 2 findings; Module 7 Kano and specification lessons.
+    </p>
+  </section>
+
+  <!-- UPDATED SCENARIO -->
+  <section id="scenario" class="card">
+    <h2>8. Updated Scenario – AI RampLift in a Hot-Day Turn</h2>
+
+    <p>
+      In a mid-day peak at a busy hub, an aircraft blocks in and the ramp crew positions
+      the standard belt loader with the AI RampLift extension. For the crew, setup looks
+      almost identical to a normal operation; AI RampLift is already aligned with the belt
+      and carts.
+    </p>
+    <p>
+      As baggage carts arrive, AI RampLift’s vision system detects bags in the carts and
+      available space on the belt and inside the hold. The system’s arm or mechanism
+      performs the heaviest cart→belt and belt→hold motions. Rampers monitor and manage
+      exceptions, reposition carts, and handle special items or edge cases, but no longer
+      perform the majority of high-strain last-touch lifts.
+    </p>
+    <p>
+      On the supervisor side, a simple dashboard shows a small set of indicators: current
+      operation status, any system alerts, and summary ergonomic risk metrics (e.g., how
+      many last-touch lifts were offloaded to AI RampLift in the last turn). When the AI is
+      uncertain—for example, if visibility is low or a bag is oddly shaped—it slows down
+      or requests assistance instead of guessing, which supports safety and trust.
+    </p>
+    <p>
+      The turn completes on schedule. Workers feel physically less exhausted and more
+      confident about their long-term health, and supervisors see operational performance
+      preserved or improved. This scenario reflects the combined requirements for
+      ergonomics, throughput, and real-time visibility that emerged from Parts 1 and 2.
+    </p>
+
+    <p class="section-note">
+      Sources: Observations; Interviews; Personas; AI RampLift VOA context.
+    </p>
+  </section>
+
+  <!-- FINAL DESIGN PROPOSAL -->
+  <section id="proposal" class="card">
+    <h2>9. Final Design Proposal – AI RampLift Direction</h2>
+
+    <p>
+      The integrated proposal is to pursue <strong>AI RampLift</strong> as a
+      retrofit-capable, AI-enabled robotic and mechanical lift-assist system that:
+    </p>
+    <ul>
+      <li>
+        <strong>Targets the last-touch gap</strong> left by current belt loaders and Rollertrack,
+        offloading the highest-strain manual motions from rampers.
+      </li>
+      <li>
+        <strong>Preserves or improves turn time</strong> by integrating into existing workflows
+        and minimizing additional steps.
+      </li>
+      <li>
+        <strong>Provides real-time ergonomic impact</strong> and simple, actionable visibility
+        for supervisors.
+      </li>
+      <li>
+        <strong>Aligns with value priorities</strong> identified in VOA: large gains in ergonomics
+        and impact, while maintaining strong core technology and quality.
+      </li>
+      <li>
+        <strong>Supports a safety-first, tech-forward identity</strong> that fits both airline
+        strategy and ramp culture.
+      </li>
+    </ul>
+    <p>
+      The next design steps would include detailing the system architecture, finalizing the
+      VOA radar plot, completing a Kano-based feature table, and creating a Must/Should/Could
+      specification matrix. These artifacts would bridge this design journey into a more
+      formal engineering and evaluation plan.
+    </p>
+  </section>
+
+  <!-- KEY INSIGHTS & REFLECTIONS -->
+  <section id="reflections" class="card">
+    <h2>10. Key Insights and Reflections</h2>
+
+    <h3>10.1 Insights about the Problem and Users</h3>
+    <ul>
+      <li>
+        Observing ramp work in real conditions made environmental constraints (heat, cold,
+        rain, noise, glare) feel central rather than peripheral.
+      </li>
+      <li>
+        Interviews reinforced how strongly “speed culture” shapes adoption: any additional
+        overhead, even seconds per cart, becomes a major barrier.
+      </li>
+      <li>
+        Supervisors are less interested in more data and more interested in information that
+        fits their decision windows and accountability structure.
+      </li>
+    </ul>
+
+    <h3>10.2 Insights about Methods and Frameworks</h3>
+    <ul>
+      <li>
+        Combining observations, interviews, personas, empathy maps, and then VOA and Kano
+        created a chain from lived experience to value priorities and requirements.
+      </li>
+      <li>
+        VOA helped clarify where AI RampLift should match, exceed, or differentiate from a
+        strong competitor, turning a general idea into a positioned concept.
+      </li>
+    </ul>
+
+    <h3>10.3 Connection to Broader Background and Future Work</h3>
+    <p>
+      This project also connects to my broader background as an airline pilot and engineer,
+      where safety-critical operations, human–machine collaboration, and real-time
+      constraints are everyday realities. The AI RampLift direction overlaps with current
+      discussions about AI-supported ground operations, predictive safety, and design
+      cognition: not just making tools smarter, but making them <em>trustable</em> and
+      compatible with the way people actually work. The artifacts developed here—
+      stakeholder maps, opportunity framing, research synthesis, and VOA-based positioning—
+      form a starting point for deeper, research-oriented work on AI-assisted ergonomics
+      in aviation and other heavy-duty environments.
+    </p>
+  </section>
+
+  <!-- REFERENCES & APPENDICES -->
+  <section id="references" class="card">
+    <h2>11. References (as cited in earlier parts)</h2>
+    <p class="small">
+      Note: These references mirror those cited in the Part 1 and Part 2 submissions; full APA
+      formatting can be expanded from the original sources.
+    </p>
+    <ul class="small">
+      <li>NIOSH. (2015). Musculoskeletal disorders among baggage handlers. (as cited in Part 1).</li>
+      <li>HSE. (2025). Baggage handling injury statistics. (as cited in Part 1).</li>
+      <li>IATA. (2024). Ground safety overview. (as cited in Part 1).</li>
+      <li>McKinsey &amp; Company. (2024). AI-driven predictive maintenance. (as cited in Part 1).</li>
+      <li>MDPI. (2024). Human–machine collaboration in ground operations. (as cited in Part 1).</li>
+      <li>Airbus. (n.d.). Sustainable materials innovation. (as cited in Part 1).</li>
+      <li>Course readings and Module 7 materials on competitors, VOA, Kano analysis, and specifications.</li>
+    </ul>
+  </section>
+
+  <section id="appendices" class="card">
+    <h2>12. Appendices (Artifacts Referenced)</h2>
+    <ul class="appendix-list small">
+      <li>Appendix A – Part 1 Opportunity Statement and SET analysis.</li>
+      <li>Appendix B – Weighted Decision Matrix (Impact, Feasibility, Time, Cost, Acceptance).</li>
+      <li>Appendix C – Powers of Ten Stakeholder Map and Interest–Influence Map.</li>
+      <li>Appendix D – Observation Notes and AEIOU Tables.</li>
+      <li>Appendix E – Semi-Structured Interview Guides and Summaries.</li>
+      <li>Appendix F – Personas (Ramp Operator, Operations Coordinator).</li>
+      <li>Appendix G – Empathy Maps.</li>
+      <li>Appendix H – Module 7 AI RampLift VOA practice (competitor comparison and scores).</li>
+    </ul>
+    <p class="small website-note">
+      Full references and supporting materials are available at the project website:
+      <a href="https://aryan1359.github.io/hcd-project/" target="_blank" rel="noopener">https://aryan1359.github.io/hcd-project/</a>
+    </p>
+  </section>
+
+  <section id="gallery" class="card">
+    <h2>13. Project Gallery</h2>
+    <p class="section-note website-note">
+      Visual highlights from the field research and concept development phases. Image set hosted locally within `Pics/`.
+    </p>
+    <div class="gallery-grid">
+      <figure class="gallery-item">
+        <img src="Pics/1.jpg" alt="Project photo 1" loading="lazy" />
+        <figcaption>Figure 1</figcaption>
+      </figure>
+      <figure class="gallery-item">
+        <img src="Pics/2.jpg" alt="Project photo 2" loading="lazy" />
+        <figcaption>Figure 2</figcaption>
+      </figure>
+      <figure class="gallery-item">
+        <img src="Pics/3.jpg" alt="Project photo 3" loading="lazy" />
+        <figcaption>Figure 3</figcaption>
+      </figure>
+      <figure class="gallery-item">
+        <img src="Pics/4.jpg" alt="Project photo 4" loading="lazy" />
+        <figcaption>Figure 4</figcaption>
+      </figure>
+      <figure class="gallery-item">
+        <img src="Pics/5.jpg" alt="Project photo 5" loading="lazy" />
+        <figcaption>Figure 5</figcaption>
+      </figure>
+      <figure class="gallery-item">
+        <img src="Pics/6.jpg" alt="Project photo 6" loading="lazy" />
+        <figcaption>Figure 6</figcaption>
+      </figure>
+      <figure class="gallery-item">
+        <img src="Pics/7.jpg" alt="Project photo 7" loading="lazy" />
+        <figcaption>Figure 7</figcaption>
+      </figure>
+      <figure class="gallery-item">
+        <img src="Pics/8.jpg" alt="Project photo 8" loading="lazy" />
+        <figcaption>Figure 8</figcaption>
+      </figure>
+      <figure class="gallery-item">
+        <img src="Pics/9.jpg" alt="Project photo 9" loading="lazy" />
+        <figcaption>Figure 9</figcaption>
+      </figure>
+      <figure class="gallery-item">
+        <img src="Pics/10.jpg" alt="Project photo 10" loading="lazy" />
+        <figcaption>Figure 10</figcaption>
+      </figure>
+      <figure class="gallery-item">
+        <img src="Pics/11.jpg" alt="Project photo 11" loading="lazy" />
+        <figcaption>Figure 11</figcaption>
+      </figure>
+      <figure class="gallery-item">
+        <img src="Pics/13.jpg" alt="Project photo 12" loading="lazy" />
+        <figcaption>Figure 12</figcaption>
+      </figure>
+      <figure class="gallery-item">
+        <img src="Pics/14.jpg" alt="Project photo 13" loading="lazy" />
+        <figcaption>Figure 13</figcaption>
+      </figure>
+      <figure class="gallery-item">
+        <img src="Pics/15.jpg" alt="Project photo 14" loading="lazy" />
+        <figcaption>Figure 14</figcaption>
+      </figure>
+      <figure class="gallery-item">
+        <img src="Pics/16.jpg" alt="Project photo 15" loading="lazy" />
+        <figcaption>Figure 15</figcaption>
+      </figure>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

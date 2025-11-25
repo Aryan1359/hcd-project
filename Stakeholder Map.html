@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ramp Worker Ergonomics – Stakeholder Powers‑of‑Ten Table</title>
+<style>
+  :root { --bg: #ffffff; --fg: #1f2937; --muted: #6b7280; --brand: #0ea5e9; --accent: #e2f2fb; --border: #e5e7eb; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; padding: 20px; }
+  .page { max-width: 1100px; margin: 0 auto; }
+  
+  /* Redesigned Controls Section */
+  .controls { 
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border: 1px solid #bae6fd;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(14, 165, 233, 0.1);
+  }
+  
+  .controls-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 16px;
+  }
+  
+  .controls-inputs {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: start;
+  }
+  
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .input-group label {
+    font-weight: 600;
+    font-size: 13px;
+    color: #0369a1;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .input-group input {
+    padding: 10px 12px;
+    border: 2px solid #bae6fd;
+    border-radius: 8px;
+    font-size: 14px;
+    background: white;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  
+  .input-group input:focus {
+    outline: none;
+    border-color: #0ea5e9;
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+  }
+  
+  .input-group input::placeholder {
+    color: #94a3b8;
+  }
+  
+  .revision-input {
+    max-width: 150px;
+  }
+  
+  .controls-actions {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+  }
+  
+  .btn {
+    appearance: none;
+    border: none;
+    background: #0ea5e9;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 4px rgba(14, 165, 233, 0.2);
+  }
+  
+  .btn:hover {
+    background: #0284c7;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(14, 165, 233, 0.3);
+  }
+  
+  .btn:active {
+    transform: translateY(0);
+  }
+  
+  .btn.secondary {
+    background: white;
+    color: #0369a1;
+    border: 2px solid #0ea5e9;
+  }
+  
+  .btn.secondary:hover {
+    background: #f0f9ff;
+    border-color: #0284c7;
+  }
+  
+  .btn svg {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .printHeader {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 2px dashed #bae6fd;
+    color: #0369a1;
+  }
+  
+  .phTitle {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0c4a6e;
+    margin-bottom: 4px;
+  }
+  
+  .phMeta {
+    font-size: 13px;
+    color: #0369a1;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  
+  .phMeta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  @media (max-width: 768px) {
+    .controls-header {
+      flex-direction: column;
+    }
+    
+    .controls-inputs {
+      grid-template-columns: 1fr;
+    }
+    
+    .controls-actions {
+      width: 100%;
+      flex-direction: column;
+    }
+    
+    .btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+  
+  /* Print-specific styles */
+  @media print {
+    .controls-header {
+      display: none !important; /* Hide input fields and buttons when printing */
+    }
+    
+    .controls {
+      background: white;
+      border: none;
+      box-shadow: none;
+      padding: 10px 0;
+    }
+    
+    .printHeader {
+      border-top: none;
+      margin-top: 0;
+      padding-top: 0;
+    }
+    
+    .phTitle {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+    
+    .phMeta {
+      margin-bottom: 8px;
+    }
+    
+    .phLink {
+      font-size: 12px;
+      color: #0369a1;
+    }
+    
+    /* Hide reset buttons and keep only the data */
+    .miniReset, .boardReset {
+      display: none !important;
+    }
+    
+    /* Ensure reflection section prints */
+    .reflection-section {
+      page-break-inside: avoid;
+      margin-top: 24px;
+    }
+    
+    .reflection-section h2 {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+  }
+  
+  .phLink {
+    font-size: 13px;
+    margin-top: 8px;
+  }
+  
+  .phLink a {
+    color: #0ea5e9;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .phLink a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Table */
+  table { width: 100%; border-collapse: collapse; border: 1px solid var(--border); }
+  thead th { text-align: left; font-size: 0.9rem; color: #0b3d5c; border-bottom: 2px solid var(--border); padding: 10px; background: #f0f9ff; }
+  tbody td { vertical-align: top; padding: 12px 10px; border-bottom: 1px solid var(--border); }
+  tbody tr:nth-child(even) { background: #fcfdff; }
+  .num { width: 44px; font-weight: 700; color: #0b3d5c; }
+  .zoom { width: 160px; min-width: 140px; vertical-align: top; }
+  .name { font-weight: 700; color: #0f172a; }
+  .why { color: var(--muted); margin-top: 6px; line-height: 1.45; }
+
+  /* Sliders */
+  .sliders { margin-top: 10px; border-top: 1px dashed var(--border); padding-top: 10px; }
+  .slider-row { display: grid; grid-template-columns: 220px 1fr; align-items: center; gap: 10px; margin: 8px 0; }
+  .slider-row label { font-weight: 600; color: #0b3d5c; }
+  .slider-row .value { font-weight: 700; margin-left: 6px; color: var(--fg); }
+  input[type=range] { width: 100%; }
+
+  /* Mini quadrant per-row */
+  .zoomCell { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .miniQuad { width: 100%; max-width: 130px; aspect-ratio: 1 / 1; cursor: crosshair; }
+  .miniQuad svg { width: 100%; height: 100%; display: block; }
+  .miniReset { appearance: none; border: 1px solid var(--border); background: #ffffff; color: #0b3d5c; font-size: 12px; padding: 4px 8px; border-radius: 6px; margin-top: 4px; cursor: pointer; }
+  .miniReset:hover { background: #f0f9ff; border-color: #bae6fd; }
+  @media (max-width: 700px){
+    .zoom { width: 130px; min-width: 110px; }
+    .slider-row { grid-template-columns: 160px 1fr; }
+  }
+
+  /* Note */
+  .note { background:#f8fafc; border:1px solid var(--border); border-radius:10px; padding:10px 12px; margin-bottom:10px; color: #0b3d5c; }
+
+  /* Big board */
+  .boardWrap { margin-top: 18px; padding-top: 12px; border-top: 2px solid var(--border); }
+  .boardTitle { font-weight: 800; color:#0b3d5c; margin: 0 0 8px; }
+  .bigBoard { width: 100%; max-width: 900px; aspect-ratio: 1/1; border:1px solid var(--border); border-radius: 8px; background:#ffffff; }
+  .bigBoard svg { width: 100%; height: 100%; display:block; touch-action: none; }
+  .boardControls { display:flex; gap:10px; align-items:center; margin:10px 0 12px; }
+  .boardReset { appearance:none; border:1px solid var(--border); background:#fff; color:#0b3d5c; font-weight:600; padding:6px 10px; border-radius:8px; cursor:pointer; }
+  .boardReset:hover { background:#f0f9ff; border-color:#bae6fd; }
+  .boardLegend { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:8px; margin-top:10px; max-width: 900px; }
+  .legendItem { display:flex; align-items:center; gap:8px; color:#334155; }
+  .legendIcon { width:24px; height:24px; display:inline-block; }
+  .rationale { font-size: 12px; color: var(--muted); margin: 2px 0 6px; }
+</style>
+</head>
+<body>
+  <div class="page">
+    <!-- Redesigned Top Controls -->
+    <section class="controls" aria-label="Document Settings and Export">
+      <div class="controls-header">
+        <div class="controls-inputs">
+          <div class="input-group">
+            <label for="titleInput2">Document Title</label>
+            <input 
+              id="titleInput2" 
+              type="text" 
+              placeholder="Ramp Worker Ergonomics — Interest–Influence Map"
+              aria-label="Document title"
+            />
+          </div>
+          <div class="input-group revision-input">
+            <label for="revInput2">Revision</label>
+            <input 
+              id="revInput2" 
+              type="text" 
+              placeholder="Rev A"
+              aria-label="Document revision"
+            />
+          </div>
+        </div>
+        <div class="controls-actions">
+          <button type="button" id="printBtn2" class="btn" aria-label="Print to PDF">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+            </svg>
+            Print PDF
+          </button>
+          <button type="button" id="exportBtn2" class="btn secondary" aria-label="Export to Excel CSV">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Export CSV
+          </button>
+        </div>
+      </div>
+      
+      <div class="printHeader">
+        <div class="phTitle" id="docTitle2"></div>
+        <div class="phMeta">
+          <span id="docRev2"></span>
+          <span>•</span>
+          <span id="docDate2"></span>
+        </div>
+        <div class="phLink">
+          <strong>View online:</strong> <a href="https://aryan1359.github.io/hcd-project/#part2" target="_blank">https://aryan1359.github.io/hcd-project/#part2</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- How-to -->
+    <div class="note"><strong>How to use:</strong>
+      <ul style="margin:6px 0 0 18px; padding:0 0 0 4px;">
+        <li>Each stakeholder starts with <em>preset default</em> values for Interest (X) and Influence (Y).</li>
+        <li>Adjust using the two sliders or drag the dot inside the mini quadrant; values update immediately.</li>
+        <li>Use <strong>Reset</strong> under a row to return that stakeholder to its preset defaults.</li>
+      </ul>
+    </div>
+
+    <!-- Table -->
+    <table>
+      <caption style="caption-side: top; text-align:left; padding:8px 10px; font-weight:700; color:#0b3d5c;">Interest–Influence Map — dynamic (drag to adjust %)</caption>
+      <thead>
+        <tr>
+          <th class="num">#</th>
+          <th class="zoom">Zoom</th>
+          <th>Stakeholder & Rationale</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- 1 -->
+        <tr>
+          <td class="num">1</td>
+          <td class="zoom"><div class="zoomCell"><div class="miniQuad" aria-label="Quadrant preview"></div></div></td>
+          <td>
+            <div class="name">Ramp workers / baggage handlers</div>
+            <div class="why">Core users who lift, carry, twist, and work inside tight holds under time and weather pressure; they <em>embody</em> the ergonomic problem and are the first-order recipients of harm or benefit.</div>
+          </td>
+        </tr>
+        <!-- 2 -->
+        <tr>
+          <td class="num">2</td>
+          <td class="zoom"><div class="zoomCell"><div class="miniQuad" aria-label="Quadrant preview"></div></div></td>
+          <td>
+            <div class="name">Ground crew leads & safety trainers</div>
+            <div class="why">Coordinate sequencing, enforce procedures, and set the practical pace/spacing that determines posture quality and micro-breaks; high leverage over safe technique adoption.</div>
+          </td>
+        </tr>
+        <!-- 3 -->
+        <tr>
+          <td class="num">3</td>
+          <td class="zoom"><div class="zoomCell"><div class="miniQuad" aria-label="Quadrant preview"></div></div></td>
+          <td>
+            <div class="name">Ramp operations ecosystem (fuelers, tug/vehicle operators, catering loaders)</div>
+            <div class="why">Share space/time windows on the ramp; their arrival/departure sequencing drives peak load, congestion, and rushing that raises musculoskeletal risk.</div>
+          </td>
+        </tr>
+        <!-- 4 -->
+        <tr>
+          <td class="num">4</td>
+          <td class="zoom"><div class="zoomCell"><div class="miniQuad" aria-label="Quadrant preview"></div></div></td>
+          <td>
+            <div class="name">Operational control & load planning (ramp controller / dispatcher / load planner)</div>
+            <div class="why">Set turnaround tempo and baggage flow; influence workload spikes, recovery time, and communication that mitigates or amplifies strain.</div>
+          </td>
+        </tr>
+        <!-- 5 -->
+        <tr>
+          <td class="num">5</td>
+          <td class="zoom"><div class="zoomCell"><div class="miniQuad" aria-label="Quadrant preview"></div></div></td>
+          <td>
+            <div class="name">Airline & ground-handling management</div>
+            <div class="why">Own safety and on-time KPIs; decide staffing, training intensity, and investment in lift-assist/exoskeletons and analytics — critical for scale-up and sustained adoption.</div>
+          </td>
+        </tr>
+        <!-- 6 -->
+        <tr>
+          <td class="num">6</td>
+          <td class="zoom"><div class="zoomCell"><div class="miniQuad" aria-label="Quadrant preview"></div></div></td>
+          <td>
+            <div class="name">Airport authority (operations & safety office)</div>
+            <div class="why">Controls ramp access, infrastructure, and site rules; can enable or constrain ergonomic equipment use, safe zones, and workflow improvements.</div>
+          </td>
+        </tr>
+        <!-- 7 -->
+        <tr>
+          <td class="num">7</td>
+          <td class="zoom"><div class="zoomCell"><div class="miniQuad" aria-label="Quadrant preview"></div></div></td>
+          <td>
+            <div class="name">Regulators (FAA, OSHA, IATA)</div>
+            <div class="why">Define baggage weight limits, training/ergonomics standards, and reporting; compliance pressure raises influence over solution design and rollout.</div>
+          </td>
+        </tr>
+        <!-- 8 -->
+        <tr>
+          <td class="num">8</td>
+          <td class="zoom"><div class="zoomCell"><div class="miniQuad" aria-label="Quadrant preview"></div></div></td>
+          <td>
+            <div class="name">Passengers / public</div>
+            <div class="why">Indirect beneficiaries whose expectations for timely, damage-free baggage shape reputation and economic incentives for safer, smoother operations.</div>
+          </td>
+        </tr>
+        <!-- 9 -->
+        <tr>
+          <td class="num">9</td>
+          <td class="zoom"><div class="zoomCell"><div class="miniQuad" aria-label="Quadrant preview"></div></div></td>
+          <td>
+            <div class="name">Occupational health clinicians & physical therapists</div>
+            <div class="why">Treat WMSDs and provide rehab feedback; their injury data and guidance inform prevention targets (posture, repetition, torque) for product requirements.</div>
+          </td>
+        </tr>
+        <!-- 10 -->
+        <tr>
+          <td class="num">10</td>
+          <td class="zoom"><div class="zoomCell"><div class="miniQuad" aria-label="Quadrant preview"></div></div></td>
+          <td>
+            <div class="name">Workers' compensation / injury insurance providers</div>
+            <div class="why">Handle claims and total cost of injury; can create incentives or requirements for ergonomic interventions and track ROI at scale.</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Big board -->
+    <section class="boardWrap">
+      <h2 class="boardTitle">System Quadrant — All Stakeholders (drag to reposition)</h2>
+      <div class="boardControls">
+        <button type="button" class="boardReset" id="resetAll">Reset All to Defaults</button>
+      </div>
+      <div class="bigBoard" id="bigBoard" aria-label="All-stakeholders quadrant"></div>
+      <div class="boardLegend" id="boardLegend" aria-label="Legend"></div>
+    </section>
+
+    <!-- Slider template injected per-row -->
+    <template id="sliderTemplate">
+      <div class="sliders" role="group" aria-label="Interest and Influence controls">
+        <div class="slider-row">
+          <label>Interest (X) <span class="value">50%</span></label>
+          <input type="range" min="0" max="100" value="50" class="slider interest" aria-label="Interest (X)" />
+        </div>
+        <div class="slider-row">
+          <label>Influence (Y) <span class="value">50%</span></label>
+          <input type="range" min="0" max="100" value="50" class="slider influence" aria-label="Influence (Y)" />
+        </div>
+      </div>
+    </template>
+
+    <script>
+  // ===== Utilities =====
+  const svgns = 'http://www.w3.org/2000/svg';
+  const $id = (id) => document.getElementById(id);
+  const safeText = (el, value) => { if (el) el.textContent = value; };
+  const on = (el, evt, fn) => { if (el) el.addEventListener(evt, fn); };
+  function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+
+  // Small self-test to ensure newline joining is valid (debug safeguard)
+  (function testCSVJoin(){
+    const s = ['a','b','c'].join('\n');
+    console.assert(s.split('\n').length === 3, 'CSV newline join failed');
+  })();
+
+  // ===== Mini quadrants =====
+  function setDot(dot, interest, influence){
+    const x = clamp(Number(interest), 0, 100);
+    const y = 100 - clamp(Number(influence), 0, 100);
+    dot.setAttribute('cx', x);
+    dot.setAttribute('cy', y);
+    dot.setAttribute('r', 4);
+    dot.setAttribute('fill', '#0ea5e9');
+  }
+  function buildMiniQuad(container, interest, influence){
+    const svg = document.createElementNS(svgns, 'svg');
+    svg.setAttribute('viewBox', '0 0 100 100');
+    svg.setAttribute('aria-hidden', 'true');
+
+    const border = document.createElementNS(svgns, 'rect');
+    border.setAttribute('x', 0); border.setAttribute('y', 0); border.setAttribute('width', 100); border.setAttribute('height', 100);
+    border.setAttribute('fill', 'none'); border.setAttribute('stroke', '#cbd5e1');
+
+    const v = document.createElementNS(svgns, 'line');
+    v.setAttribute('x1', 50); v.setAttribute('y1', 0); v.setAttribute('x2', 50); v.setAttribute('y2', 100);
+    v.setAttribute('stroke', '#94a3b8'); v.setAttribute('stroke-dasharray', '2,2');
+
+    const h = document.createElementNS(svgns, 'line');
+    h.setAttribute('x1', 0); h.setAttribute('y1', 50); h.setAttribute('x2', 100); h.setAttribute('y2', 50);
+    h.setAttribute('stroke', '#94a3b8'); h.setAttribute('stroke-dasharray', '2,2');
+
+    const dot = document.createElementNS(svgns, 'circle');
+    dot.classList.add('dot');
+    setDot(dot, interest, influence);
+
+    svg.append(border, v, h, dot);
+    container.innerHTML = '';
+    container.appendChild(svg);
+    return svg;
+  }
+  function attachMiniInteractions(mini, tr, syncGlobal){
+    const svg = mini.querySelector('svg');
+    const dot = svg.querySelector('.dot');
+    const interestInput = tr.querySelector('input.interest');
+    const influenceInput = tr.querySelector('input.influence');
+    const interestLabel = tr.querySelector('.slider-row:nth-child(1) .value');
+    const influenceLabel = tr.querySelector('.slider-row:nth-child(2) .value');
+
+    let dragging = false;
+    function setFromClient(clientX, clientY){
+      const rect = svg.getBoundingClientRect();
+      const xPct = clamp(((clientX - rect.left) / rect.width) * 100, 0, 100);
+      const yPct = clamp(((clientY - rect.top) / rect.height) * 100, 0, 100);
+      const interest = Math.round(xPct);
+      const influence = Math.round(100 - yPct);
+      tr.dataset.interest = interest; tr.dataset.influence = influence;
+      setDot(dot, interest, influence);
+      if(interestInput){ interestInput.value = interest; if(interestLabel) interestLabel.textContent = interest + '%'; }
+      if(influenceInput){ influenceInput.value = influence; if(influenceLabel) influenceLabel.textContent = influence + '%'; }
+      syncGlobal(tr.dataset.id, interest, influence);
+    }
+    svg.addEventListener('pointerdown', (e) => {
+      dragging = true;
+      svg.setPointerCapture(e.pointerId);
+      setFromClient(e.clientX, e.clientY);
+    });
+    svg.addEventListener('pointermove', (e) => { if(dragging) setFromClient(e.clientX, e.clientY); });
+    svg.addEventListener('pointerup', (e) => { dragging = false; try { svg.releasePointerCapture(e.pointerId); } catch(_){} });
+    svg.addEventListener('pointercancel', () => { dragging = false; });
+  }
+
+  // ===== Big board =====
+  function regularPolygonPoints(sides, r, rotationDeg){
+    const pts = [];
+    const rot = (Math.PI/180) * (rotationDeg || 0);
+    for(let i=0;i<sides;i++){
+      const a = rot + (i * 2*Math.PI / sides);
+      pts.push((Math.cos(a)*r).toFixed(2) + ',' + (Math.sin(a)*r).toFixed(2));
+    }
+    return pts.join(' ');
+  }
+  function createShape(type){
+    const g = document.createElementNS(svgns, 'g');
+    g.setAttribute('tabindex', '0');
+    g.style.cursor = 'grab';
+    const r = 3.5;
+
+    // Larger hit target to make dragging easy
+    const hit = document.createElementNS(svgns, 'circle');
+    hit.setAttribute('cx', 0); hit.setAttribute('cy', 0); hit.setAttribute('r', 7);
+    hit.setAttribute('fill', 'transparent');
+    hit.setAttribute('pointer-events', 'all');
+
+    let el;
+    switch(type){
+      case 'circle': el = document.createElementNS(svgns, 'circle'); el.setAttribute('cx', 0); el.setAttribute('cy', 0); el.setAttribute('r', r); el.setAttribute('fill', '#0ea5e9'); break;
+      case 'square': el = document.createElementNS(svgns, 'rect'); el.setAttribute('x', -r); el.setAttribute('y', -r); el.setAttribute('width', 2*r); el.setAttribute('height', 2*r); el.setAttribute('fill', '#0284c7'); break;
+      case 'triangle': el = document.createElementNS(svgns, 'polygon'); el.setAttribute('points', regularPolygonPoints(3, r, -90)); el.setAttribute('fill', '#38bdf8'); break;
+      case 'triangleDown': el = document.createElementNS(svgns, 'polygon'); el.setAttribute('points', regularPolygonPoints(3, r, 90)); el.setAttribute('fill', '#38bdf8'); break;
+      case 'diamond': el = document.createElementNS(svgns, 'polygon'); el.setAttribute('points', '0,'+(-r)+' '+r+',0 0,'+r+' '+(-r)+',0'); el.setAttribute('fill', '#06b6d4'); break;
+      case 'pentagon': el = document.createElementNS(svgns, 'polygon'); el.setAttribute('points', regularPolygonPoints(5, r, -90)); el.setAttribute('fill', '#0ea5e9'); break;
+      case 'hexagon': el = document.createElementNS(svgns, 'polygon'); el.setAttribute('points', regularPolygonPoints(6, r, 0)); el.setAttribute('fill', '#3b82f6'); break;
+      case 'octagon': el = document.createElementNS(svgns, 'polygon'); el.setAttribute('points', regularPolygonPoints(8, r, 22.5)); el.setAttribute('fill', '#60a5fa'); break;
+      case 'plus':
+        el = document.createElementNS(svgns, 'g');
+        const h = document.createElementNS(svgns, 'rect'); h.setAttribute('x', -r); h.setAttribute('y', -1.2); h.setAttribute('width', 2*r); h.setAttribute('height', 2.4); h.setAttribute('fill', '#0284c7');
+        const v = document.createElementNS(svgns, 'rect'); v.setAttribute('x', -1.2); v.setAttribute('y', -r); v.setAttribute('width', 2.4); v.setAttribute('height', 2*r); v.setAttribute('fill', '#0284c7');
+        el.append(h,v); break;
+      case 'cross':
+        el = document.createElementNS(svgns, 'g');
+        const l1 = document.createElementNS(svgns, 'line'); l1.setAttribute('x1', -r); l1.setAttribute('y1', -r); l1.setAttribute('x2', r); l1.setAttribute('y2', r); l1.setAttribute('stroke', '#0c4a6e'); l1.setAttribute('stroke-width', 2);
+        const l2 = document.createElementNS(svgns, 'line'); l2.setAttribute('x1', -r); l2.setAttribute('y1', r); l2.setAttribute('x2', r); l2.setAttribute('y2', -r); l2.setAttribute('stroke', '#0c4a6e'); l2.setAttribute('stroke-width', 2);
+        el.append(l1,l2); break;
+      default:
+        el = document.createElementNS(svgns, 'circle'); el.setAttribute('cx', 0); el.setAttribute('cy', 0); el.setAttribute('r', r); el.setAttribute('fill', '#0ea5e9');
+    }
+    g.appendChild(hit);
+    g.appendChild(el);
+    return g;
+  }
+  function buildBoard(container){
+    const svg = document.createElementNS(svgns, 'svg');
+    svg.setAttribute('viewBox', '0 0 100 100');
+
+    const border = document.createElementNS(svgns, 'rect');
+    border.setAttribute('x', 0); border.setAttribute('y', 0); border.setAttribute('width', 100); border.setAttribute('height', 100);
+    border.setAttribute('fill', 'none'); border.setAttribute('stroke', '#94a3b8');
+
+    const v = document.createElementNS(svgns, 'line');
+    v.setAttribute('x1', 50); v.setAttribute('y1', 0); v.setAttribute('x2', 50); v.setAttribute('y2', 100);
+    v.setAttribute('stroke', '#94a3b8'); v.setAttribute('stroke-dasharray', '3,3');
+
+    const h = document.createElementNS(svgns, 'line');
+    h.setAttribute('x1', 0); h.setAttribute('y1', 50); h.setAttribute('x2', 100); h.setAttribute('y2', 50);
+    h.setAttribute('stroke', '#94a3b8'); h.setAttribute('stroke-dasharray', '3,3');
+
+    container.innerHTML = '';
+    svg.append(border, v, h);
+    container.appendChild(svg);
+    return svg;
+  }
+
+  const SHAPE_FOR_ID = { 1:'circle', 2:'square', 3:'triangle', 4:'diamond', 5:'pentagon', 6:'hexagon', 7:'triangleDown', 8:'octagon', 9:'plus', 10:'cross' };
+
+  // Defaults per stakeholder (1..10). Use null to fall back to 50.
+  const DEFAULTS = {
+    1: { interest: 95, influence: 80 }, // Ramp workers / baggage handlers
+    2: { interest: 60, influence: 30 }, // Ground crew leads & safety trainers
+    3: { interest: 30, influence: 20 }, // Ramp operations ecosystem
+    4: { interest: 30, influence: 30 }, // Operational control & load planning
+    5: { interest: 80, influence: 60 }, // Airline & ground-handling management
+    6: { interest: 40, influence: 60 }, // Airport authority
+    7: { interest: 25, influence: 50 }, // Regulators (FAA, OSHA, IATA)
+    8: { interest: 15, influence: 15 }, // Passengers / public
+    9: { interest: 10, influence: 20 }, // Occupational health clinicians & PTs
+    10:{ interest: 50, influence: 30 }  // Workers' comp / injury insurance
+  };
+
+  const RATIONALES = {
+    1: {
+      interest: "Direct exposure and lived experience; we'll interview and co‑design with them (very high interest).",
+      influence: "Final users and co-design partners; acceptance and iterative feedback drive the solution — set at 80%."
+    },
+    2: {
+      interest: "Coordinate and train but don't lift bags themselves — moderate interest (60%).",
+      influence: "Consulted for procedures; not primary decision‑makers — 30%."
+    },
+    3: {
+      interest: "Ergonomics is not core to their role; adjacent operations — 30%.",
+      influence: "Sequencing can affect ramp strain but little say in ergonomics — 20%."
+    },
+    4: {
+      interest: "Focus is schedule/load rather than ergonomics — 30%.",
+      influence: "Some leverage via tempo/task order, but low in this project scope — 30%."
+    },
+    5: {
+      interest: "Injury cost, efficiency and safety drive strong interest — 80%.",
+      influence: "Control budgets/staffing/approvals — set at 60%."
+    },
+    6: {
+      interest: "General safety/infrastructure interest, not specific ergonomics — 40%.",
+      influence: "Rules and site access shape what's possible — 60%."
+    },
+    7: {
+      interest: "Broad safety mandate but not project‑specific — 25%.",
+      influence: "Standards and compliance pressure — 50%."
+    },
+    8: {
+      interest: "Indirect concern (timely, undamaged bags) — 15%.",
+      influence: "Minimal direct influence on ramp ergonomics — 15%."
+    },
+    9: {
+      interest: "Advisory role on WMSDs; limited involvement — 10%.",
+      influence: "Guidance informs design but doesn't mandate change — 20%."
+    },
+    10: {
+      interest: "Financial exposure to injury claims — 50%.",
+      influence: "Can incentivize programs but not direct day‑to‑day ops — 30%."
+    }
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const rows = document.querySelectorAll('tbody tr');
+    const tmpl = $id('sliderTemplate');
+    const boardEl = $id('bigBoard');
+    const legendEl = $id('boardLegend');
+    const resetAllBtn = $id('resetAll');
+
+    // Controls
+    const titleInput = $id('titleInput2');  // Changed from 'titleInput'
+    const revInput = $id('revInput2');      // Changed from 'revInput'
+    const printBtn = $id('printBtn2');      // Changed from 'printBtn'
+    const exportBtn = $id('exportBtn2');    // Changed from 'exportBtn'
+    const docTitle = $id('docTitle2');      // Changed from 'docTitle'
+    const docRev = $id('docRev2');          // Changed from 'docRev'
+    const docDate = $id('docDate2');        // Changed from 'docDate'
+
+    const DEFAULT_TITLE = 'Ramp Worker Ergonomics — Interest–Influence Map';
+    if (titleInput) titleInput.value = DEFAULT_TITLE;
+
+    function refreshHeader(){
+      safeText(docTitle, (titleInput && titleInput.value) ? titleInput.value : DEFAULT_TITLE);
+      safeText(docRev, 'Revision: ' + ((revInput && revInput.value) ? revInput.value : '—'));
+      safeText(docDate, new Date().toLocaleString());
+    }
+    refreshHeader();
+    on(titleInput, 'input', refreshHeader);
+    on(revInput, 'input', refreshHeader);
+
+    on(printBtn, 'click', () => { refreshHeader(); window.print(); });
+
+    // --- Export CSV (Excel friendly) ---
+    on(exportBtn, 'click', () => {
+      refreshHeader();
+      const lines = [];
+      const title = ((titleInput && titleInput.value) ? titleInput.value : DEFAULT_TITLE).replace(/,/g,' ');
+      const rev = ((revInput && revInput.value) ? revInput.value : '').replace(/,/g,' ');
+      lines.push(`Title,${title}`);
+      lines.push(`Revision,${rev || '-'}`);
+      lines.push(`Exported,${new Date().toLocaleString()}`);
+      lines.push('');
+      lines.push('#,Stakeholder,Interest (%),Influence (%)');
+      Array.from(rows).forEach((tr, i) => {
+        const nameEl = tr.querySelector('.name');
+        const name = (nameEl ? nameEl.textContent.trim() : `Stakeholder ${i+1}`).replace(/,/g,';');
+        const interest = tr.dataset.interest ?? '50';
+        const influence = tr.dataset.influence ?? '50';
+        lines.push(`${i+1},${name},${interest},${influence}`);
+      });
+      const csv = lines.join('\r\n');
+      const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const safeRev = (rev || 'no-rev').replace(/[^A-Za-z0-9._-]/g,'_');
+      a.href = url; a.download = `Stakeholder_Map_${safeRev}.csv`;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+    // --- Guard: required DOM parts ---
+    (function assertElements(){
+      const ids = ['titleInput2','revInput2','docTitle2','docRev2','docDate2','bigBoard','boardLegend','sliderTemplate'];
+      ids.forEach(id => {
+        console.assert($id(id) !== null, `Missing DOM element: #${id}`);
+      });
+    })();
+
+    // --- Init rows (sliders + mini-quads) ---
+    rows.forEach((tr, i) => {
+      const id = i + 1; // 1..10
+      tr.dataset.id = id;
+      const stakeholderCell = tr.children[2];
+      const node = tmpl ? tmpl.content.cloneNode(true) : document.createElement('div');
+
+      const interestInput = node.querySelector ? node.querySelector('input.interest') : null;
+      const influenceInput = node.querySelector ? node.querySelector('input.influence') : null;
+      const values = node.querySelectorAll ? node.querySelectorAll('.value') : [];
+      const interestDefault = (DEFAULTS[id]?.interest ?? 50);
+      const influenceDefault = (DEFAULTS[id]?.influence ?? 50);
+
+      if (interestInput) interestInput.value = interestDefault;
+      if (influenceInput) influenceInput.value = influenceDefault;
+      if (values[0]) values[0].textContent = interestDefault + '%';
+      if (values[1]) values[1].textContent = influenceDefault + '%';
+
+      // Add rationales under each slider
+      if (node.querySelector) {
+        const sliderRows = node.querySelectorAll('.slider-row');
+        const rr = RATIONALES[id] || {};
+        const r1 = document.createElement('div'); r1.className = 'rationale'; r1.textContent = rr.interest || '';
+        const r2 = document.createElement('div'); r2.className = 'rationale'; r2.textContent = rr.influence || '';
+        if (sliderRows[0]) sliderRows[0].insertAdjacentElement('afterend', r1);
+        if (sliderRows[1]) sliderRows[1].insertAdjacentElement('afterend', r2);
+      }
+
+      tr.dataset.interest = interestDefault;
+      tr.dataset.influence = influenceDefault;
+      if (stakeholderCell) stakeholderCell.appendChild(node);
+
+      // Build mini quad & interactions
+      const miniCell = tr.children[1];
+      const mini = miniCell ? miniCell.querySelector('.miniQuad') : null;
+      const miniSvg = mini ? buildMiniQuad(mini, interestDefault, influenceDefault) : null;
+      if (mini && miniSvg) attachMiniInteractions(mini, tr, (...args)=>syncGlobal(...args));
+
+      // Slider sync -> mini + global
+      const interestEl = tr.querySelector('input.interest');
+      const influenceEl = tr.querySelector('input.influence');
+      const vInterest = tr.querySelector('.slider-row:nth-child(1) .value');
+      const vInfluence = tr.querySelector('.slider-row:nth-child(2) .value');
+      function updateFromSliders(){
+        const iVal = Number(interestEl ? interestEl.value : 50);
+        const yVal = Number(influenceEl ? influenceEl.value : 50);
+        tr.dataset.interest = iVal; tr.dataset.influence = yVal;
+        if (miniSvg) setDot(miniSvg.querySelector('.dot'), iVal, yVal);
+        if (vInterest) vInterest.textContent = iVal + '%';
+        if (vInfluence) vInfluence.textContent = yVal + '%';
+        syncGlobal(tr.dataset.id, iVal, yVal);
+      }
+      if (interestEl) on(interestEl, 'input', updateFromSliders);
+      if (influenceEl) on(influenceEl, 'input', updateFromSliders);
+
+      // Per-row Reset under mini
+      const zoomCell = tr.children[1] ? tr.children[1].querySelector('.zoomCell') : null;
+      if (zoomCell) {
+        const btn = document.createElement('button');
+        btn.type = 'button'; btn.className = 'miniReset'; btn.textContent = 'Reset';
+        btn.addEventListener('click', () => {
+          const dI = (DEFAULTS[id]?.interest ?? 50);
+          const dY = (DEFAULTS[id]?.influence ?? 50);
+          if (interestEl) interestEl.value = dI; if (influenceEl) influenceEl.value = dY; updateFromSliders();
+        });
+        zoomCell.appendChild(btn);
+      }
+    });
+
+    // --- Build big board & legend ---
+    const boardSvg = buildBoard(boardEl);
+
+    const groupsById = {};
+    rows.forEach((tr, i) => {
+      const id = i + 1;
+      const shape = SHAPE_FOR_ID[id] || 'circle';
+      const g = createShape(shape);
+      g.dataset.id = id;
+      groupsById[id] = g;
+      boardSvg.appendChild(g);
+    });
+    function setGroupPos(id, interest, influence){
+      const g = groupsById[id]; if(!g) return;
+      const x = clamp(Number(interest),0,100);
+      const y = 100 - clamp(Number(influence),0,100);
+      g.setAttribute('transform', `translate(${x},${y})`);
+    }
+    rows.forEach((tr, i) => {
+      const id = i + 1; setGroupPos(id, tr.dataset.interest, tr.dataset.influence);
+    });
+
+    // Self-test: initial positions match defaults
+    (function sanityPositions(){
+      const tol = 0.7; // tolerance in board units
+      rows.forEach((tr, i) => {
+        const id = i + 1; const g = groupsById[id]; if(!g) return;
+        const m = (g.getAttribute('transform')||'').match(/translate\(([^,]+),([^\)]+)\)/);
+        if(!m) return; const x = parseFloat(m[1]); const y = parseFloat(m[2]);
+        const ex = clamp(Number(tr.dataset.interest),0,100);
+        const ey = 100 - clamp(Number(tr.dataset.influence),0,100);
+        console.assert(Math.abs(x-ex) <= tol && Math.abs(y-ey) <= tol, `Init position mismatch for id ${id}`);
+      });
+    })();
+
+    // Legend
+if (legendEl) {
+  legendEl.innerHTML = '';
+  rows.forEach((tr, i) => {
+    const id = i + 1;
+    const labelEl = tr.querySelector('.name');
+    const label = labelEl ? labelEl.textContent.trim() : `Stakeholder ${id}`;
+
+    const wrap = document.createElement('div');
+    wrap.className = 'legendItem';
+
+    const icon = document.createElementNS(svgns, 'svg');
+    icon.setAttribute('viewBox','-12 -12 24 24');
+    icon.classList.add('legendIcon');
+    // Make icons larger than the CSS default
+    icon.style.width = '80px';   // adjust to 40px if you want even larger
+    icon.style.height = '80px';
+
+    const iconShape = createShape(SHAPE_FOR_ID[id] || 'circle');
+    // Use the visible shape (lastChild), not the transparent hit circle (firstChild)
+    const visible = iconShape.lastChild.cloneNode(true);
+
+    // Scale the glyph inside the 24x24 viewBox so it fills the icon nicely
+    const g = document.createElementNS(svgns, 'g');
+    g.setAttribute('transform','scale(1.8)'); // tweak 1.6–2.0 to taste
+    g.appendChild(visible);
+    icon.appendChild(g);
+
+    const span = document.createElement('span');
+    span.textContent = label;
+
+    wrap.append(icon, span);
+    legendEl.appendChild(wrap);
+  });
+}
+
+
+    // Sync functions table <-> board
+    function syncGlobal(id, interest, influence){ setGroupPos(id, interest, influence); }
+    function syncRowFromBoard(id, interest, influence){
+      const index = Number(id) - 1; const tr = rows[index]; if (!tr) return;
+      tr.dataset.interest = interest; tr.dataset.influence = influence;
+      const interestEl = tr.querySelector('input.interest');
+      const influenceEl = tr.querySelector('input.influence');
+      const vInterest = tr.querySelector('.slider-row:nth-child(1) .value');
+      const vInfluence = tr.querySelector('.slider-row:nth-child(2) .value');
+      if(interestEl){ interestEl.value = interest; if(vInterest) vInterest.textContent = interest + '%'; }
+      if(influenceEl){ influenceEl.value = influence; if(vInfluence) vInfluence.textContent = influence + '%'; }
+      const miniSvg = tr.children[1] ? tr.children[1].querySelector('.miniQuad svg') : null;
+      if(miniSvg){ setDot(miniSvg.querySelector('.dot'), interest, influence); }
+    }
+
+    // Drag interactions on board (pointer capture on boardSvg)
+    let draggingId = null;
+    function boardSetFromClient(id, clientX, clientY){
+      const rect = boardSvg.getBoundingClientRect();
+      const xPct = clamp(((clientX - rect.left) / rect.width) * 100, 0, 100);
+      const yPct = clamp(((clientY - rect.top) / rect.height) * 100, 0, 100);
+      const interest = Math.round(xPct);
+      const influence = Math.round(100 - yPct);
+      syncRowFromBoard(id, interest, influence);
+      setGroupPos(id, interest, influence);
+    }
+
+    Object.values(groupsById).forEach(g => {
+      g.addEventListener('pointerdown', (e) => {
+        draggingId = g.dataset.id;
+        g.style.cursor = 'grabbing';
+        try { boardSvg.setPointerCapture(e.pointerId); } catch(_){}
+        boardSetFromClient(draggingId, e.clientX, e.clientY);
+      });
+      g.addEventListener('pointercancel', () => { draggingId = null; g.style.cursor = 'grab'; });
+    });
+
+    boardSvg.addEventListener('pointermove', (e) => {
+      if(!draggingId) return;
+      boardSetFromClient(draggingId, e.clientX, e.clientY);
+    });
+    boardSvg.addEventListener('pointerup', (e) => {
+      if(!draggingId) return;
+      const g = groupsById[draggingId];
+      if(g) g.style.cursor = 'grab';
+      draggingId = null;
+      try { boardSvg.releasePointerCapture(e.pointerId); } catch(_){}
+    });
+    boardSvg.addEventListener('pointerleave', () => { draggingId = null; });
+    boardSvg.addEventListener('pointercancel', () => { draggingId = null; });
+
+    // Reset all
+    if (resetAllBtn) resetAllBtn.addEventListener('click', () => {
+      rows.forEach((tr, i) => {
+        const id = i + 1; const dI = (DEFAULTS[id]?.interest ?? 50); const dY = (DEFAULTS[id]?.influence ?? 50);
+        syncRowFromBoard(id, dI, dY); setGroupPos(id, dI, dY);
+      });
+    });
+
+    // ===== Extra Tests =====
+    // 1) Mini->Board sync test on first row (non-destructive):
+    (function syncTest(){
+      const tr = rows[0]; if(!tr) return; const interestEl = tr.querySelector('input.interest');
+      if(!interestEl) return;
+      const original = Number(tr.dataset.interest);
+      const testVal = (original + 7) % 100;
+      interestEl.value = testVal; interestEl.dispatchEvent(new Event('input', {bubbles:true}));
+      const g = document.querySelector('[data-id="1"]');
+      const m = g ? (g.getAttribute('transform')||'').match(/translate\(([^,]+),([^\)]+)\)/) : null;
+      if(m){ const x = Math.round(parseFloat(m[1])); console.assert(x === testVal, 'Mini→Board sync failed for row 1'); }
+      // revert
+      interestEl.value = original; interestEl.dispatchEvent(new Event('input', {bubbles:true}));
+    })();
+  });
+    </script>
+    
+    <!-- Opportunity Statement Section -->
+    <section class="reflection-section" style="margin-top: 32px; padding-top: 24px; border-top: 2px solid var(--border);">
+      <h2 style="font-size: 20px; font-weight: 700; color: #0c4a6e; margin-bottom: 12px;">Opportunity Statement</h2>
+      <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 16px; line-height: 1.7; color: #334155;">
+        <h3 style="margin:0 0 8px;font-size:16px;color:#035b94;">Opportunity Framing</h3>
+        <p><strong>Final Opportunity Statement:</strong> How might we reduce musculoskeletal strain and communication breakdowns for airport ramp workers during high‑traffic operations by providing real‑time ergonomic feedback and supervisor visibility, without slowing task throughput?</p>
+        <p><strong>Rationale &amp; Selection:</strong> In Part 1, I compared multiple opportunities using SET analysis and a weighted decision screen. Each alternative was evaluated by five weighted criteria to ensure objective prioritization.</p>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
