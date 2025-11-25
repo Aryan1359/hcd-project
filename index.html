@@ -401,7 +401,26 @@
         <h2>Part 3 — Product Requirements & Concepts</h2>
         <p class="muted">Module 7 — Integrated Final Assessment (Part 3)</p>
         <hr />
-        <p><strong>Coming soon:</strong> product requirements, concept options, evaluation criteria, and next steps.</p>
+        <!-- Part 3 Subtabs -->
+        <nav class="subtabs" role="tablist" aria-label="Part 3 Sections" style="margin:20px 0;">
+          <button class="subtab-btn" role="tab" aria-selected="true" aria-controls="part3-sub-voa" id="part3-tab-voa" data-subtab="p3-voa">VOA</button>
+          <button class="subtab-btn" role="tab" aria-selected="false" aria-controls="part3-sub-ai" id="part3-tab-ai" data-subtab="p3-ai">AI RampLift Ergonomic System</button>
+          <button class="subtab-btn" role="tab" aria-selected="false" aria-controls="part3-sub-gallery" id="part3-tab-gallery" data-subtab="p3-gallery">gallery</button>
+        </nav>
+
+        <!-- Part 3 Subtab Panels -->
+        <div id="part3-sub-voa" class="subtab-panel" role="tabpanel" aria-labelledby="part3-tab-voa">
+          <h3 style="margin-top:0;color:#035b94;">VOA</h3>
+          <p><em>Value Opportunity Assessment (placeholder):</em> Add prioritized value dimensions, target outcomes, and alignment rationale here.</p>
+        </div>
+        <div id="part3-sub-ai" class="subtab-panel" role="tabpanel" aria-labelledby="part3-tab-ai" hidden>
+          <h3 style="margin-top:0;color:#035b94;">AI RampLift Ergonomic System</h3>
+          <p><em>Concept placeholder:</em> Describe system components (wearables, sensors, AI posture analysis, supervisor dashboard) and key differentiators.</p>
+        </div>
+        <div id="part3-sub-gallery" class="subtab-panel" role="tabpanel" aria-labelledby="part3-tab-gallery" hidden>
+          <h3 style="margin-top:0;color:#035b94;">Gallery</h3>
+          <p><em>Concept gallery placeholder:</em> Insert sketches, storyboard frames, low-fidelity prototypes, or comparison visuals.</p>
+        </div>
       </article>
     </section>
 
@@ -530,7 +549,10 @@
                   || (subId==='sub5' && p.id==='part2-sub5')
                   || (subId==='sub-empathy' && p.id==='part2-sub-empathy')
                   || (subId==='sub6' && p.id==='part2-sub6')
-                  || (subId==='sub-designresearch' && p.id==='part2-sub-designresearch');
+                  || (subId==='sub-designresearch' && p.id==='part2-sub-designresearch')
+                  || (subId==='p3-voa' && p.id==='part3-sub-voa')
+                  || (subId==='p3-ai' && p.id==='part3-sub-ai')
+                  || (subId==='p3-gallery' && p.id==='part3-sub-gallery');
         p.hidden = !show;
       });
     }
@@ -539,8 +561,15 @@
       activateSubtab(b.dataset.subtab);
     }));
     
-    // Initialize first subtab (default to Opportunity Statement)
-    activateSubtab('sub3');
+    // Initialize first subtab depending on active top-level tab
+    (function initSubtabs(){
+      const activeTop = (location.hash||'#part1').replace('#','');
+      if(activeTop==='part3'){
+        activateSubtab('p3-voa');
+      } else {
+        activateSubtab('sub3'); // Part 2 default
+      }
+    })();
 
     // Auto-resize iframes to eliminate internal scroll bars
     function autoSizeIframes(){
